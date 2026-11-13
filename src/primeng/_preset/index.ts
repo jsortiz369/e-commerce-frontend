@@ -17,7 +17,7 @@ export type PaletteConfig = {
 
 export const configPreset = (paletteColor?: PaletteConfig) => {
   const primary = resolvePaletteScale(paletteColor?.primaryColor ?? '#215ada');
-  const secondary = resolvePaletteScale(paletteColor?.secondaryColor ?? '#64748b');
+  const secondary = resolvePaletteScale(paletteColor?.secondaryColor ?? '#14b8a6');
   const success = resolvePaletteScale(paletteColor?.successColor ?? '#22c55e');
   const info = resolvePaletteScale(paletteColor?.infoColor ?? '#0ea5e9');
   const warn = resolvePaletteScale(paletteColor?.warnColor ?? '#f97316');

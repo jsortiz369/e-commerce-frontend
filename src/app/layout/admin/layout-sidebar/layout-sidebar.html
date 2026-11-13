@@ -19,15 +19,25 @@
             class="fixed! z-30 transition-all duration-200"
         >
             <p-sidebar-panel>
-                <p-sidebar-header class="justify-center border-b border-secondary-200/70 px-2.5 py-0!">
-                   <h2>Dashboard</h2>
+                <p-sidebar-header class="justify-center border-b border-surface-200/70 px-2.5 py-0!">
+                    @if(_isOpen$()){
+                        <img 
+                            src="logo.png"
+                            class="w-60 h-14"
+                        >
+                    }@else {
+                        <img 
+                            src="logo_mini.png"
+                            class="w-14 h-14"
+                        >
+                    }
                 </p-sidebar-header>
 
                 <p-sidebar-content class="overscroll-contain px-2 py-2">
                     sdss
                 </p-sidebar-content>
 
-                <p-sidebar-footer class="border-t border-secondary-200/70 dark:border-secondary-800/70 p-2!">
+                <p-sidebar-footer class="border-t border-surface-200/70 dark:border-secondary-800/70 p-2!">
                     <p-sidebar-menu>
                         <p-sidebar-menu-item>
                             <button
@@ -38,8 +48,8 @@
                                 <p-avatar
                                     label="AD"
                                     shape="circle"
-                                    class="size-6! shrink-0 bg-primary text-primary-contrast ring-2 ring-primary-500/20 text-[10px]! font-bold"
                                 />
+                                    <!-- class="size-6! shrink-0 bg-primary text-primary-contrast ring-2 ring-primary-500/20 text-[10px]! font-bold" -->
                                     <div class="flex min-w-0 flex-1 flex-col leading-tight">
                                         <span class="truncate text-xs font-medium text-surface-800 dark:text-surface-100">
                                             Admin General

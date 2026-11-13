@@ -21,6 +21,7 @@ export class LayoutSidebar {
   private readonly _openOnHover$ = computed(() => this._layoutService$.layoutState().openOnHover);
   private readonly _sidebarBackdrop$ = computed(() => this._isOpen$() && this._layoutService$.isMobile());
   private readonly _variant$ = computed(() => this._layoutService$.layoutState().variant);
+  private readonly _isDesktop$ = computed(() => this._layoutService$.isDesktop());
 
   onChangeToggleSidebar() {
     this._layoutService$.onMenuToggle();

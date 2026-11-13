@@ -1,0 +1,304 @@
+[
+  {
+    "label": "General",
+    "children": [
+      {
+        "icon": "th-large",
+        "label": "Resumen",
+        "route": "/admin"
+      },
+      {
+        "icon": "shopping-cart",
+        "label": "Terminal POS (Caja)",
+        "route": "/admin/pos",
+        "badge": "POS"
+      }
+    ]
+  },
+  {
+    "label": "Comercial",
+    "children": [
+      {
+        "icon": "box",
+        "label": "Catálogo",
+        "children": [
+          {
+            "label": "Productos"
+          },
+          {
+            "label": "Variantes y SKUs"
+          },
+          {
+            "label": "Precios de mercado"
+          },
+          {
+            "label": "Categorías"
+          },
+          {
+            "label": "Marcas"
+          }
+        ]
+      },
+      {
+        "icon": "shopping-bag",
+        "label": "Ventas y Pedidos",
+        "children": [
+          {
+            "label": "Caja Físico y Virtual (POS)",
+            "route": "/admin/pos"
+          },
+          {
+            "label": "Pedidos",
+            "route": "/admin/pos"
+          },
+          {
+            "label": "Historial de estados",
+            "route": "/admin/pos"
+          },
+          {
+            "label": "Carritos de compra",
+            "route": "/admin/pos"
+          }
+        ]
+      },
+      {
+        "icon": "users",
+        "label": "Clientes y CRM",
+        "children": [
+          {
+            "label": "Clientes"
+          },
+          {
+            "label": "Direcciones de clientes"
+          },
+          {
+            "label": "Productos favoritos"
+          },
+          {
+            "label": "Tickets de contacto"
+          },
+          {
+            "label": "Suscriptores Newsletter"
+          },
+          {
+            "label": "Sesiones de clientes"
+          }
+        ]
+      },
+      {
+        "icon": "star",
+        "label": "Reseñas y Devoluciones",
+        "children": [
+          {
+            "label": "Solicitudes de devolución"
+          },
+          {
+            "label": "Reseñas de productos"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Abastecimiento",
+    "children": [
+      {
+        "icon": "warehouse",
+        "label": "Inventario",
+        "children": [
+          {
+            "label": "Niveles de stock"
+          },
+          {
+            "label": "Movimientos de stock"
+          },
+          {
+            "label": "Almacenes"
+          }
+        ]
+      },
+      {
+        "icon": "truck",
+        "label": "Compras y Proveedores",
+        "children": [
+          {
+            "label": "Proveedores"
+          },
+          {
+            "label": "Facturas de compra"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Marketing y Finanzas",
+    "items": [
+      {
+        "icon": "percentage",
+        "label": "Promociones",
+        "children": [
+          {
+            "label": "Descuentos y cupones"
+          },
+          {
+            "label": "Descuentos por producto"
+          },
+          {
+            "label": "Descuentos por categoría"
+          },
+          {
+            "label": "Redenciones de cupones"
+          }
+        ]
+      },
+      {
+        "icon": "credit-card",
+        "label": "Pagos",
+        "children": [
+          {
+            "label": "Transacciones"
+          },
+          {
+            "label": "Proveedores de pago"
+          },
+          {
+            "label": "Métodos de pago"
+          }
+        ]
+      },
+      {
+        "icon": "wallet",
+        "label": "Impuestos y Monedas",
+        "children": [
+          {
+            "label": "Monedas"
+          },
+          {
+            "label": "Tasas de impuesto"
+          },
+          {
+            "label": "Reglas fiscales"
+          },
+          {
+            "label": "Zonas fiscales"
+          },
+          {
+            "label": "Roles fiscales (Cliente/Prod)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Canales e Idiomas",
+    "children": [
+      {
+        "icon": "shop",
+        "label": "Storefront (CMS)",
+        "children": [
+          {
+            "label": "Bloques de contenido"
+          },
+          {
+            "label": "Líneas y banners"
+          }
+        ]
+      },
+      {
+        "icon": "globe",
+        "label": "Internacionalización (i18n)",
+        "children": [
+          {
+            "label": "Idiomas",
+            "route": "/admin/i18n"
+          },
+          {
+            "label": "Traducciones estáticas",
+            "route": "/admin/i18n"
+          },
+          {
+            "label": "Traducciones catálogo",
+            "route": "/admin/i18n"
+          },
+          {
+            "label": "Traducciones sistema/CMS",
+            "route": "/admin/i18n"
+          },
+          {
+            "label": "Traducciones geográficas",
+            "route": "/admin/i18n"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Administración",
+    "children": [
+      {
+        "icon": "sliders-h",
+        "label": "Configuración",
+        "children": [
+          {
+            "label": "Perfil de empresa"
+          },
+          {
+            "label": "Direcciones de empresa"
+          },
+          {
+            "label": "Temas (Tienda y Admin)"
+          },
+          {
+            "label": "Verticales de negocio"
+          }
+        ]
+      },
+      {
+        "icon": "compass",
+        "label": "Maestros Geográficos",
+        "children": [
+          {
+            "label": "Regiones y subregiones"
+          },
+          {
+            "label": "Países"
+          },
+          {
+            "label": "Estados / Departamentos"
+          },
+          {
+            "label": "Ciudades"
+          }
+        ]
+      },
+      {
+        "icon": "shield",
+        "label": "Seguridad y Accesos (IAM)",
+        "children": [
+          {
+            "label": "Usuarios internos"
+          },
+          {
+            "label": "Roles y permisos"
+          },
+          {
+            "label": "Módulos del sistema"
+          },
+          {
+            "label": "Sesiones de usuarios"
+          }
+        ]
+      },
+      {
+        "icon": "database",
+        "label": "Auditoría",
+        "children": [
+          {
+            "label": "Bitácora de cambios"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -13,7 +13,7 @@ export const _SIDEBAR: SidebarDesignTokens = {
   colorScheme: {
     light: {
       root: {
-        borderColor: 'color-mix(in oklab, {secondary.200} 80%, transparent)',
+        borderColor: 'color-mix(in oklab, {surface.200} 80%, transparent)',
       },
       panel: {
         color: '{content.color}',

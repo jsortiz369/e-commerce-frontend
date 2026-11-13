@@ -1,11 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PIcon } from '@primeicons/angular/p-icon';
+import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 
 import { LayoutService } from '../../services/layout-service';
 
 @Component({
-  imports: [CommonModule, PIcon],
+  imports: [CommonModule, PIcon, ButtonModule, DividerModule],
   selector: 'app-layout-topbar',
   templateUrl: './layout-topbar.html',
   host: {

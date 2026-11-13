@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-5">
-    <!-- Encabezado de vista minimalista -->
+    <!-- Encabezado de vista minimalista con botones de prueba de Loaders -->
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
             <h1 class="text-base font-semibold tracking-tight text-surface-900 dark:text-surface-0">
@@ -9,10 +9,26 @@
                 Vista general del e-commerce lista para conectar cada proceso.
             </p>
         </div>
+
+        <!-- Botones interactivos para probar los 2 Loaders de E-Commerce -->
+        <div class="flex flex-wrap items-center gap-2">
+            <button
+                type="button"
+                (click)="demoProductLoader()"
+                class="inline-flex h-8 items-center gap-1.5 rounded-md bg-primary hover:bg-primary-600 px-3 text-xs font-medium text-primary-contrast shadow-xs transition-colors cursor-pointer"
+            >
+                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+                    <path d="m3.3 7 8.7 5 8.7-5"></path>
+                    <path d="M12 22V12"></path>
+                </svg>
+                <span>Probar Creando Producto</span>
+            </button>
+        </div>
     </div>
 
     <!-- Tarjetas de métricas base (minimalistas con colores configurados) -->
-    <!-- <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-lg border border-surface-200/80 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-4">
             <span class="text-xs text-secondary-500 dark:text-secondary-400">Ventas del día</span>
             <div class="mt-1.5 flex items-baseline justify-between">
@@ -44,10 +60,10 @@
                 <span class="text-[11px] text-secondary-400">Inventario</span>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <!-- Contenedor base para procesos -->
-    <!-- <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2 rounded-lg border border-surface-200/80 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-4 min-h-72 flex flex-col justify-between">
             <div class="flex items-center justify-between border-b border-surface-100 dark:border-surface-800/80 pb-3">
                 <span class="text-xs font-medium text-surface-800 dark:text-surface-100">Actividad de pedidos recientes</span>
@@ -67,5 +83,16 @@
                 Espacio reservado para el módulo de inventario
             </div>
         </div>
-    </div> -->
+    </div>
 </div>
+
+<!-- =========================================================
+     LOADER 2: ACCIÓN EN PROCESO (EJEMPLO: CREANDO PRODUCTO)
+     ========================================================= -->
+@if (showActionLoader()) {
+    <app-loader
+        action="cart"
+        title="Creando producto..."
+        step="Paso 2 de 3: Sincronizando variantes e imágenes"
+    />
+}

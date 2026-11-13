@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { sidebarGuard } from '../core/guards/admin/sidebar-guard';
 
 export default [
   {
@@ -12,6 +13,7 @@ export default [
   },
   {
     path: 'admin',
+    canActivate: [sidebarGuard],
     loadComponent: () => import('../layout/admin/layout/layout').then((c) => c.Layout),
     loadChildren: () => import('./admin/admin.routes'),
   },

@@ -1,0 +1,92 @@
+@if(_loadersSystem$.isLoaderPageAdmin() || _loadersSystem$.isLoaderPage()) {
+    <div
+        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-surface-50/90 dark:bg-surface-950/90 backdrop-blur-md p-6 select-none transition-all duration-300"
+    >
+        <!-- Contenedor central de la ilustración animada -->
+        <div class="relative flex flex-col items-center">
+            <!-- Resplandor ambiental de fondo con el color Primary -->
+            <div class="absolute -top-6 size-44 rounded-full bg-primary-500/15 dark:bg-primary-500/20 blur-2xl pointer-events-none animate-pulse"></div>
+    
+            <!-- Anillo orbital exterior giratorio -->
+            <div class="relative flex size-28 items-center justify-center">
+                <!-- Anillo discontinuo exterior (orbita suave) -->
+                <svg class="absolute inset-0 size-full animate-[spin_6s_linear_infinite]" viewBox="0 0 100 100">
+                    <circle
+                        cx="50"
+                        cy="50"
+                        r="44"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-dasharray="6 8"
+                        class="text-secondary-300 dark:text-secondary-700"
+                    />
+                </svg>
+    
+                <!-- Anillo fino interior de progreso con el color Primary -->
+                <svg class="absolute inset-1.5 size-25 animate-[spin_2s_cubic-bezier(0.4,0,0.2,1)_infinite]" viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="pageLoaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--color-primary, #215ada)" stop-opacity="0.1" />
+                            <stop offset="100%" stop-color="var(--color-primary, #215ada)" stop-opacity="1" />
+                        </linearGradient>
+                    </defs>
+                    <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="none"
+                        stroke="url(#pageLoaderGradient)"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-dasharray="80 180"
+                    />
+                </svg>
+    
+                <!-- BOLSA DE COMPRAS E-COMMERCE FLOTANTE -->
+                <div class="relative z-10 flex size-14 items-center justify-center animate-[bounce_2.4s_easeInOut_infinite]">
+                    <div class="relative flex size-13 items-center justify-center rounded-2xl bg-primary text-primary-contrast shadow-lg shadow-primary-500/30 ring-2 ring-primary-300/40 dark:ring-primary-700/50">
+                        <!-- Icono Vectorial Bolsa de Compras E-Commerce -->
+                        <svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <!-- Asa de la bolsa -->
+                            <path d="M6 8V6a6 6 0 0 1 12 0v2" />
+                            <!-- Cuerpo de la bolsa -->
+                            <rect x="3" y="8" width="18" height="13" rx="2" fill="currentColor" fill-opacity="0.12" />
+                            <!-- Detalle interno: destello o etiqueta -->
+                            <path d="M9 13a3 3 0 0 0 6 0" />
+                        </svg>
+    
+                        <!-- Etiqueta de precio / oferta flotante en la esquina -->
+                        <span class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-secondary-900 dark:bg-surface-0 text-surface-0 dark:text-surface-900 text-[8px] font-bold shadow-xs">
+                            $
+                        </span>
+                    </div>
+                </div>
+    
+                <!-- Sombra dinámica en el suelo que acompaña el rebote -->
+                <div class="absolute -bottom-2 h-1.5 w-10 rounded-full bg-secondary-900/15 dark:bg-secondary-100/10 blur-[2px] animate-pulse"></div>
+            </div>
+    
+            <!-- Textos de estado y navegación -->
+            <div class="mt-5 flex flex-col items-center text-center max-w-xs">
+                <!-- Badge de marca e-commerce -->
+                <div class="inline-flex items-center gap-1.5 rounded-full border border-secondary-200/80 dark:border-secondary-800 bg-surface-0 dark:bg-surface-900 px-2.5 py-0.5 shadow-2xs">
+                    <span class="size-1.5 rounded-full bg-primary animate-ping"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-secondary-600 dark:text-secondary-400">
+                        E-COMMERCE
+                    </span>
+                </div>
+    
+                <!-- Título -->
+                <h3 class="mt-2 text-sm font-semibold tracking-tight text-surface-900 dark:text-surface-0">
+                    {{_title$()}}
+                </h3>
+    
+                <!-- Subtítulo -->
+                <p class="mt-0.5 text-xs text-secondary-500 dark:text-secondary-400 leading-relaxed">
+                    {{_subTitle$()}}
+                </p>
+            </div>
+        </div>
+    </div>
+}

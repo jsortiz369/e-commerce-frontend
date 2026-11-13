@@ -1,20 +1,29 @@
 <header class=" flex sticky shrink-0 items-center justify-between gap-3 px-3.5 transition-all duration-200">
-    <div class="flex min-w-0 items-center gap-2">
-        <button
+    <div class="flex min-w-0 items-center">
+        <!-- <button
             pButton
-            pSidebarTrigger
             target="admin-sidebar"
             severity="secondary"
             text
             size="small"
-            class="size-7! p-0! text-secondary-500 hover:bg-primary-50/70! hover:text-primary-600! dark:text-secondary-400 dark:hover:bg-primary-950/40! dark:hover:text-primary-400!"
             aria-label="Contraer o expandir menú"
             (click)="toggleSidebar()"
         >
             <svg pIcon="sidebar"></svg>
+        </button> -->
+        <button 
+            pButton 
+            variant="text"
+            size="small"
+            severity="secondary"
+            (click)="toggleSidebar()"
+            class="p-1.5!"
+        >
+            <svg pIcon="sidebar" size="20"></svg>
         </button>
-
-        <span class="h-3.5 w-px bg-secondary-200 dark:bg-secondary-800" aria-hidden="true"></span>
+        
+        <!-- class="size-7! p-0! text-secondary-500 hover:bg-primary-50/70! hover:text-primary-600! dark:text-secondary-400 dark:hover:bg-primary-950/40! dark:hover:text-primary-400!" -->
+        <p-divider [align]="'center'" layout="vertical" class="m-1!" type="solid" />
     </div>
 
     <div class="flex items-center gap-1.5">
