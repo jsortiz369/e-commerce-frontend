@@ -1,3 +1,165 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --color-primary: var(--ecom-primary-500);
+  --color-primary-50: var(--ecom-primary-50);
+  --color-primary-100: var(--ecom-primary-100);
+  --color-primary-200: var(--ecom-primary-200);
+  --color-primary-300: var(--ecom-primary-300);
+  --color-primary-400: var(--ecom-primary-400);
+  --color-primary-500: var(--ecom-primary-500);
+  --color-primary-600: var(--ecom-primary-600);
+  --color-primary-700: var(--ecom-primary-700);
+  --color-primary-800: var(--ecom-primary-800);
+  --color-primary-900: var(--ecom-primary-900);
+  --color-primary-950: var(--ecom-primary-950);
+  --color-primary-contrast: var(--ecom-primary-contrast-color, #ffffff);
+
+  --color-secondary: var(--ecom-secondary-500);
+  --color-secondary-50: var(--ecom-secondary-50);
+  --color-secondary-100: var(--ecom-secondary-100);
+  --color-secondary-200: var(--ecom-secondary-200);
+  --color-secondary-300: var(--ecom-secondary-300);
+  --color-secondary-400: var(--ecom-secondary-400);
+  --color-secondary-500: var(--ecom-secondary-500);
+  --color-secondary-600: var(--ecom-secondary-600);
+  --color-secondary-700: var(--ecom-secondary-700);
+  --color-secondary-800: var(--ecom-secondary-800);
+  --color-secondary-900: var(--ecom-secondary-900);
+  --color-secondary-950: var(--ecom-secondary-950);
+  --color-secondary-contrast: var(--ecom-secondary-contrast-color, #ffffff);
+
+  --color-success: var(--ecom-success-500);
+  --color-success-50: var(--ecom-success-50);
+  --color-success-100: var(--ecom-success-100);
+  --color-success-200: var(--ecom-success-200);
+  --color-success-300: var(--ecom-success-300);
+  --color-success-400: var(--ecom-success-400);
+  --color-success-500: var(--ecom-success-500);
+  --color-success-600: var(--ecom-success-600);
+  --color-success-700: var(--ecom-success-700);
+  --color-success-800: var(--ecom-success-800);
+  --color-success-900: var(--ecom-success-900);
+  --color-success-950: var(--ecom-success-950);
+  --color-success-contrast: var(--ecom-success-contrast-color);
+
+  --color-warning: var(--ecom-warn-500);
+  --color-warning-50: var(--ecom-warn-50);
+  --color-warning-100: var(--ecom-warn-100);
+  --color-warning-200: var(--ecom-warn-200);
+  --color-warning-300: var(--ecom-warn-300);
+  --color-warning-400: var(--ecom-warn-400);
+  --color-warning-500: var(--ecom-warn-500);
+  --color-warning-600: var(--ecom-warn-600);
+  --color-warning-700: var(--ecom-warn-700);
+  --color-warning-800: var(--ecom-warn-800);
+  --color-warning-900: var(--ecom-warn-900);
+  --color-warning-950: var(--ecom-warn-950);
+  --color-warning-contrast: var(--ecom-warn-contrast-color);
+
+  --color-error: var(--ecom-error-500);
+  --color-error-50: var(--ecom-error-50);
+  --color-error-100: var(--ecom-error-100);
+  --color-error-200: var(--ecom-error-200);
+  --color-error-300: var(--ecom-error-300);
+  --color-error-400: var(--ecom-error-400);
+  --color-error-500: var(--ecom-error-500);
+  --color-error-600: var(--ecom-error-600);
+  --color-error-700: var(--ecom-error-700);
+  --color-error-800: var(--ecom-error-800);
+  --color-error-900: var(--ecom-error-900);
+  --color-error-950: var(--ecom-error-950);
+  --color-error-contrast: var(--ecom-error-contrast-color);
+
+  --color-info: var(--ecom-info-500);
+  --color-info-50: var(--ecom-info-50);
+  --color-info-100: var(--ecom-info-100);
+  --color-info-200: var(--ecom-info-200);
+  --color-info-300: var(--ecom-info-300);
+  --color-info-400: var(--ecom-info-400);
+  --color-info-500: var(--ecom-info-500);
+  --color-info-600: var(--ecom-info-600);
+  --color-info-700: var(--ecom-info-700);
+  --color-info-800: var(--ecom-info-800);
+  --color-info-900: var(--ecom-info-900);
+  --color-info-950: var(--ecom-info-950);
+  --color-info-contrast: var(--ecom-info-contrast-color);
+
+  --color-help: var(--ecom-help-500);
+  --color-help-50: var(--ecom-help-50);
+  --color-help-100: var(--ecom-help-100);
+  --color-help-200: var(--ecom-help-200);
+  --color-help-300: var(--ecom-help-300);
+  --color-help-400: var(--ecom-help-400);
+  --color-help-500: var(--ecom-help-500);
+  --color-help-600: var(--ecom-help-600);
+  --color-help-700: var(--ecom-help-700);
+  --color-help-800: var(--ecom-help-800);
+  --color-help-900: var(--ecom-help-900);
+  --color-help-950: var(--ecom-help-950);
+  --color-help-contrast: var(--ecom-help-contrast-color);
+
+  --color-surface: var(--ecom-surface-500);
+  --color-surface-0: var(--ecom-surface-0);
+  --color-surface-50: var(--ecom-surface-50);
+  --color-surface-100: var(--ecom-surface-100);
+  --color-surface-200: var(--ecom-surface-200);
+  --color-surface-300: var(--ecom-surface-300);
+  --color-surface-400: var(--ecom-surface-400);
+  --color-surface-500: var(--ecom-surface-500);
+  --color-surface-600: var(--ecom-surface-600);
+  --color-surface-700: var(--ecom-surface-700);
+  --color-surface-800: var(--ecom-surface-800);
+  --color-surface-900: var(--ecom-surface-900);
+  --color-surface-950: var(--ecom-surface-950);
+
+  --color-content: var(--ecom-content-border-color);
+  --color-overlay-modal: var(--ecom-overlay-modal-background);
+  --color-color: var(--ecom-text-color);
+  --color-text-secondary: var(--ecom-text-secondary-color);
+
+  --text-muted-color: var(--ecom-text-muted-color);
+  --text-xs: var(--ecom-form-field-xs-font-size);
+  --text-xs--line-height: 1rem;
+  --text-sm: var(--ecom-form-field-sm-font-size);
+  --text-sm--line-height: 1.25rem;
+  --text-md: var(--ecom-form-field-md-font-size);
+  --text-md--line-height: 1.5rem;
+  --text-lg: var(--ecom-form-field-lg-font-size);
+  --text-lg--line-height: 1.75rem;
+  --text-xl: var(--ecom-form-field-xl-font-size);
+  --text-xl--line-height: 2rem;
+}
+
+@custom-variant dark (&:where(.ecom-dark, .ecom-dark *));
+
+/* Base resets */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ecom-surface-100, rgba(0, 240, 255, 0.1));
+  border-radius: 4px;
+}
+
+.ecom-dark ::-webkit-scrollbar-track {
+  background: var(--ecom-surface-800, rgba(0, 240, 255, 0.1));
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--ecom-surface-300) 80%, transparent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--ecom-surface-900) 80%, transparent);
+}

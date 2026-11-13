@@ -1,0 +1,203 @@
+<header
+    class="z-20 flex h-11 shrink-0 items-center justify-between gap-3 bg-surface-0/95 dark:bg-surface-900/95 px-3.5 backdrop-blur-md transition-all duration-200"
+    [class.sticky]="true"
+    [class.top-2.5]="isFloating()"
+    [class.top-0]="!isFloating()"
+    [class.mx-2.5]="isFloating()"
+    [class.mt-2.5]="isFloating()"
+    [class.rounded-xl]="isFloating()"
+    [class.rounded-none]="!isFloating()"
+    [class.border]="isFloating()"
+    [class.border-b]="!isFloating()"
+    [class.border-secondary-200/80]="true"
+    [class.dark:border-secondary-800/80]="true"
+    [class.shadow-sm]="isFloating()"
+    [class.shadow-none]="!isFloating()"
+>
+    <!-- Izquierda: Trigger + Breadcrumb + Esquema activo -->
+    <div class="flex min-w-0 items-center gap-2">
+        <button
+            pButton
+            pSidebarTrigger
+            [target]="sidebarTarget()"
+            severity="secondary"
+            text
+            size="small"
+            class="size-7! p-0! text-secondary-500 hover:bg-primary-50/70! hover:text-primary-600! dark:text-secondary-400 dark:hover:bg-primary-950/40! dark:hover:text-primary-400!"
+            aria-label="Contraer o expandir menú"
+        >
+            <svg data-p-icon="sidebar" class="size-4!"></svg>
+        </button>
+
+        <span class="h-3.5 w-px bg-secondary-200 dark:bg-secondary-800" aria-hidden="true"></span>
+
+        <nav aria-label="Ruta de navegación" class="flex min-w-0 items-center gap-1.5 text-xs">
+            <span class="hidden sm:inline text-secondary-500 dark:text-secondary-400">
+                {{ groupLabel() }}
+            </span>
+            <span class="hidden sm:inline text-secondary-300 dark:text-secondary-700">/</span>
+            <span class="truncate font-semibold text-surface-900 dark:text-surface-0">
+                {{ breadcrumbTrail() }}
+            </span>
+            @if (activeSchema()) {
+                <span class="ml-1 inline-flex items-center rounded border border-primary-200/80 dark:border-primary-800 bg-primary-50/80 dark:bg-primary-950/60 px-1.5 py-0.2 font-mono text-[10px] font-semibold text-primary-700 dark:text-primary-300">
+                    schema: {{ activeSchema() }}
+                </span>
+            }
+        </nav>
+    </div>
+
+    <!-- Derecha: Acciones Rápidas + Selector de Colores Dinámico + Buscador + POS -->
+    <div class="flex items-center gap-1.5">
+        <!-- BOTÓN PRINCIPAL ACCIÓN: POS (DESTACA EN COLOR PRIMARY) -->
+        <button
+            type="button"
+            (click)="openPos.emit()"
+            class="inline-flex h-7 items-center gap-1.5 rounded-md bg-primary hover:bg-primary-600 active:bg-primary-700 px-2.5 text-xs font-semibold text-primary-contrast shadow-xs transition-colors cursor-pointer"
+        >
+            <svg pIcon="shopping-cart" class="size-3.5! text-current!"></svg>
+            <span>Caja / POS</span>
+        </button>
+
+        <!-- SELECTOR DE PALETA DE COLOR DINÁMICO (PRIMARY / SECONDARY) -->
+        <div class="relative">
+            <button
+                type="button"
+                id="admin-palette-trigger"
+                (click)="togglePaletteMenu()"
+                class="inline-flex h-7 items-center gap-1.5 rounded-md border border-secondary-200/80 dark:border-secondary-800 bg-surface-0 dark:bg-surface-900 px-2 text-xs font-medium text-secondary-700 dark:text-secondary-300 hover:border-primary-300 hover:text-primary-700 dark:hover:text-primary-300 transition-colors cursor-pointer"
+                title="Personalizar colores Primary y Secondary"
+            >
+                <span class="flex items-center -space-x-1">
+                    <span class="size-2.5 rounded-full ring-1 ring-surface-0 dark:ring-surface-900" [style.backgroundColor]="themeService.activePrimaryHex()"></span>
+                    <span class="size-2.5 rounded-full ring-1 ring-surface-0 dark:ring-surface-900" [style.backgroundColor]="themeService.activeSecondaryHex()"></span>
+                </span>
+                <span class="hidden lg:inline text-[11px]">Colores</span>
+            </button>
+
+            <!-- Popover flotante para personalizar y jugar con Primary & Secondary -->
+            @if (showPaletteMenu()) {
+                <div
+                    id="admin-palette-popover"
+                    class="absolute right-0 top-9 z-50 w-72 rounded-lg border border-secondary-200/90 dark:border-secondary-800 bg-surface-0 dark:bg-surface-900 p-3 shadow-xl flex flex-col gap-3"
+                >
+                    <div class="flex items-center justify-between border-b border-secondary-100 dark:border-secondary-800 pb-2">
+                        <div>
+                            <h4 class="text-xs font-semibold text-surface-900 dark:text-surface-0">
+                                Personalizar Paleta
+                            </h4>
+                            <p class="text-[10px] text-secondary-500">
+                                Se aplica en vivo a todo el admin
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            (click)="closePaletteMenu()"
+                            class="text-secondary-400 hover:text-secondary-700 dark:hover:text-secondary-200 text-xs cursor-pointer"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    <!-- Controles interactivos de color primario y secundario -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="flex flex-col gap-1 rounded border border-secondary-200/70 dark:border-secondary-800 p-2">
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-primary">
+                                Color Primary
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <input
+                                    type="color"
+                                    [value]="themeService.activePrimaryHex()"
+                                    (input)="onPrimaryColorInput($event)"
+                                    class="size-6 cursor-pointer rounded border-0 p-0 bg-transparent"
+                                    aria-label="Color primario"
+                                />
+                                <span class="font-mono text-[11px] font-medium text-secondary-700 dark:text-secondary-300">
+                                    {{ themeService.activePrimaryHex() }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1 rounded border border-secondary-200/70 dark:border-secondary-800 p-2">
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-secondary-600 dark:text-secondary-400">
+                                Color Secondary
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <input
+                                    type="color"
+                                    [value]="themeService.activeSecondaryHex()"
+                                    (input)="onSecondaryColorInput($event)"
+                                    class="size-6 cursor-pointer rounded border-0 p-0 bg-transparent"
+                                    aria-label="Color secundario"
+                                />
+                                <span class="font-mono text-[11px] font-medium text-secondary-700 dark:text-secondary-300">
+                                    {{ themeService.activeSecondaryHex() }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paletas rápidas preconfiguradas -->
+                    <div class="flex flex-col gap-1">
+                        <span class="text-[10px] font-semibold uppercase tracking-wider text-secondary-400">
+                            Temas listos para probar
+                        </span>
+                        <div class="flex flex-col gap-1 max-h-48 overflow-y-auto">
+                            @for (preset of themeService.presets; track preset.name) {
+                                <button
+                                    type="button"
+                                    (click)="onSelectPreset(preset)"
+                                    class="flex items-center justify-between rounded px-2 py-1.5 text-left text-xs transition-colors hover:bg-secondary-100 dark:hover:bg-secondary-800 cursor-pointer"
+                                    [class.bg-secondary-100]="themeService.activePrimaryHex() === preset.primaryHex && themeService.activeSecondaryHex() === preset.secondaryHex"
+                                    [class.dark:bg-secondary-800]="themeService.activePrimaryHex() === preset.primaryHex && themeService.activeSecondaryHex() === preset.secondaryHex"
+                                >
+                                    <div class="flex items-center gap-2">
+                                        <span class="flex items-center -space-x-1">
+                                            <span class="size-3 rounded-full ring-1 ring-surface-0 dark:ring-surface-900" [style.backgroundColor]="preset.primaryHex"></span>
+                                            <span class="size-3 rounded-full ring-1 ring-surface-0 dark:ring-surface-900" [style.backgroundColor]="preset.secondaryHex"></span>
+                                        </span>
+                                        <span class="font-medium text-secondary-800 dark:text-secondary-200">
+                                            {{ preset.name }}
+                                        </span>
+                                    </div>
+                                    <span class="font-mono text-[10px] text-secondary-400">
+                                        {{ preset.primaryName }}
+                                    </span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Buscador compacto -->
+        <button
+            type="button"
+            class="hidden md:inline-flex h-7 w-48 items-center justify-between rounded-md border border-secondary-200/80 dark:border-secondary-800 bg-secondary-50/50 dark:bg-secondary-950/60 px-2.5 text-xs text-secondary-500 dark:text-secondary-400 transition-colors hover:border-secondary-300 hover:text-secondary-700"
+        >
+            <span class="flex items-center gap-1.5 truncate">
+                <svg pIcon="search" class="size-3! shrink-0"></svg>
+                <span class="truncate">Buscar módulo...</span>
+            </span>
+            <kbd class="rounded border border-secondary-200 dark:border-secondary-700 bg-surface-0 dark:bg-surface-900 px-1 py-0.2 text-[10px] font-sans text-secondary-500">
+                Ctrl K
+            </kbd>
+        </button>
+
+        <div class="hidden sm:inline-flex h-7 items-center gap-1.5 rounded-md border border-secondary-200/80 dark:border-secondary-800 bg-secondary-50/60 dark:bg-secondary-900/60 px-2 text-[11px] font-medium text-secondary-700 dark:text-secondary-300">
+            <span class="size-1.5 rounded-full bg-success"></span>
+            <span>Tienda activa</span>
+        </div>
+
+        <button
+            type="button"
+            class="relative inline-flex size-7 items-center justify-center rounded-md text-secondary-500 dark:text-secondary-400 transition-colors hover:bg-primary-50/70 dark:hover:bg-primary-950/40 hover:text-primary-600 dark:hover:text-primary-400"
+            aria-label="Notificaciones"
+        >
+            <svg pIcon="bell" class="size-3.5!"></svg>
+            <span class="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-primary ring-2 ring-surface-0 dark:ring-surface-900"></span>
+        </button>
+    </div>
+</header>

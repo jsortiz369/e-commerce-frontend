@@ -1,0 +1,217 @@
+<p-sidebar
+    id="admin-sidebar"
+    [open]="sidebarOpen()"
+    (openChange)="onSidebarOpenChange($event)"
+    [variant]="variantValue"
+    [collapsible]="collapsible"
+    [side]="side"
+    width="16rem"
+    iconWidth="3.25rem"
+>
+    <p-sidebar-spacer [class.ml-2.5]="isFloating" />
+    <p-sidebar-aside
+        class="fixed! z-30 transition-all duration-200 bg-surface-0 dark:bg-surface-900"
+        [class.inset-y-0!]="!isFloating"
+        [class.left-0!]="!isFloating"
+        [class.border-r]="!isFloating"
+        [class.top-2.5!]="isFloating"
+        [class.bottom-2.5!]="isFloating"
+        [class.left-2.5!]="isFloating"
+        [class.rounded-xl!]="isFloating"
+        [class.border!]="isFloating"
+        [class.border-secondary-200/80]="true"
+        [class.dark:border-secondary-800/80]="true"
+        [class.shadow-sm]="isFloating"
+        [class.overflow-hidden]="true"
+    >
+        <p-sidebar-panel class="bg-transparent!" [class.rounded-xl!]="isFloating">
+            <!-- Cabecera del Sidebar: Identidad de marca destacando el color Primary -->
+            <p-sidebar-header class="h-11 justify-center border-b border-secondary-200/70 dark:border-secondary-800/70 px-2.5 py-0!">
+                <p-sidebar-menu>
+                    <p-sidebar-menu-item>
+                        <button
+                            type="button"
+                            pSidebarMenuButton
+                            class="px-1! py-1! hover:bg-transparent! cursor-default"
+                        >
+                            <div class="flex size-6 shrink-0 items-center justify-center rounded-md bg-primary text-primary-contrast text-xs font-bold tracking-tight shadow-sm ring-2 ring-primary-500/25">
+                                <svg pIcon="shopping-bag" class="size-3.5! text-current!"></svg>
+                            </div>
+                            @if (sidebarOpen()) {
+                                <div class="flex min-w-0 flex-1 items-center justify-between gap-2">
+                                    <span class="truncate text-xs font-semibold tracking-tight text-surface-900 dark:text-surface-0">
+                                        E-Commerce
+                                    </span>
+                                    <span class="inline-flex items-center rounded-md border border-secondary-200/80 dark:border-secondary-800 bg-secondary-100/70 dark:bg-secondary-900/60 px-1.5 py-0.5 text-[10px] font-medium text-secondary-700 dark:text-secondary-300">
+                                        15 Schemas
+                                    </span>
+                                </div>
+                            }
+                        </button>
+                    </p-sidebar-menu-item>
+                </p-sidebar-menu>
+            </p-sidebar-header>
+
+            <!-- Navegación de Módulos: Exclusivo Accordion + Estilo Primary Resaltado -->
+            <p-sidebar-content
+                class="overscroll-contain px-2 py-2"
+                [class.gap-2.5!]="sidebarOpen()"
+                [class.gap-1!]="!sidebarOpen()"
+            >
+                @for (group of navGroups; track group.label) {
+                    <p-sidebar-group class="p-0!">
+                        <p-sidebar-group-label
+                            class="h-5! px-2 text-[10px]! font-semibold! uppercase tracking-wider text-secondary-500 dark:text-secondary-400"
+                            [class.hidden!]="!sidebarOpen()"
+                        >
+                            {{ group.label }}
+                        </p-sidebar-group-label>
+                        <p-sidebar-group-content>
+                            <p-sidebar-menu class="gap-0.5!">
+                                @for (item of group.items; track item.label) {
+                                    <p-sidebar-menu-item
+                                        class="relative"
+                                        [collapsible]="!!item.subItems"
+                                        [open]="openItemLabel() === item.label"
+                                        (openChange)="onItemOpenChange(item.label, $event)"
+                                    >
+                                        <button
+                                            type="button"
+                                            pSidebarMenuButton
+                                            [isActive]="!!item.isActive"
+                                            [attr.title]="!sidebarOpen() ? item.label + (item.schema ? ' (' + item.schema + ')' : '') : null"
+                                            (click)="onMenuButtonClick($event, group, item)"
+                                            class="group/menu h-8! rounded-md px-2 text-[12.5px]! font-medium transition-colors cursor-pointer text-secondary-700 dark:text-secondary-300 hover:bg-primary-50/75 dark:hover:bg-primary-950/40 hover:text-primary-700 dark:hover:text-primary-300 data-[active=true]:bg-primary data-[active=true]:text-primary-contrast data-[active=true]:font-semibold! data-[active=true]:shadow-xs"
+                                        >
+                                            <svg
+                                                [pIcon]="item.icon"
+                                                class="size-4! shrink-0 transition-colors text-secondary-500 dark:text-secondary-400 group-hover/menu:text-primary-600 dark:group-hover/menu:text-primary-400 group-data-[active=true]/menu:text-primary-contrast"
+                                            ></svg>
+                                            @if (sidebarOpen()) {
+                                                <span class="truncate">{{ item.label }}</span>
+                                                @if (item.subItems) {
+                                                    <svg
+                                                        data-p-icon="chevron-down"
+                                                        class="ml-auto size-3.5! transition-transform duration-200 text-secondary-400 dark:text-secondary-500 group-hover/menu:text-primary-500 group-data-[active=true]/menu:text-primary-contrast"
+                                                        [class.rotate-180]="openItemLabel() === item.label"
+                                                    ></svg>
+                                                }
+                                            }
+                                        </button>
+
+                                        @if (item.badge && !item.subItems && sidebarOpen()) {
+                                            <p-sidebar-menu-badge
+                                                [class.bg-primary-100!]="!item.isActive"
+                                                [class.text-primary-700!]="!item.isActive"
+                                                [class.dark:bg-primary-950/80!]="!item.isActive"
+                                                [class.dark:text-primary-300!]="!item.isActive"
+                                                [class.bg-surface-0!]="item.isActive"
+                                                [class.text-primary-700!]="item.isActive"
+                                                class="rounded-full! text-[10px]! font-bold! px-1.5!"
+                                            >
+                                                {{ item.badge }}
+                                            </p-sidebar-menu-badge>
+                                        }
+
+                                        <!-- Submenú en modo expandido -->
+                                        @if (item.subItems && sidebarOpen()) {
+                                            <p-sidebar-menu-sub class="mt-0.5! border-l border-secondary-200/80 dark:border-secondary-800 ml-3.5! pl-2.5! gap-0.5!">
+                                                @for (sub of item.subItems; track sub.label) {
+                                                    <p-sidebar-menu-sub-item>
+                                                        <button
+                                                            type="button"
+                                                            pSidebarMenuSubButton
+                                                            [isActive]="!!sub.isActive"
+                                                            (click)="selectSubItem(group, item, sub)"
+                                                            class="group/sub h-7! rounded-md px-2 text-xs! text-secondary-600 dark:text-secondary-400 transition-colors hover:bg-primary-50/60 dark:hover:bg-primary-950/30 hover:text-primary-700 dark:hover:text-primary-300 data-[active=true]:bg-primary-50/90 dark:data-[active=true]:bg-primary-950/60 data-[active=true]:font-semibold! data-[active=true]:text-primary-700 dark:data-[active=true]:text-primary-300 data-[active=true]:border-l-2 data-[active=true]:border-primary"
+                                                        >
+                                                            <span class="truncate">{{ sub.label }}</span>
+                                                            <span class="ml-auto rounded bg-secondary-100/80 dark:bg-secondary-800/80 px-1 py-0.2 font-mono text-[9px] text-secondary-600 dark:text-secondary-400 transition-colors group-hover/sub:bg-primary-100/70 group-hover/sub:text-primary-700 dark:group-hover/sub:bg-primary-900/50 dark:group-hover/sub:text-primary-300 group-data-[active=true]/sub:bg-primary-100 dark:group-data-[active=true]/sub:bg-primary-900/70 group-data-[active=true]/sub:text-primary-700 dark:group-data-[active=true]/sub:text-primary-300">
+                                                                {{ sub.tables.length }}
+                                                            </span>
+                                                        </button>
+                                                    </p-sidebar-menu-sub-item>
+                                                }
+                                            </p-sidebar-menu-sub>
+                                        }
+                                    </p-sidebar-menu-item>
+                                }
+                            </p-sidebar-menu>
+                        </p-sidebar-group-content>
+                    </p-sidebar-group>
+                }
+            </p-sidebar-content>
+
+            <!-- Pie del Sidebar: Usuario activo -->
+            <p-sidebar-footer class="border-t border-secondary-200/70 dark:border-secondary-800/70 p-2!">
+                <p-sidebar-menu>
+                    <p-sidebar-menu-item>
+                        <button
+                            type="button"
+                            pSidebarMenuButton
+                            class="h-9! rounded-md px-1! transition-colors hover:bg-primary-50/60 dark:hover:bg-primary-950/30"
+                        >
+                            <p-avatar
+                                label="AD"
+                                shape="circle"
+                                class="size-6! shrink-0 bg-primary text-primary-contrast ring-2 ring-primary-500/20 text-[10px]! font-bold"
+                            />
+                            @if (sidebarOpen()) {
+                                <div class="flex min-w-0 flex-1 flex-col leading-tight">
+                                    <span class="truncate text-xs font-medium text-surface-800 dark:text-surface-100">
+                                        Admin General
+                                    </span>
+                                    <span class="truncate text-[10px] text-secondary-500 dark:text-secondary-400">
+                                        admin&#64;tienda.com
+                                    </span>
+                                </div>
+                            }
+                        </button>
+                    </p-sidebar-menu-item>
+                </p-sidebar-menu>
+            </p-sidebar-footer>
+
+            <button pSidebarRail aria-label="Alternar barra lateral"></button>
+        </p-sidebar-panel>
+    </p-sidebar-aside>
+</p-sidebar>
+
+<!-- Submenú flotante fijo cuando el sidebar está en iconWidth (colapsado) -->
+@if (activeFlyoutItem(); as flyout) {
+    <div
+        id="admin-sidebar-flyout"
+        role="menu"
+        [style.top.px]="flyoutTop()"
+        class="fixed z-50 w-56 rounded-xl border border-secondary-200/90 dark:border-secondary-800 bg-surface-0 dark:bg-surface-900 p-1.5 shadow-lg transition-all"
+        [class.left-14]="!isFloating"
+        [class.left-16]="isFloating"
+    >
+        <div class="mb-1 flex items-center justify-between border-b border-secondary-100 dark:border-secondary-800 px-2 py-1">
+            <span class="text-[11px] font-semibold tracking-tight text-surface-800 dark:text-surface-100">
+                {{ flyout.item.label }}
+            </span>
+            @if (flyout.item.schema) {
+                <span class="rounded bg-primary text-primary-contrast px-1.5 py-0.2 font-mono text-[10px] font-semibold">
+                    {{ flyout.item.schema }}
+                </span>
+            }
+        </div>
+        <ul class="flex flex-col gap-0.5 list-none m-0 p-0">
+            @for (sub of flyout.item.subItems; track sub.label) {
+                <li>
+                    <button
+                        type="button"
+                        (click)="selectSubItem(flyout.group, flyout.item, sub)"
+                        [attr.data-active]="sub.isActive ? 'true' : null"
+                        class="group/flyout flex h-7 w-full items-center justify-between rounded-md px-2 text-left text-xs text-secondary-700 dark:text-secondary-300 transition-colors hover:bg-primary-50/80 dark:hover:bg-primary-950/40 hover:text-primary-700 dark:hover:text-primary-300 data-[active=true]:bg-primary data-[active=true]:text-primary-contrast data-[active=true]:font-medium cursor-pointer"
+                    >
+                        <span class="truncate">{{ sub.label }}</span>
+                        <span class="ml-2 rounded bg-secondary-100 dark:bg-secondary-800/80 px-1 py-0.2 font-mono text-[9px] text-secondary-600 dark:text-secondary-400 group-data-[active=true]/flyout:bg-primary-900 group-data-[active=true]/flyout:text-primary-contrast">
+                            {{ sub.tables.length }}
+                        </span>
+                    </button>
+                </li>
+            }
+        </ul>
+    </div>
+}

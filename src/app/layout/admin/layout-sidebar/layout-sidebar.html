@@ -1,0 +1,58 @@
+@if (_sidebarBackdrop$()) {
+    <p-sidebar-backdrop class="z-30 flex" />
+}
+
+<p-sidebar
+    id="admin-sidebar"
+    [open]="_isOpen$()"
+    [variant]=" _variant$()"
+    [collapsible]=" _collapsible$()"
+    [overlay]="_overlay$()" 
+    [openOnHover]="_variant$() == 'inset' ? false :_openOnHover$()"
+    (openChange)="onChangeToggleSidebar()"
+    [side]="'left'" 
+    width="16.5rem"
+    iconWidth="4rem"
+>
+        <p-sidebar-spacer />
+        <p-sidebar-aside
+            class="fixed! z-30 transition-all duration-200"
+        >
+            <p-sidebar-panel>
+                <p-sidebar-header class="justify-center border-b border-secondary-200/70 px-2.5 py-0!">
+                   <h2>Dashboard</h2>
+                </p-sidebar-header>
+
+                <p-sidebar-content class="overscroll-contain px-2 py-2">
+                    sdss
+                </p-sidebar-content>
+
+                <p-sidebar-footer class="border-t border-secondary-200/70 dark:border-secondary-800/70 p-2!">
+                    <p-sidebar-menu>
+                        <p-sidebar-menu-item>
+                            <button
+                                type="button"
+                                pSidebarMenuButton
+                                class="h-9! rounded-md px-1! transition-colors hover:bg-primary-50/60 dark:hover:bg-primary-950/30"
+                            >
+                                <p-avatar
+                                    label="AD"
+                                    shape="circle"
+                                    class="size-6! shrink-0 bg-primary text-primary-contrast ring-2 ring-primary-500/20 text-[10px]! font-bold"
+                                />
+                                    <div class="flex min-w-0 flex-1 flex-col leading-tight">
+                                        <span class="truncate text-xs font-medium text-surface-800 dark:text-surface-100">
+                                            Admin General
+                                        </span>
+                                        <span class="truncate text-[10px] text-secondary-500 dark:text-secondary-400">
+                                            admin&#64;tienda.com
+                                        </span>
+                                    </div>
+                                
+                            </button>
+                        </p-sidebar-menu-item>
+                    </p-sidebar-menu>
+                </p-sidebar-footer>
+            </p-sidebar-panel>
+        </p-sidebar-aside>
+    </p-sidebar>

@@ -1,0 +1,454 @@
+<div class="flex flex-col gap-4">
+    <!-- =========================================================
+         CABECERA DEL TERMINAL DE VENTAS: MODALIDAD FÍSICA O VIRTUAL
+         ========================================================= -->
+    <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-surface-200/80 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 px-4 py-2.5">
+        <div class="flex items-center gap-3">
+            <div class="flex size-8 items-center justify-center rounded-md bg-surface-900 dark:bg-surface-0 text-surface-0 dark:text-surface-900">
+                <svg pIcon="shopping-cart" class="size-4!"></svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-sm font-semibold tracking-tight text-surface-900 dark:text-surface-0">
+                        Terminal Punto de Venta (Caja)
+                    </h1>
+                    <span class="rounded bg-surface-100 dark:bg-surface-800 px-1.5 py-0.5 font-mono text-[10px] font-medium text-surface-600 dark:text-surface-300">
+                        sales.SalesChannel: {{ salesChannel() }}
+                    </span>
+                </div>
+                <p class="text-[11px] text-surface-500 dark:text-surface-400">
+                    Escanea códigos de barras o selecciona productos para facturar en caja física o despacho virtual.
+                </p>
+            </div>
+        </div>
+
+        <!-- Selector de Canal (Punto Físico vs Venta Virtual) + Almacén -->
+        <div class="flex flex-wrap items-center gap-2">
+            <!-- Selector de Almacén (inventories.tb_warehouses) -->
+            <div class="flex items-center gap-1.5 rounded-md border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-950 px-2.5 py-1 text-xs">
+                <svg pIcon="warehouse" class="size-3.5! text-surface-400"></svg>
+                <select
+                    [ngModel]="selectedWarehouse()"
+                    (ngModelChange)="selectedWarehouse.set($event)"
+                    aria-label="Seleccionar almacén o caja"
+                    class="bg-transparent text-xs font-medium text-surface-700 dark:text-surface-200 outline-none cursor-pointer"
+                >
+                    @for (wh of warehouses; track wh.code) {
+                        <option [value]="wh.code" class="bg-surface-0 dark:bg-surface-900">
+                            {{ wh.name }}
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Conmutador Punto Físico / Venta Virtual -->
+            <div class="inline-flex rounded-md border border-surface-200 dark:border-surface-800 bg-surface-100/80 dark:bg-surface-950 p-0.5">
+                <button
+                    type="button"
+                    (click)="setSalesChannel('PHYSICAL_STORE')"
+                    class="flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
+                    [class.bg-surface-0]="salesChannel() === 'PHYSICAL_STORE'"
+                    [class.dark:bg-surface-800]="salesChannel() === 'PHYSICAL_STORE'"
+                    [class.text-surface-900]="salesChannel() === 'PHYSICAL_STORE'"
+                    [class.dark:text-surface-0]="salesChannel() === 'PHYSICAL_STORE'"
+                    [class.shadow-2xs]="salesChannel() === 'PHYSICAL_STORE'"
+                    [class.text-surface-500]="salesChannel() !== 'PHYSICAL_STORE'"
+                >
+                    <svg pIcon="shop" class="size-3.5!"></svg>
+                    <span>Caja Física (Supermercado)</span>
+                </button>
+                <button
+                    type="button"
+                    (click)="setSalesChannel('ONLINE')"
+                    class="flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
+                    [class.bg-surface-0]="salesChannel() === 'ONLINE'"
+                    [class.dark:bg-surface-800]="salesChannel() === 'ONLINE'"
+                    [class.text-surface-900]="salesChannel() === 'ONLINE'"
+                    [class.dark:text-surface-0]="salesChannel() === 'ONLINE'"
+                    [class.shadow-2xs]="salesChannel() === 'ONLINE'"
+                    [class.text-surface-500]="salesChannel() !== 'ONLINE'"
+                >
+                    <svg pIcon="globe" class="size-3.5!"></svg>
+                    <span>Venta Virtual / Televenta</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         CUERPO DEL POS: ESCÁNER + CATÁLOGO (IZQ) | TICKET CAJA (DER)
+         ========================================================= -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 items-start">
+        <!-- COLUMNA IZQUIERDA (7 cols): Lector Código de Barras + Productos -->
+        <div class="lg:col-span-7 flex flex-col gap-3">
+            <!-- Barra de Escaneo (Pistola Lectora / SKU / Nombre) -->
+            <div class="rounded-lg border border-surface-200/80 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-3 flex flex-col gap-2.5">
+                <div class="flex items-center gap-2">
+                    <div class="relative flex-1">
+                        <svg
+                            pIcon="barcode"
+                            class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4! text-surface-400"
+                        ></svg>
+                        <input
+                            type="text"
+                            [ngModel]="barcodeOrSearchInput()"
+                            (ngModelChange)="barcodeOrSearchInput.set($event)"
+                            (keydown.enter)="onBarcodeEnter()"
+                            placeholder="Escanear código de barras (ej. 775010000101), escribir SKU o nombre y presionar Enter..."
+                            class="h-9 w-full rounded-md border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 pl-9 pr-20 text-xs text-surface-900 dark:text-surface-0 placeholder:text-surface-400 focus:border-surface-900 dark:focus:border-surface-400 outline-none transition-colors"
+                        />
+                        <kbd class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 px-1.5 py-0.5 font-mono text-[10px] text-surface-400">
+                            Enter ↵
+                        </kbd>
+                    </div>
+                    <button
+                        type="button"
+                        (click)="onBarcodeEnter()"
+                        class="h-9 rounded-md bg-surface-900 dark:bg-surface-0 px-3 text-xs font-medium text-surface-0 dark:text-surface-900 hover:opacity-90 transition-opacity cursor-pointer shrink-0"
+                    >
+                        Pasar producto
+                    </button>
+                </div>
+
+                @if (scanFeedback()) {
+                    <div class="flex items-center gap-1.5 rounded bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                        <svg pIcon="check-circle" class="size-3.5!"></svg>
+                        <span>{{ scanFeedback() }}</span>
+                    </div>
+                }
+
+                <!-- Filtros rápidos de categoría (catalog.tb_categories) -->
+                <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                    @for (cat of categories; track cat) {
+                        <button
+                            type="button"
+                            (click)="selectedCategory.set(cat)"
+                            class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
+                            [class.bg-surface-900]="selectedCategory() === cat"
+                            [class.text-surface-0]="selectedCategory() === cat"
+                            [class.dark:bg-surface-0]="selectedCategory() === cat"
+                            [class.dark:text-surface-900]="selectedCategory() === cat"
+                            [class.bg-surface-100]="selectedCategory() !== cat"
+                            [class.text-surface-600]="selectedCategory() !== cat"
+                            [class.dark:bg-surface-800]="selectedCategory() !== cat"
+                            [class.dark:text-surface-300]="selectedCategory() !== cat"
+                        >
+                            {{ cat }}
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Grilla de Productos Rápidos para Cajera -->
+            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                @for (item of filteredCatalog(); track item.id) {
+                    <button
+                        type="button"
+                        (click)="addVariantToTicket(item)"
+                        class="group flex flex-col justify-between rounded-lg border border-surface-200/80 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-3 text-left transition-all hover:border-surface-400 dark:hover:border-surface-600 hover:shadow-xs cursor-pointer"
+                    >
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="min-w-0">
+                                <span class="block truncate text-xs font-semibold text-surface-900 dark:text-surface-0 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                    {{ item.name }}
+                                </span>
+                                <span class="block text-[11px] text-surface-500 dark:text-surface-400">
+                                    {{ item.variantName }}
+                                </span>
+                            </div>
+                            <span class="shrink-0 rounded bg-surface-100 dark:bg-surface-800 px-1.5 py-0.5 font-mono text-xs font-semibold text-surface-900 dark:text-surface-0">
+                                ${{ item.price.toFixed(2) }}
+                            </span>
+                        </div>
+
+                        <div class="mt-3 flex items-center justify-between border-t border-surface-100 dark:border-surface-800/80 pt-2 text-[10px] text-surface-400 dark:text-surface-500">
+                            <span class="font-mono">SKU: {{ item.sku }} • {{ item.barcode }}</span>
+                            <span class="font-medium text-emerald-600 dark:text-emerald-400">
+                                Stock: {{ item.stock }}
+                            </span>
+                        </div>
+                    </button>
+                } @empty {
+                    <div class="col-span-full rounded-lg border border-dashed border-surface-200 dark:border-surface-800 p-8 text-center text-xs text-surface-400">
+                        No se encontraron productos con ese código de barras, SKU o nombre.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA (5 cols): TICKET DE CAJA / ORDEN EN CURSO -->
+        <div class="lg:col-span-5 flex flex-col rounded-lg border border-surface-200/80 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 overflow-hidden">
+            <!-- Encabezado del Ticket y Selección de Cliente -->
+            <div class="border-b border-surface-200/70 dark:border-surface-800 p-3.5 flex flex-col gap-2.5 bg-surface-50/50 dark:bg-surface-950/40">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <svg pIcon="receipt" class="size-4! text-surface-600 dark:text-surface-300"></svg>
+                        <span class="text-xs font-semibold text-surface-900 dark:text-surface-0">
+                            Ticket de Venta ({{ totalItemsCount() }} ítems)
+                        </span>
+                    </div>
+                    @if (ticketLines().length > 0) {
+                        <button
+                            type="button"
+                            (click)="clearTicket()"
+                            class="text-[11px] text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
+                        >
+                            Vaciar caja
+                        </button>
+                    }
+                </div>
+
+                <!-- Selector de Cliente (commerce.tb_customers) -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] font-medium uppercase tracking-wider text-surface-400">
+                        Cliente (tb_customers)
+                    </label>
+                    <select
+                        [ngModel]="selectedCustomerId()"
+                        (ngModelChange)="onCustomerChange($event)"
+                        aria-label="Seleccionar cliente"
+                        class="h-8 w-full rounded-md border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 px-2 text-xs text-surface-800 dark:text-surface-100 outline-none"
+                    >
+                        @for (cust of customers; track cust.id) {
+                            <option [value]="cust.id">
+                                {{ cust.name }} — Doc: {{ cust.taxId }}
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Datos adicionales cuando es Venta Virtual / Online -->
+                @if (salesChannel() === 'ONLINE') {
+                    <div class="flex flex-col gap-1.5 rounded-md border border-indigo-500/20 bg-indigo-500/5 p-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                                Despacho Virtual (tb_customers_addresses)
+                            </span>
+                            <span class="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">
+                                +$8.00 envío
+                            </span>
+                        </div>
+                        <input
+                            type="text"
+                            [ngModel]="shippingAddress()"
+                            (ngModelChange)="shippingAddress.set($event)"
+                            placeholder="Dirección de entrega para el pedido virtual..."
+                            class="h-7 w-full rounded border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 px-2 text-xs text-surface-800 dark:text-surface-100 outline-none"
+                        />
+                    </div>
+                }
+            </div>
+
+            <!-- Lista de Productos Pasados por Caja (sales.tb_order_lines) -->
+            <div class="max-h-72 min-h-48 overflow-y-auto overscroll-contain divide-y divide-surface-100 dark:divide-surface-800/70 px-3.5">
+                @for (line of ticketLines(); track line.variant.id) {
+                    <div class="flex items-center justify-between gap-2 py-2.5">
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-xs font-medium text-surface-900 dark:text-surface-0">
+                                {{ line.variant.name }}
+                            </p>
+                            <p class="font-mono text-[10px] text-surface-400">
+                                {{ line.variant.sku }} • ${{ line.variant.price.toFixed(2) }} c/u
+                            </p>
+                        </div>
+
+                        <!-- Controles de cantidad estilo cajera -->
+                        <div class="flex items-center gap-1">
+                            <button
+                                type="button"
+                                (click)="updateQuantity(line.variant.id, -1)"
+                                class="flex size-6 items-center justify-center rounded border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-xs font-semibold text-surface-700 dark:text-surface-200 hover:bg-surface-100 cursor-pointer"
+                                aria-label="Disminuir cantidad"
+                            >
+                                -
+                            </button>
+                            <span class="w-7 text-center font-mono text-xs font-semibold text-surface-900 dark:text-surface-0">
+                                {{ line.quantity }}
+                            </span>
+                            <button
+                                type="button"
+                                (click)="updateQuantity(line.variant.id, 1)"
+                                class="flex size-6 items-center justify-center rounded border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-xs font-semibold text-surface-700 dark:text-surface-200 hover:bg-surface-100 cursor-pointer"
+                                aria-label="Aumentar cantidad"
+                            >
+                                +
+                            </button>
+                        </div>
+
+                        <div class="w-16 text-right font-mono text-xs font-semibold text-surface-900 dark:text-surface-0">
+                            ${{ (line.variant.price * line.quantity).toFixed(2) }}
+                        </div>
+
+                        <button
+                            type="button"
+                            (click)="removeLine(line.variant.id)"
+                            class="text-surface-400 hover:text-rose-500 transition-colors cursor-pointer"
+                            aria-label="Eliminar línea"
+                        >
+                            <svg pIcon="trash" class="size-3.5!"></svg>
+                        </button>
+                    </div>
+                } @empty {
+                    <div class="flex h-44 flex-col items-center justify-center gap-1.5 text-center text-xs text-surface-400">
+                        <svg pIcon="shopping-bag" class="size-5! opacity-40"></svg>
+                        <span>Caja lista. Escanea o selecciona un producto.</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Cupón + Totales + Método de Pago -->
+            <div class="border-t border-surface-200/80 dark:border-surface-800 bg-surface-50/60 dark:bg-surface-950/50 p-3.5 flex flex-col gap-3">
+                <!-- Cupón de descuento (promotions.tb_discounts) -->
+                <div class="flex items-center gap-1.5">
+                    <input
+                        type="text"
+                        [ngModel]="couponCode()"
+                        (ngModelChange)="couponCode.set($event)"
+                        (keydown.enter)="applyCoupon()"
+                        placeholder="Cupón de descuento (ej. PROMO10)"
+                        class="h-7 flex-1 rounded border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 px-2 font-mono text-xs uppercase text-surface-800 dark:text-surface-100 outline-none"
+                    />
+                    <button
+                        type="button"
+                        (click)="applyCoupon()"
+                        class="h-7 rounded border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 px-2.5 text-[11px] font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 cursor-pointer"
+                    >
+                        Aplicar
+                    </button>
+                </div>
+
+                <!-- Resumen contable (sales.tb_orders) -->
+                <div class="flex flex-col gap-1 text-xs">
+                    <div class="flex justify-between text-surface-500 dark:text-surface-400">
+                        <span>Subtotal</span>
+                        <span class="font-mono">${{ subtotalAmount().toFixed(2) }}</span>
+                    </div>
+                    @if (discountAmount() > 0) {
+                        <div class="flex justify-between text-emerald-600 dark:text-emerald-400">
+                            <span>Descuento ({{ appliedDiscountPercent() }}%)</span>
+                            <span class="font-mono">-${{ discountAmount().toFixed(2) }}</span>
+                        </div>
+                    }
+                    <div class="flex justify-between text-surface-500 dark:text-surface-400">
+                        <span>Impuestos (IGV/IVA 18%)</span>
+                        <span class="font-mono">${{ taxAmount().toFixed(2) }}</span>
+                    </div>
+                    @if (shippingFee() > 0) {
+                        <div class="flex justify-between text-surface-500 dark:text-surface-400">
+                            <span>Envío domicilio (Canal Virtual)</span>
+                            <span class="font-mono">${{ shippingFee().toFixed(2) }}</span>
+                        </div>
+                    }
+                    <div class="mt-1 flex items-baseline justify-between border-t border-surface-200/80 dark:border-surface-800 pt-2 text-sm font-semibold text-surface-900 dark:text-surface-0">
+                        <span>Total a Cobrar</span>
+                        <span class="font-mono text-base">${{ totalAmount().toFixed(2) }}</span>
+                    </div>
+                </div>
+
+                <!-- Selección de Medio de Pago (payments.tb_payment_providers) -->
+                <div class="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+                    <button
+                        type="button"
+                        (click)="paymentMethod.set('CASH')"
+                        class="rounded border py-1.5 px-2 text-center text-[11px] font-medium transition-colors cursor-pointer"
+                        [class.border-surface-900]="paymentMethod() === 'CASH'"
+                        [class.bg-surface-900]="paymentMethod() === 'CASH'"
+                        [class.text-surface-0]="paymentMethod() === 'CASH'"
+                        [class.dark:border-surface-0]="paymentMethod() === 'CASH'"
+                        [class.dark:bg-surface-0]="paymentMethod() === 'CASH'"
+                        [class.dark:text-surface-900]="paymentMethod() === 'CASH'"
+                        [class.border-surface-200]="paymentMethod() !== 'CASH'"
+                        [class.dark:border-surface-800]="paymentMethod() !== 'CASH'"
+                    >
+                        Efectivo
+                    </button>
+                    <button
+                        type="button"
+                        (click)="paymentMethod.set('CARD_POS')"
+                        class="rounded border py-1.5 px-2 text-center text-[11px] font-medium transition-colors cursor-pointer"
+                        [class.border-surface-900]="paymentMethod() === 'CARD_POS'"
+                        [class.bg-surface-900]="paymentMethod() === 'CARD_POS'"
+                        [class.text-surface-0]="paymentMethod() === 'CARD_POS'"
+                        [class.dark:border-surface-0]="paymentMethod() === 'CARD_POS'"
+                        [class.dark:bg-surface-0]="paymentMethod() === 'CARD_POS'"
+                        [class.dark:text-surface-900]="paymentMethod() === 'CARD_POS'"
+                        [class.border-surface-200]="paymentMethod() !== 'CARD_POS'"
+                        [class.dark:border-surface-800]="paymentMethod() !== 'CARD_POS'"
+                    >
+                        Tarjeta POS
+                    </button>
+                    <button
+                        type="button"
+                        (click)="paymentMethod.set('TRANSFER_QR')"
+                        class="rounded border py-1.5 px-2 text-center text-[11px] font-medium transition-colors cursor-pointer"
+                        [class.border-surface-900]="paymentMethod() === 'TRANSFER_QR'"
+                        [class.bg-surface-900]="paymentMethod() === 'TRANSFER_QR'"
+                        [class.text-surface-0]="paymentMethod() === 'TRANSFER_QR'"
+                        [class.dark:border-surface-0]="paymentMethod() === 'TRANSFER_QR'"
+                        [class.dark:bg-surface-0]="paymentMethod() === 'TRANSFER_QR'"
+                        [class.dark:text-surface-900]="paymentMethod() === 'TRANSFER_QR'"
+                        [class.border-surface-200]="paymentMethod() !== 'TRANSFER_QR'"
+                        [class.dark:border-surface-800]="paymentMethod() !== 'TRANSFER_QR'"
+                    >
+                        QR / Transf.
+                    </button>
+                    <button
+                        type="button"
+                        (click)="paymentMethod.set('PAYMENT_LINK')"
+                        class="rounded border py-1.5 px-2 text-center text-[11px] font-medium transition-colors cursor-pointer"
+                        [class.border-surface-900]="paymentMethod() === 'PAYMENT_LINK'"
+                        [class.bg-surface-900]="paymentMethod() === 'PAYMENT_LINK'"
+                        [class.text-surface-0]="paymentMethod() === 'PAYMENT_LINK'"
+                        [class.dark:border-surface-0]="paymentMethod() === 'PAYMENT_LINK'"
+                        [class.dark:bg-surface-0]="paymentMethod() === 'PAYMENT_LINK'"
+                        [class.dark:text-surface-900]="paymentMethod() === 'PAYMENT_LINK'"
+                        [class.border-surface-200]="paymentMethod() !== 'PAYMENT_LINK'"
+                        [class.dark:border-surface-800]="paymentMethod() !== 'PAYMENT_LINK'"
+                    >
+                        Link Virtual
+                    </button>
+                </div>
+
+                <!-- Cálculo de Vuelto / Cambio cuando es Efectivo en Caja Física -->
+                @if (paymentMethod() === 'CASH' && ticketLines().length > 0) {
+                    <div class="flex items-center justify-between gap-2 rounded-md border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 px-2.5 py-1.5 text-xs">
+                        <span class="text-surface-500">Efectivo recibido:</span>
+                        <input
+                            type="number"
+                            [ngModel]="cashReceived()"
+                            (ngModelChange)="cashReceived.set($event)"
+                            class="w-20 rounded border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-1.5 py-0.5 text-right font-mono text-xs font-semibold outline-none"
+                        />
+                        <span class="text-surface-500">Vuelto:</span>
+                        <span class="font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                            ${{ cashChange().toFixed(2) }}
+                        </span>
+                    </div>
+                }
+
+                <!-- Botón de Cierre de Venta -->
+                <button
+                    type="button"
+                    [disabled]="ticketLines().length === 0"
+                    (click)="completeSale()"
+                    class="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-surface-900 dark:bg-surface-0 text-xs font-semibold text-surface-0 dark:text-surface-900 transition-opacity hover:opacity-90 disabled:opacity-40 cursor-pointer"
+                >
+                    <svg pIcon="check" class="size-4!"></svg>
+                    @if (salesChannel() === 'PHYSICAL_STORE') {
+                        <span>Cobrar en Caja e Imprimir Ticket (${{ totalAmount().toFixed(2) }})</span>
+                    } @else {
+                        <span>Generar Orden Virtual y Enviar Pago (${{ totalAmount().toFixed(2) }})</span>
+                    }
+                </button>
+
+                @if (lastCompletedOrderNumber(); as orderNum) {
+                    <div class="flex items-center justify-between rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700 dark:text-emerald-300">
+                        <span>Venta registrada en <code>sales.tb_orders</code>:</span>
+                        <strong class="font-mono">{{ orderNum }}</strong>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

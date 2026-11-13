@@ -1,0 +1,13 @@
+<p-sidebar-layout class="h-dvh! min-h-dvh! w-full overflow-hidden">
+    <app-layout-sidebar />
+       
+    <p-sidebar-main class="h-dvh min-w-0 flex-1 flex-col overflow-hidden">
+        <app-layout-topbar/>
+
+        <main class="flex-1 overflow-y-auto overscroll-contain scrollbar-gutter-stable transition-all">
+            <div class="mx-auto w-full max-w-7xl flex flex-col gap-4">
+                <router-outlet />
+            </div>
+        </main>
+    </p-sidebar-main>
+</p-sidebar-layout>
