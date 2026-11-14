@@ -36,6 +36,6 @@ export class Dashboard {
       } else {
         this.actionProgress.set(Math.min(100, current + 25));
       }
-    }, 500000);
+    }, 500);
   }
 }

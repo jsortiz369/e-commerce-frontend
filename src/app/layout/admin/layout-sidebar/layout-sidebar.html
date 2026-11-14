@@ -34,7 +34,26 @@
                 </p-sidebar-header>
 
                 <p-sidebar-content class="overscroll-contain px-2 py-2">
-                    sdss
+                    @for (group of _sidebarGroups$(); track group.label) {
+                        <p-sidebar-group class="p-0!">
+                            <p-sidebar-group-label class="h-5! px-2 text-[10px]! font-semibold! uppercase tracking-wider text-secondary-500">
+                                {{ group.label }}
+                            </p-sidebar-group-label>
+
+                            <p-sidebar-group-content>
+                                <p-sidebar-menu class="gap-0.5!">
+                                    @for (item of group.children; track item.label) {
+                                        <p-sidebar-menu-item
+                                            class="relative"
+                                            [collapsible]="!!item.children"
+                                        >
+                                            {{ item.label }}
+                                        </p-sidebar-menu-item>
+                                    }
+                                </p-sidebar-menu>
+                            </p-sidebar-group-content>
+                        </p-sidebar-group>
+                    }
                 </p-sidebar-content>
 
                 <p-sidebar-footer class="border-t border-surface-200/70 dark:border-secondary-800/70 p-2!">
