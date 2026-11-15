@@ -133,7 +133,7 @@
   },
   {
     "label": "Marketing y Finanzas",
-    "items": [
+    "children": [
       {
         "icon": "percentage",
         "label": "Promociones",

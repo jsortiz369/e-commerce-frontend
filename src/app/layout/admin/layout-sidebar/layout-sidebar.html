@@ -5,83 +5,205 @@
 <p-sidebar
     id="admin-sidebar"
     [open]="_isOpen$()"
-    [variant]=" _variant$()"
-    [collapsible]=" _collapsible$()"
-    [overlay]="_overlay$()" 
-    [openOnHover]="_variant$() == 'inset' ? false :_openOnHover$()"
+    [variant]="_variant$()"
+    [collapsible]="_collapsible$()"
+    [overlay]="_overlay$()"
+    [openOnHover]="_variant$() == 'inset' ? false : _openOnHover$()"
     (openChange)="onChangeToggleSidebar()"
-    [side]="'left'" 
+    [side]="'left'"
     width="16.5rem"
     iconWidth="4rem"
 >
-        <p-sidebar-spacer />
-        <p-sidebar-aside
-            class="fixed! z-30 transition-all duration-200"
-        >
-            <p-sidebar-panel>
-                <p-sidebar-header class="justify-center border-b border-surface-200/70 px-2.5 py-0!">
-                    @if(_isOpen$()){
-                        <img 
-                            src="logo.png"
-                            class="w-60 h-14"
-                        >
-                    }@else {
-                        <img 
-                            src="logo_mini.png"
-                            class="w-14 h-14"
-                        >
-                    }
-                </p-sidebar-header>
+    <p-sidebar-spacer />
 
-                <p-sidebar-content class="overscroll-contain px-2 py-2">
-                    @for (group of _sidebarGroups$(); track group.label) {
-                        <p-sidebar-group class="p-0!">
-                            <p-sidebar-group-label class="h-5! px-2 text-[10px]! font-semibold! uppercase tracking-wider text-secondary-500">
-                                {{ group.label }}
-                            </p-sidebar-group-label>
+    <p-sidebar-aside class="fixed! z-30 transition-all duration-200">
+        <p-sidebar-panel>
+            <p-sidebar-header class="justify-center border-b border-secondary-200/70 dark:border-secondary-800/70 px-2.5 py-0!">
+                @if (_isOpen$()) {
+                    <img
+                        src="logo.png"
+                        alt="Logo E-Commerce"
+                        class="h-12 w-56 object-contain transition-all duration-200 select-none"
+                    />
+                } @else {
+                    <img
+                        src="logo_mini.png"
+                        alt="Logo Mini"
+                        class="size-10 object-contain transition-all duration-200 select-none"
+                    />
+                }
+            </p-sidebar-header>
 
-                            <p-sidebar-group-content>
-                                <p-sidebar-menu class="gap-0.5!">
-                                    @for (item of group.children; track item.label) {
-                                        <p-sidebar-menu-item
-                                            class="relative"
-                                            [collapsible]="!!item.children"
-                                        >
-                                            {{ item.label }}
-                                        </p-sidebar-menu-item>
+            <p-sidebar-content>
+                <p-scrollarea class="h-[calc(100dvh-112px)]" [pt]="{root: {class: 'border-0!'}, viewport: {class: 'px-2!'}}">
+                    <p-scrollarea-viewport>
+                        <p-scrollarea-content>
+                            @for (group of _sidebarGroups$(); track group.label; let firstGroup = $first; let lastGroup = $last) {
+                                <p-sidebar-group [ngClass]="!firstGroup ? 'pt-2.5!' : ''">
+                                    @if (_isOpen$()) {
+                                        <p-sidebar-group-label class="h-5! mb-1 px-2 flex items-center gap-1.5 uppercase tracking-wider select-none animate-in fade-in slide-in-from-left-2 duration-300">
+                                            <span class="size-1 rounded-full bg-primary/70"></span>
+                                            <span class="truncate">{{ group.label }}</span>
+                                        </p-sidebar-group-label>
+                                    } @else if (!firstGroup) {
+                                        <p-divider [pt]="{root: {class: 'my-1.5!'}}" />
                                     }
-                                </p-sidebar-menu>
-                            </p-sidebar-group-content>
-                        </p-sidebar-group>
-                    }
-                </p-sidebar-content>
+            
+                                    <p-sidebar-group-content>
+                                        <p-sidebar-menu class="gap-0.5!">
+                                            @for (item of getGroupItems(group); track item.label) {
+                                                <p-sidebar-menu-item
+                                                    class="relative"
+                                                    [collapsible]="!!item.children?.length"
+                                                    [open]="isItemOpen(item)"
+                                                    (openChange)="onItemOpenChange(item, $event)"
+                                                >
+                                                    <button
+                                                        type="button"
+                                                        pSidebarMenuButton 
+                                                        [isActive]="isItemDirectActive(item)"
+                                                        [attr.data-child-active]="hasActiveChild(item) ? 'true' : null"
+                                                        [attr.title]="!_isOpen$() ? item.label : null"
+                                                        (click)="onSelectItem(item)"
+                                                        [class.justify-center!]="!_isOpen$()"
+                                                        [class.px-0!]="!_isOpen$()"
+                                                    >
+                                                        <!-- class="group/menu h-8.5! w-full rounded-lg px-2.5 text-[12.5px]! font-medium transition-all duration-150 cursor-pointer text-secondary-700 dark:text-secondary-300 hover:bg-primary-50/80 dark:hover:bg-primary-950/40 hover:text-primary-700 dark:hover:text-primary-300 data-[child-active=true]:bg-primary-50/65 dark:data-[child-active=true]:bg-primary-950/35 data-[child-active=true]:text-primary-700 dark:data-[child-active=true]:text-primary-300 data-[child-active=true]:font-semibold! data-[active=true]:bg-primary! data-[active=true]:text-primary-contrast! data-[active=true]:font-semibold! data-[active=true]:shadow-xs data-[active=true]:shadow-primary-500/20" -->
+                                                        <!-- Ícono del Módulo -->
+                                                        @if (item.icon) {
+                                                            <span class="relative flex size-5 shrink-0 items-center justify-center">
+                                                                <svg
+                                                                    [pIcon]="item.icon"
+                                                                    class="shrink-0 transition-transform duration-150"
+                                                                ></svg>
+            
+                                                                <!-- Punto indicador cuando está colapsado y tiene un sub-ítem activo -->
+                                                                @if (!_isOpen$() && hasActiveChild(item)) {
+                                                                    <span class="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-primary ring-2 ring-surface-0 dark:ring-surface-900"></span>
+                                                                }
+                                                            </span>
+                                                        }
+            
+                                                        <!-- Texto, Badge y Chevron (Solo visibles cuando el Sidebar está abierto) -->
+                                                        @if (_isOpen$()) {
+                                                            <span class="flex-1 truncate text-left">{{ item.label }}</span>
+            
+                                                            @if (item.badge) {
+                                                                <span
+                                                                    class="ml-auto inline-flex items-center rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold tracking-wide transition-colors border"
+                                                                    [class.bg-primary-100/90]="!isItemDirectActive(item)"
+                                                                    [class.text-primary-700]="!isItemDirectActive(item)"
+                                                                    [class.border-primary-200/70]="!isItemDirectActive(item)"
+                                                                    [class.dark:bg-primary-950/80]="!isItemDirectActive(item)"
+                                                                    [class.dark:text-primary-300]="!isItemDirectActive(item)"
+                                                                    [class.dark:border-primary-800/70]="!isItemDirectActive(item)"
+                                                                    [class.bg-surface-0]="isItemDirectActive(item)"
+                                                                    [class.text-primary-700]="isItemDirectActive(item)"
+                                                                    [class.border-transparent]="isItemDirectActive(item)"
+                                                                >
+                                                                    {{ item.badge }}
+                                                                </span>
+                                                            }
+            
+                                                            @if (item.children?.length) {
+                                                                <span class="ml-auto flex items-center gap-1">
+                                                                    <span class="rounded-full bg-secondary-100 dark:bg-secondary-800/80 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-secondary-500 dark:text-secondary-400 transition-colors group-hover/menu:bg-primary-100/80 group-hover/menu:text-primary-700 dark:group-hover/menu:bg-primary-900/50 dark:group-hover/menu:text-primary-300 group-data-[child-active=true]/menu:bg-primary-100 group-data-[child-active=true]/menu:text-primary-700 dark:group-data-[child-active=true]/menu:bg-primary-900/60 dark:group-data-[child-active=true]/menu:text-primary-300">
+                                                                        {{ item.children?.length }}
+                                                                    </span>
+                                                                    <svg
+                                                                        pIcon="chevron-down"
+                                                                        class="size-3.5! shrink-0 text-secondary-400 dark:text-secondary-500 transition-transform duration-200 group-hover/menu:text-primary-600 dark:group-hover/menu:text-primary-400"
+                                                                        [class.rotate-180]="isItemOpen(item)"
+                                                                        [class.text-primary-600!]="isItemOpen(item)"
+                                                                        [class.dark:text-primary-400!]="isItemOpen(item)"
+                                                                    ></svg>
+                                                                </span>
+                                                            }
+                                                        }
+                                                    </button>
+            
+                                                    @if (item.children?.length && _isOpen$()) {
+                                                        <p-sidebar-menu-sub class="">
+                                                            @for (sub of item.children; track sub.label) {
+                                                                <p-sidebar-menu-sub-item>
+                                                                    <button
+                                                                        type="button"
+                                                                        pSidebarMenuSubButton
+                                                                        [isActive]="isSubItemActive(item, sub)"
+                                                                        (click)="onSelectSubItem(item, sub)"
+                                                                        class="group/sub relative flex h-7! w-full items-center gap-2 rounded-md px-2 text-left text-xs! font-medium text-secondary-600 dark:text-secondary-400 transition-all duration-150 cursor-pointer hover:bg-primary-50/65 dark:hover:bg-primary-950/35 hover:text-primary-700 dark:hover:text-primary-300 data-[active=true]:bg-primary-50/95 dark:data-[active=true]:bg-primary-950/60 data-[active=true]:text-primary-700 dark:data-[active=true]:text-primary-300 data-[active=true]:font-semibold!"
+                                                                    >
+                                                                        <span
+                                                                            class="size-1.5 shrink-0 rounded-full bg-secondary-300 dark:bg-secondary-600 transition-all duration-150 group-hover/sub:bg-primary-400 group-data-[active=true]/sub:bg-primary group-data-[active=true]/sub:scale-125 group-data-[active=true]/sub:ring-2 group-data-[active=true]/sub:ring-primary-500/25"
+                                                                        ></span>
+            
+                                                                        <span class="flex-1 truncate">{{ sub.label }}</span>
+            
+                                                                        @if (sub.badge) {
+                                                                            <span class="rounded bg-primary-100/80 dark:bg-primary-900/60 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-primary-700 dark:text-primary-300">
+                                                                                {{ sub.badge }}
+                                                                            </span>
+                                                                        }
+                                                                    </button>
+                                                                </p-sidebar-menu-sub-item>
+                                                            }
+                                                        </p-sidebar-menu-sub>
+                                                    }
+                                                </p-sidebar-menu-item>
+                                            }
+                                        </p-sidebar-menu>
+                                    </p-sidebar-group-content>
+                                </p-sidebar-group>
+                            }
+                        </p-scrollarea-content>
+                    </p-scrollarea-viewport>
+                    <p-scrollarea-scrollbar orientation="vertical">
+                        <p-scrollarea-handle />
+                    </p-scrollarea-scrollbar>
+                </p-scrollarea>
+            </p-sidebar-content>
 
-                <p-sidebar-footer class="border-t border-surface-200/70 dark:border-secondary-800/70 p-2!">
-                    <p-sidebar-menu>
-                        <p-sidebar-menu-item>
-                            <button
-                                type="button"
-                                pSidebarMenuButton
-                                class="h-9! rounded-md px-1! transition-colors hover:bg-primary-50/60 dark:hover:bg-primary-950/30"
-                            >
+            <!-- Pie del Sidebar: Perfil del Administrador -->
+            <p-sidebar-footer class="border-t border-secondary-200/70 dark:border-secondary-800/70 p-2!">
+                <p-sidebar-menu>
+                    <p-sidebar-menu-item>
+                        <button
+                            type="button"
+                            pSidebarMenuButton
+                            [attr.title]="!_isOpen$() ? 'Admin General (admin@tienda.com)' : null"
+                            [class.justify-center!]="!_isOpen$()"
+                            [class.px-0!]="!_isOpen$()"
+                            class="group/user h-10! w-full rounded-lg px-2! transition-colors hover:bg-primary-50/70 dark:hover:bg-primary-950/35 cursor-pointer"
+                        >
+                            <div class="relative flex shrink-0 items-center justify-center">
                                 <p-avatar
                                     label="AD"
                                     shape="circle"
+                                    class="size-7! shrink-0 bg-primary! text-primary-contrast! ring-2 ring-primary-500/25 text-[10px]! font-bold shadow-xs"
                                 />
-                                    <!-- class="size-6! shrink-0 bg-primary text-primary-contrast ring-2 ring-primary-500/20 text-[10px]! font-bold" -->
-                                    <div class="flex min-w-0 flex-1 flex-col leading-tight">
-                                        <span class="truncate text-xs font-medium text-surface-800 dark:text-surface-100">
-                                            Admin General
-                                        </span>
-                                        <span class="truncate text-[10px] text-secondary-500 dark:text-secondary-400">
-                                            admin&#64;tienda.com
-                                        </span>
-                                    </div>
-                                
-                            </button>
-                        </p-sidebar-menu-item>
-                    </p-sidebar-menu>
-                </p-sidebar-footer>
-            </p-sidebar-panel>
-        </p-sidebar-aside>
-    </p-sidebar>
+                                <span class="absolute -bottom-0.5 -right-0.5 size-2 rounded-full bg-emerald-500 ring-2 ring-surface-0 dark:ring-surface-900"></span>
+                            </div>
+
+                            @if (_isOpen$()) {
+                                <div class="flex min-w-0 flex-1 flex-col text-left leading-tight">
+                                    <span class="truncate text-xs font-semibold text-surface-800 dark:text-surface-100 group-hover/user:text-primary-700 dark:group-hover/user:text-primary-300 transition-colors">
+                                        Admin General
+                                    </span>
+                                    <span class="truncate text-[10px] text-secondary-500 dark:text-secondary-400">
+                                        admin&#64;tienda.com
+                                    </span>
+                                </div>
+
+                                <span class="rounded-md bg-secondary-100 dark:bg-secondary-800 px-1.5 py-0.5 text-[9px] font-semibold text-secondary-600 dark:text-secondary-300 group-hover/user:bg-primary-100/80 group-hover/user:text-primary-700 dark:group-hover/user:bg-primary-900/50 dark:group-hover/user:text-primary-300 transition-colors">
+                                    Root
+                                </span>
+                            }
+                        </button>
+                    </p-sidebar-menu-item>
+                </p-sidebar-menu>
+            </p-sidebar-footer>
+
+            <button pSidebarRail aria-label="Alternar barra lateral"></button>
+        </p-sidebar-panel>
+    </p-sidebar-aside>
+</p-sidebar>

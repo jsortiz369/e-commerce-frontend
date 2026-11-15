@@ -11,7 +11,7 @@ export const sidebarGuard: CanActivateFn = (route, state) => {
 
   if (_layout.sidebar().length > 0) return true;
 
-  _loaderSystem.showLoaderPageAdmin();
+  //_loaderSystem.showLoaderPageAdmin(); // descomentar mas adelante
   return _layout.getSidebar().pipe(
     map((sidebar) => true),
     catchError((error) => {

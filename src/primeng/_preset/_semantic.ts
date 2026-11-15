@@ -14,11 +14,6 @@ export const _SEMANTIC = {
     fontSize: '1rem',
     paddingX: '1rem',
     paddingY: '0.75rem',
-    xs: {
-      fontSize: '0.75rem',
-      paddingX: '0.625rem',
-      paddingY: '0.375rem',
-    },
     sm: {
       fontSize: '0.875rem',
       paddingX: '0.75rem',

@@ -5,8 +5,8 @@ export const _SIDEBAR: SidebarDesignTokens = {
     floatingBorderRadius: '{border.radius.lg}',
   },
   groupLabel: {
-    fontSize: '1rem',
-    fontWeight: '600',
+    fontSize: '{form.field.sm.font.size}',
+    fontWeight: 'bold',
     color: '{text.muted.color}',
     padding: '0.5rem 0.75rem',
   },
@@ -27,6 +27,27 @@ export const _SIDEBAR: SidebarDesignTokens = {
         background: '{surface.100}',
         floatingBackground: '{surface.100}',
         insetBackground: '{surface.0}',
+      },
+      menuAction: {
+        focusBackground: 'red',
+      },
+      menuSub: {},
+      menuBadge: { background: 'green', borderColor: 'red' },
+      menuButton: {
+        focusBackground: '{primary.100}',
+        focusColor: '{primary.color}',
+        activeBackground: '{primary.color}',
+        activeColor: '{primary.contrast.color}',
+        icon: {
+          focusColor: '{primary.color}',
+          size: '1.25rem',
+        },
+      },
+      menuSubButton: {
+        focusBackground: 'transparent',
+        focusColor: '{primary.color}',
+        activeBackground: 'color-mix(in oklab, {primary.100} 45%, transparent)',
+        activeColor: '{primary.color}',
       },
     },
   },
@@ -90,6 +111,10 @@ export const _SIDEBAR: SidebarDesignTokens = {
       .ecom-sidebar-layout:has(.ecom-sidebar[data-variant="inset"]) .ecom-sidebar-main {
         background-color: ${options.dt('sidebar.main.inset.background')};
         border-top-left-radius: ${options?.dt?.('sidebar.panel.floating.border.radius')}+0.5rem;
+      }
+
+      .ecom-sidebar-layout .ecom-sidebar-menu-button[data-active="true"] svg {
+        color: ${options.dt('primary.contrast.color')}
       }
     `;
   },
