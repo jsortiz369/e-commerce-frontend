@@ -8,10 +8,7 @@ import { SidebarCollapsible, SidebarSide, SidebarVariant } from 'primeng/types/s
 import { Sidebar } from '@primeicons/angular/sidebar';
 import { ChevronDown } from '@primeicons/angular/chevron-down';
 import { PIcon } from '@primeicons/angular/p-icon';
-import {
-  ThemePaletteService,
-  ThemePresetOption,
-} from '../../../shared/services/theme-palette.service';
+import { ThemePaletteService, ThemePresetOption } from '../../../shared/services/theme-palette.service';
 
 export interface NavSubItem {
   label: string;
@@ -38,16 +35,7 @@ export interface NavGroup {
 }
 
 @Component({
-  imports: [
-    CommonModule,
-    RouterModule,
-    AvatarModule,
-    ButtonModule,
-    SidebarModule,
-    Sidebar,
-    ChevronDown,
-    PIcon,
-  ],
+  imports: [CommonModule, RouterModule, AvatarModule, ButtonModule, SidebarModule, Sidebar, ChevronDown, PIcon],
   selector: 'app-layout',
   templateUrl: './layout.html',
 })
@@ -55,7 +43,7 @@ export class Layout {
   private readonly router = inject(Router);
   readonly themeService = inject(ThemePaletteService);
 
-  readonly variant: SidebarVariant = 'floating';
+  readonly variant: SidebarVariant = 'sidebar';
   readonly collapsible: SidebarCollapsible = 'icon';
   readonly side: SidebarSide = 'left';
 
@@ -370,20 +358,12 @@ export class Layout {
             },
             {
               label: 'Traducciones catálogo',
-              tables: [
-                'tb_product_translations',
-                'tb_category_translations',
-                'tb_brand_translations',
-              ],
+              tables: ['tb_product_translations', 'tb_category_translations', 'tb_brand_translations'],
               route: '/admin/i18n',
             },
             {
               label: 'Traducciones sistema/CMS',
-              tables: [
-                'tb_content_item_translations',
-                'tb_modules_translations',
-                'tb_roles_translations',
-              ],
+              tables: ['tb_content_item_translations', 'tb_modules_translations', 'tb_roles_translations'],
               route: '/admin/i18n',
             },
             {
@@ -602,11 +582,7 @@ export class Layout {
     }
 
     if (this.showPaletteMenu()) {
-      if (
-        target &&
-        !target.closest('#admin-palette-popover') &&
-        !target.closest('#admin-palette-trigger')
-      ) {
+      if (target && !target.closest('#admin-palette-popover') && !target.closest('#admin-palette-trigger')) {
         this.showPaletteMenu.set(false);
       }
     }

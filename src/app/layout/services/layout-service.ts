@@ -1,10 +1,8 @@
 import { computed, Service, signal } from '@angular/core';
 import { SidebarCollapsible, SidebarVariant } from 'primeng/sidebar';
 
-import { _PALETTE, PaletteColorName } from '../../../primeng/_preset/_palette';
-
 export interface LayoutConfig {
-  primary: PaletteColorName;
+  //primary: PaletteColorName;
   surface: string | undefined | null;
   darkTheme: boolean;
 }
@@ -20,7 +18,7 @@ interface LayoutState {
 @Service()
 export class LayoutService {
   readonly layoutConfig = signal<LayoutConfig>({
-    primary: 'green',
+    //primary: 'green',
     surface: null,
     darkTheme: false,
   });
@@ -37,7 +35,7 @@ export class LayoutService {
   readonly isMobile = computed(() => this.currentView() === 'mobile');
   readonly theme = computed(() => (this.layoutConfig().darkTheme ? 'dark' : 'light'));
   readonly isDarkTheme = computed(() => this.layoutConfig().darkTheme);
-  readonly getPrimary = computed(() => this.layoutConfig().primary);
+  //readonly getPrimary = computed(() => this.layoutConfig().primary);
   readonly getSurface = computed(() => this.layoutConfig().surface);
 
   constructor() {
@@ -45,7 +43,7 @@ export class LayoutService {
 
     //updatePreset(configPreset(this.layoutConfig().primary));
     this.onToggleDarkMode();
-    this.onChangePrimary(this.layoutConfig().primary);
+    // this.onChangePrimary(this.layoutConfig().primary);
   }
 
   onMenuToggle(header = false) {
@@ -85,11 +83,11 @@ export class LayoutService {
   }
 
   paletteColors() {
-    const palettes: { name: PaletteColorName; color: string }[] = [];
-    Object.entries(_PALETTE).forEach(([key, value]) => {
-      palettes.push({ name: key as PaletteColorName, color: value['500'] });
-    });
-    return palettes;
+    // const palettes: { name: PaletteColorName; color: string }[] = [];
+    // Object.entries(_PALETTE).forEach(([key, value]) => {
+    //   palettes.push({ name: key as PaletteColorName, color: value['500'] });
+    // });
+    // return palettes;
   }
 
   onToggleDarkMode(config?: LayoutConfig): void {
@@ -103,10 +101,10 @@ export class LayoutService {
     this.setConfigLayoutLocal();
   }
 
-  onChangePrimary(paletteColor: PaletteColorName) {
+  /* onChangePrimary(paletteColor: PaletteColorName) {
     // updatePreset(configPreset(paletteColor));
     // this.setConfigLayoutLocal();
-  }
+  } */
 
   private setConfigLayoutLocal() {
     localStorage.setItem('layout-config', JSON.stringify(this.layoutConfig()));

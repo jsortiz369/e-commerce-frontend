@@ -14,16 +14,15 @@
     width="16.5rem"
     iconWidth="4rem"
 >
-    <p-sidebar-spacer />
-
-    <p-sidebar-aside class="fixed! z-30 transition-all duration-200">
+    <p-sidebar-spacer [class.ml-2.5]="false" />
+    <p-sidebar-aside class="fixed! z-30 transition-all duration-200 overflow-hidden">
         <p-sidebar-panel>
-            <p-sidebar-header class="justify-center border-b border-secondary-200/70 dark:border-secondary-800/70 px-2.5 py-0!">
+            <p-sidebar-header class="">
                 @if (_isOpen$()) {
                     <img
                         src="logo.png"
                         alt="Logo E-Commerce"
-                        class="h-12 w-56 object-contain transition-all duration-200 select-none"
+                        class="h-10 w-56 object-contain transition-all duration-200 select-none"
                     />
                 } @else {
                     <img
@@ -34,8 +33,8 @@
                 }
             </p-sidebar-header>
 
-            <p-sidebar-content>
-                <p-scrollarea class="h-[calc(100dvh-112px)]" [pt]="{root: {class: 'border-0!'}, viewport: {class: 'px-2!'}}">
+            <p-sidebar-content class="overscroll-contain! scrollbar-gutter-stable! overflow-hidden!">
+                <p-scrollarea class="h-[calc(100dvh-112px)]" [pt]="{root: {class: 'border-0! rounded-none! bg-transparent!'}, viewport: {class: 'px-2!'}}">
                     <p-scrollarea-viewport>
                         <p-scrollarea-content>
                             @for (group of _sidebarGroups$(); track group.label; let firstGroup = $first; let lastGroup = $last) {
@@ -68,8 +67,6 @@
                                                         [class.justify-center!]="!_isOpen$()"
                                                         [class.px-0!]="!_isOpen$()"
                                                     >
-                                                        <!-- class="group/menu h-8.5! w-full rounded-lg px-2.5 text-[12.5px]! font-medium transition-all duration-150 cursor-pointer text-secondary-700 dark:text-secondary-300 hover:bg-primary-50/80 dark:hover:bg-primary-950/40 hover:text-primary-700 dark:hover:text-primary-300 data-[child-active=true]:bg-primary-50/65 dark:data-[child-active=true]:bg-primary-950/35 data-[child-active=true]:text-primary-700 dark:data-[child-active=true]:text-primary-300 data-[child-active=true]:font-semibold! data-[active=true]:bg-primary! data-[active=true]:text-primary-contrast! data-[active=true]:font-semibold! data-[active=true]:shadow-xs data-[active=true]:shadow-primary-500/20" -->
-                                                        <!-- Ícono del Módulo -->
                                                         @if (item.icon) {
                                                             <span class="relative flex size-5 shrink-0 items-center justify-center">
                                                                 <svg
@@ -77,14 +74,12 @@
                                                                     class="shrink-0 transition-transform duration-150"
                                                                 ></svg>
             
-                                                                <!-- Punto indicador cuando está colapsado y tiene un sub-ítem activo -->
                                                                 @if (!_isOpen$() && hasActiveChild(item)) {
                                                                     <span class="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-primary ring-2 ring-surface-0 dark:ring-surface-900"></span>
                                                                 }
                                                             </span>
                                                         }
             
-                                                        <!-- Texto, Badge y Chevron (Solo visibles cuando el Sidebar está abierto) -->
                                                         @if (_isOpen$()) {
                                                             <span class="flex-1 truncate text-left">{{ item.label }}</span>
             
@@ -107,9 +102,6 @@
             
                                                             @if (item.children?.length) {
                                                                 <span class="ml-auto flex items-center gap-1">
-                                                                    <span class="rounded-full bg-secondary-100 dark:bg-secondary-800/80 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-secondary-500 dark:text-secondary-400 transition-colors group-hover/menu:bg-primary-100/80 group-hover/menu:text-primary-700 dark:group-hover/menu:bg-primary-900/50 dark:group-hover/menu:text-primary-300 group-data-[child-active=true]/menu:bg-primary-100 group-data-[child-active=true]/menu:text-primary-700 dark:group-data-[child-active=true]/menu:bg-primary-900/60 dark:group-data-[child-active=true]/menu:text-primary-300">
-                                                                        {{ item.children?.length }}
-                                                                    </span>
                                                                     <svg
                                                                         pIcon="chevron-down"
                                                                         class="size-3.5! shrink-0 text-secondary-400 dark:text-secondary-500 transition-transform duration-200 group-hover/menu:text-primary-600 dark:group-hover/menu:text-primary-400"
@@ -163,7 +155,6 @@
                 </p-scrollarea>
             </p-sidebar-content>
 
-            <!-- Pie del Sidebar: Perfil del Administrador -->
             <p-sidebar-footer class="border-t border-secondary-200/70 dark:border-secondary-800/70 p-2!">
                 <p-sidebar-menu>
                     <p-sidebar-menu-item>

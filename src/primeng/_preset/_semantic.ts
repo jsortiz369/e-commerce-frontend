@@ -50,7 +50,8 @@ export const _SEMANTIC = {
     },
   },
   content: {
-    borderRadius: '{border.radius.md}',
+    borderRadius: '{border.radius.lg}',
+    borderColor: 'color-mix(in oklab, {surface.300} 90%, transparent)',
   },
   mask: {
     transitionDuration: '0.15s',

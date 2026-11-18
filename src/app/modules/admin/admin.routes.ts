@@ -11,6 +11,6 @@ export default [
   },
   {
     path: 'i18n',
-    loadComponent: () => import('./i18n/i18n').then((m) => m.I18n),
+    loadChildren: () => import('./i18n/features/i18.routes'),
   },
 ] as Routes;

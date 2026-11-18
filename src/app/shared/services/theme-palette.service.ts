@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { _PALETTE, PaletteColorName, resolvePaletteScale } from '../../../primeng/_preset/_palette';
+import { _PALETTE, resolvePaletteScale } from '../../../primeng/_preset/_palette';
 
 export interface ThemePresetOption {
   name: string;
@@ -96,7 +96,7 @@ export class ThemePaletteService {
   }
 
   private applyPalette(primaryHex: string, secondaryHex: string): void {
-    const root = this.document?.documentElement;
+    /* const root = this.document?.documentElement;
     if (!root) return;
 
     try {
@@ -117,14 +117,11 @@ export class ThemePaletteService {
 
       // Persistir selección del admin
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify({ primary: primaryHex, secondary: secondaryHex })
-        );
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ primary: primaryHex, secondary: secondaryHex }));
       }
     } catch (e) {
       console.warn('Error applying palette theme:', e);
-    }
+    } */
   }
 
   private initSavedPalette(): void {
@@ -157,4 +154,3 @@ export class ThemePaletteService {
     return yiq >= 150 ? '#0f172a' : '#ffffff';
   }
 }
-

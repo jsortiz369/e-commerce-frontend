@@ -207,27 +207,15 @@
       },
       {
         "icon": "globe",
-        "label": "Internacionalización (i18n)",
+        "label": "i18n",
         "children": [
           {
             "label": "Idiomas",
-            "route": "/admin/i18n"
+            "route": "/admin/i18n/languages"
           },
           {
             "label": "Traducciones estáticas",
-            "route": "/admin/i18n"
-          },
-          {
-            "label": "Traducciones catálogo",
-            "route": "/admin/i18n"
-          },
-          {
-            "label": "Traducciones sistema/CMS",
-            "route": "/admin/i18n"
-          },
-          {
-            "label": "Traducciones geográficas",
-            "route": "/admin/i18n"
+            "route": "/admin/i18n/translations"
           }
         ]
       }

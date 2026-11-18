@@ -13,16 +13,18 @@ export type PaletteConfig = {
   warnColor: string;
   helpColor: string;
   dangerColor: string;
+  surface: string;
 };
 
 export const configPreset = (paletteColor?: PaletteConfig) => {
-  const primary = resolvePaletteScale(paletteColor?.primaryColor ?? '#215ada');
+  const primary = resolvePaletteScale(paletteColor?.primaryColor ?? '#2F6FE3');
   const secondary = resolvePaletteScale(paletteColor?.secondaryColor ?? '#14b8a6');
   const success = resolvePaletteScale(paletteColor?.successColor ?? '#22c55e');
   const info = resolvePaletteScale(paletteColor?.infoColor ?? '#0ea5e9');
   const warn = resolvePaletteScale(paletteColor?.warnColor ?? '#f97316');
   const help = resolvePaletteScale(paletteColor?.helpColor ?? '#a855f7');
   const danger = resolvePaletteScale(paletteColor?.dangerColor ?? '#ef4444');
+  const surface = resolvePaletteScale(paletteColor?.surface ?? '#64748b');
 
   return definePreset(Aura, {
     primitive: {
@@ -36,22 +38,13 @@ export const configPreset = (paletteColor?: PaletteConfig) => {
     },
     semantic: {
       ..._SEMANTIC,
+      surface: {
+        0: '#ffffff',
+        ...surface,
+      },
+
       colorScheme: {
         light: {
-          surface: {
-            0: '#ffffff',
-            50: '{slate.50}',
-            100: '{slate.100}',
-            200: '{slate.200}',
-            300: '{slate.300}',
-            400: '{slate.400}',
-            500: '{slate.500}',
-            600: '{slate.600}',
-            700: '{slate.700}',
-            800: '{slate.800}',
-            900: '{slate.900}',
-            950: '{slate.950}',
-          },
           primary: {
             ...primary,
             color: '{primary.500}',

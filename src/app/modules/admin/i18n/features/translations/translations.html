@@ -1,0 +1,35 @@
+<div class="flex flex-col gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-3">
+            <div>
+                <p-card class="bg-primary-200! size-14 flex! justify-center! items-center! rounded-4xl" [pt]="{ body: { class: 'p-0!' }}">
+                    <span>
+                        <svg pIcon="language" [size]="30" class="text-primary"></svg>
+                    </span>
+                </p-card>
+            </div>
+        
+            <div class="flex flex-col">
+                <h2 class="font-bold">
+                    Idiomas
+                </h2>
+                <span class="text-xs text-surface-500 dark:text-surface-400">
+                    Administra los idiomas disponibles en la plataforma.
+                </span>
+            </div>
+        </div>
+
+        <div>
+            <button
+                pButton
+                type="button"
+                size="small"
+                fluid
+            >
+                <svg pIcon="plus"></svg> Nueva traducción
+            </button>
+        </div>
+    </div>
+
+
+</div>

@@ -1,11 +1,11 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
+import { PIcon } from '@primeicons/angular/p-icon';
 import { filter } from 'rxjs';
 import { SidebarModule } from 'primeng/sidebar';
 import { Avatar } from 'primeng/avatar';
 import { ScrollAreaModule } from 'primeng/scrollarea';
-import { PIcon } from '@primeicons/angular/p-icon';
 import { Divider } from 'primeng/divider';
 
 import { LayoutService } from '../../services/layout-service';

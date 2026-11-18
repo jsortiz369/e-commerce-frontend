@@ -1,23 +1,12 @@
-<header class=" flex sticky shrink-0 items-center justify-between gap-3 px-3.5 transition-all duration-200">
+<header class="z-20 flex h-11 shrink-0 items-center justify-between gap-3 px-3.5 transition-all duration-200">
     <div class="flex min-w-0 items-center">
-        <!-- <button
-            pButton
-            target="admin-sidebar"
-            severity="secondary"
-            text
-            size="small"
-            aria-label="Contraer o expandir menú"
-            (click)="toggleSidebar()"
-        >
-            <svg pIcon="sidebar"></svg>
-        </button> -->
         <button 
             pButton 
             variant="text"
             size="small"
             severity="secondary"
             (click)="toggleSidebar()"
-            class="p-1.5!"
+            iconOnly
         >
             <svg pIcon="sidebar" size="20"></svg>
         </button>

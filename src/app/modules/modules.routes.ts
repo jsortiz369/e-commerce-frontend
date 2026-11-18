@@ -4,7 +4,9 @@ import { sidebarGuard } from '../core/guards/admin/sidebar-guard';
 export default [
   {
     path: '',
-    loadChildren: () => import('./store/store.routes'),
+    redirectTo: 'admin',
+    pathMatch: 'full',
+    //loadChildren: () => import('./store/store.routes'),
   },
   {
     path: 'admin-2',
