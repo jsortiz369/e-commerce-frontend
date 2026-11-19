@@ -5,6 +5,7 @@ import { _SIDEBAR } from './_sidebar';
 import { _CARD } from './_card';
 import { _VIRTUALSCROLLER } from './_virtualscroller';
 import { _SCROLLAREA } from './_scrollarea';
+import { _DATATABLE } from './_datatable';
 
 export const _COMPONENTS: ComponentsDesignTokens = {
   sidebar: _SIDEBAR,
@@ -12,4 +13,27 @@ export const _COMPONENTS: ComponentsDesignTokens = {
   card: _CARD,
   virtualscroller: _VIRTUALSCROLLER,
   scrollarea: _SCROLLAREA,
+  datatable: _DATATABLE,
+  paginator: {
+    root: {
+      padding: '0.375rem 0.875rem',
+    },
+    navButton: {
+      selectedColor: '{highlight.color}',
+    },
+  },
+  select: {
+    root: {
+      sm: {
+        fontSize: '{form.field.sm.font.size}',
+        paddingX: '{form.field.sm.padding.x}',
+        paddingY: '{form.field.sm.padding.y}',
+      },
+      lg: {
+        fontSize: '{form.field.lg.font.size}',
+        paddingX: '{form.field.lg.padding.x}',
+        paddingY: '{form.field.lg.padding.y}',
+      },
+    },
+  },
 };

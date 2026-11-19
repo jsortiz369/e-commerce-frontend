@@ -23,6 +23,8 @@ import { ToastModule } from 'primeng/toast';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { PanelModule } from 'primeng/panel';
+import { LayoutService } from '../../../../../layout/services/layout-service';
 
 export type LanguageDirection = 'LTR' | 'RTL';
 export type StatusFilterType = 'ALL' | 'ACTIVE' | 'INACTIVE';
@@ -80,11 +82,13 @@ export interface LanguagePresetOption {
     TooltipModule,
     DividerModule,
     MessageModule,
+    PanelModule,
   ],
   selector: 'app-languages',
   templateUrl: './languages.html',
 })
 export class Languages {
+  private readonly _layoutService$ = inject(LayoutService);
   private readonly _messageService = inject(MessageService);
   private readonly _confirmationService = inject(ConfirmationService);
 

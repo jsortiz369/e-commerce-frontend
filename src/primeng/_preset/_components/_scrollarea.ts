@@ -7,7 +7,6 @@ export const _SCROLLAREA: ScrollAreaDesignTokens = {
   scrollbar: {
     transitionDuration: '100ms',
     background: '{surface.100}',
-    //size: '4px',
   },
   handle: {
     background: '{surface.300}',

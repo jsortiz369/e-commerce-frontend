@@ -5,17 +5,17 @@ import { PaletteScale } from './_palette.types';
 
 const toOklch = converter('oklch');
 const COLOR_MAP: Record<keyof PaletteScale, { l: number; c: number }> = {
-  50: { l: 0.985, c: 0.003 },
-  100: { l: 0.953, c: 0.006 },
-  200: { l: 0.908, c: 0.012 },
-  300: { l: 0.847, c: 0.018 },
-  400: { l: 0.72, c: 0.021 },
-  500: { l: 0.55, c: 0.03 },
-  600: { l: 0.45, c: 0.025 },
-  700: { l: 0.38, c: 0.022 },
-  800: { l: 0.29, c: 0.018 },
-  900: { l: 0.22, c: 0.014 },
-  950: { l: 0.14, c: 0.01 },
+  50: { l: 0.97, c: 0.12 },
+  100: { l: 0.94, c: 0.18 },
+  200: { l: 0.88, c: 0.32 },
+  300: { l: 0.81, c: 0.5 },
+  400: { l: 0.7, c: 0.75 },
+  500: { l: 0.55, c: 1.0 },
+  600: { l: 0.47, c: 0.95 },
+  700: { l: 0.4, c: 0.9 },
+  800: { l: 0.34, c: 0.85 },
+  900: { l: 0.29, c: 0.8 },
+  950: { l: 0.22, c: 0.7 },
 };
 
 function generateScaleFrom500(baseHex: string): PaletteScale {
@@ -34,8 +34,8 @@ function generateScaleFrom500(baseHex: string): PaletteScale {
     }
 
     const target = COLOR_MAP[step];
-    const l = Math.min(0.99, Math.max(0.01, base.l + (target.l - reference.l)));
-    const c = Math.max(0, base.c * (target.c / reference.c));
+    const l = Math.min(0.99, Math.max(0.15, base.l + (target.l - reference.l)));
+    const c = base.c * target.c;
     scale[step] = formatHex({ mode: 'oklch', l, c, h: base.h }) ?? baseHex.toLowerCase();
   }
 

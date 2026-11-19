@@ -1,7 +1,29 @@
 import { ButtonDesignTokens } from '@primeuix/themes/types/button';
 
 export const _BUTTON: ButtonDesignTokens = {
-  root: {},
+  root: {
+    borderRadius: '{form.field.border.radius}',
+    gap: '0.375rem',
+    fontSize: '{form.field.font.size}',
+    paddingX: '{form.field.padding.x}',
+    paddingY: '{form.field.padding.y}',
+    iconOnlyWidth: '{form.field.icon.only.width}',
+    sm: {
+      fontSize: '{form.field.sm.font.size}',
+      paddingX: '{form.field.sm.padding.x}',
+      paddingY: '{form.field.sm.padding.y}',
+      iconOnlyWidth: '{form.field.sm.icon.only.width}',
+    },
+    lg: {
+      fontSize: '{form.field.lg.font.size}',
+      paddingX: '{form.field.lg.padding.x}',
+      paddingY: '{form.field.lg.padding.y}',
+      iconOnlyWidth: '{form.field.lg.icon.only.width}',
+    },
+    label: {
+      fontWeight: '{form.field.font.weight}',
+    },
+  },
   colorScheme: {
     light: {
       root: {
@@ -127,5 +149,16 @@ export const _BUTTON: ButtonDesignTokens = {
         },
       },
     },
+  },
+  css(options) {
+    return ` 
+      .ecom-button[size="small"] span {
+        font-weight: ${options?.dt?.('form.field.sm.font.weight')};
+      }
+
+      .ecom-button[size="large"] span {
+        font-weight: ${options?.dt?.('form.field.lg.font.weight')};
+      }
+    `;
   },
 };

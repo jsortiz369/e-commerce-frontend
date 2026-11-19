@@ -17,6 +17,7 @@ export type PaletteConfig = {
 };
 
 export const configPreset = (paletteColor?: PaletteConfig) => {
+  //const primary = resolvePaletteScale(paletteColor?.primaryColor ?? '#f43f5e');
   const primary = resolvePaletteScale(paletteColor?.primaryColor ?? '#2F6FE3');
   const secondary = resolvePaletteScale(paletteColor?.secondaryColor ?? '#14b8a6');
   const success = resolvePaletteScale(paletteColor?.successColor ?? '#22c55e');
@@ -42,7 +43,6 @@ export const configPreset = (paletteColor?: PaletteConfig) => {
         0: '#ffffff',
         ...surface,
       },
-
       colorScheme: {
         light: {
           primary: {
@@ -52,10 +52,16 @@ export const configPreset = (paletteColor?: PaletteConfig) => {
             hoverColor: '{primary.600}',
             activeColor: '{primary.600}',
           },
+          highlight: {
+            background: '{primary.50}',
+            focusBackground: '{primary.100}',
+            color: '{primary.700}',
+            focusColor: '{primary.800}',
+          },
         },
       },
     },
-    components: { ...Aura.components, ..._COMPONENTS },
+    components: { /*...Aura.components,*/ ..._COMPONENTS },
     extend: {
       secondary: {
         ...secondary,

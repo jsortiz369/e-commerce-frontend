@@ -22,12 +22,13 @@ export const _CARD: CardDesignTokens = {
     color: '{text.muted.color}',
     fontSize: '0.875rem',
   },
-  /*  css: (options) => `
+  css: (options) => `
     .p-card {
       border-color: ${options?.dt?.('content.border.color')};
       border-width: 1px
     }
   `,
+  /*  
   colorScheme: {
     dark: {
       root: {
