@@ -112,6 +112,26 @@ export const _SIDEBAR: SidebarDesignTokens = {
       .ecom-sidebar-layout .ecom-sidebar-menu-button[data-active="true"] svg {
         color: ${options.dt('primary.contrast.color')}
       }
+
+      .ecom-sidebar-layout [class*="sidebar-menu-sub-enter-from"],
+      .ecom-sidebar-layout [class*="sidebar-menu-sub-leave-to"] {
+        height: 0 !important;
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      .ecom-sidebar-layout [class*="sidebar-menu-sub-enter-to"],
+      .ecom-sidebar-layout [class*="sidebar-menu-sub-leave-from"] {
+        height: var(--px-sidebar-menu-sub-height, auto);
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .ecom-sidebar-layout [class*="sidebar-menu-sub-enter-active"],
+      .ecom-sidebar-layout [class*="sidebar-menu-sub-leave-active"] {
+        transition: height 240ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in-out, transform 200ms ease-out;
+        overflow: hidden;
+      }
     `;
   },
 };

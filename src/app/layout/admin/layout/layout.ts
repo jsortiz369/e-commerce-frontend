@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 
 import { LayoutTopbar } from '../layout-topbar/layout-topbar';
 import { LayoutSidebar } from '../layout-sidebar/layout-sidebar';
+import { LayoutFooter } from '../layout-footer/layout-footer';
 import { LayoutService } from '../../services/layout-service';
 
 @Component({
-  imports: [CommonModule, SidebarModule, RouterModule, LayoutTopbar, LayoutSidebar],
+  imports: [CommonModule, SidebarModule, RouterModule, LayoutTopbar, LayoutSidebar, LayoutFooter],
   selector: 'app-layout',
   templateUrl: './layout.html',
 })

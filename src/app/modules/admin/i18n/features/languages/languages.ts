@@ -88,7 +88,6 @@ export interface LanguagePresetOption {
   templateUrl: './languages.html',
 })
 export class Languages {
-  private readonly _layoutService$ = inject(LayoutService);
   private readonly _messageService = inject(MessageService);
   private readonly _confirmationService = inject(ConfirmationService);
 

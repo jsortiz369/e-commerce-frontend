@@ -1,0 +1,79 @@
+<footer
+    class="z-10 shrink-0 bg-surface-0 dark:bg-surface-900 border-t border-surface-200/80 dark:border-surface-800 px-4 py-2.5 transition-all duration-200"
+    [class.mx-2.5]="_isFloating$()"
+    [class.mt-1]="_isFloating$()"
+    [class.rounded-lg]="_isFloating$()"
+    [class.border]="_isFloating$()"
+    [class.shadow-sm]="_isFloating$()"
+>
+    <div class="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 sm:flex-row">
+        <!-- 1. Izquierda: Identidad del Sistema, Copyright y Versión -->
+        <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-surface-600 dark:text-surface-400 sm:justify-start">
+            <div class="flex items-center gap-1.5 font-semibold text-surface-900 dark:text-surface-0">
+                <span class="flex size-5 items-center justify-center rounded-md bg-primary-50 dark:bg-primary-950/70 text-primary border border-primary-200/60 dark:border-primary-800/60">
+                    <svg pIcon="shopping-bag" [size]="11"></svg>
+                </span>
+                <span>E-Commerce Admin</span>
+            </div>
+
+            <span class="text-surface-300 dark:text-surface-700">•</span>
+
+            <span class="text-[11px] text-surface-500 dark:text-surface-400">
+                &copy; {{ _currentYear }} Todos los derechos reservados.
+            </span>
+
+            <p-tag
+                value="v2.4.0"
+                severity="secondary"
+                [rounded]="true"
+                class="font-mono text-[10px]! px-1.5! py-0.2!"
+            />
+        </div>
+
+        <!-- 2. Centro: Estado Operativo de Servicios (Visible en pantallas grandes) -->
+        <div class="hidden xl:flex items-center gap-2.5 text-[11px] text-surface-500 dark:text-surface-400">
+            <div class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200/70 dark:border-emerald-800/60 px-2.5 py-0.5 text-emerald-700 dark:text-emerald-300 font-medium">
+                <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Servicios y API operativos</span>
+            </div>
+
+            <span class="text-surface-300 dark:text-surface-700">|</span>
+
+            <div class="inline-flex items-center gap-1 text-surface-500 dark:text-surface-400">
+                <svg pIcon="database" [size]="12" class="text-primary"></svg>
+                <span>Sincronización activa</span>
+            </div>
+        </div>
+
+        <!-- 3. Derecha: Enlaces Rápidos de Soporte y Documentación -->
+        <div class="flex flex-wrap items-center justify-center gap-3 text-[11px] font-medium text-surface-500 dark:text-surface-400">
+            <a
+                href="javascript:void(0)"
+                class="inline-flex items-center gap-1 transition-colors hover:text-primary"
+            >
+                <svg pIcon="book" [size]="12"></svg>
+                <span>Documentación</span>
+            </a>
+
+            <span class="text-surface-300 dark:text-surface-700">•</span>
+
+            <a
+                href="javascript:void(0)"
+                class="inline-flex items-center gap-1 transition-colors hover:text-primary"
+            >
+                <svg pIcon="question-circle" [size]="12"></svg>
+                <span>Soporte</span>
+            </a>
+
+            <span class="text-surface-300 dark:text-surface-700">•</span>
+
+            <a
+                href="javascript:void(0)"
+                class="inline-flex items-center gap-1 transition-colors hover:text-primary"
+            >
+                <svg pIcon="shield" [size]="12"></svg>
+                <span>Privacidad</span>
+            </a>
+        </div>
+    </div>
+</footer>

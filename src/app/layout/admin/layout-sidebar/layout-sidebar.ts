@@ -6,13 +6,12 @@ import { filter } from 'rxjs';
 import { SidebarModule } from 'primeng/sidebar';
 import { Avatar } from 'primeng/avatar';
 import { ScrollAreaModule } from 'primeng/scrollarea';
-import { Divider } from 'primeng/divider';
 
 import { LayoutService } from '../../services/layout-service';
 import { Layout, SidebarGroup, SidebarItem } from '../../services/admin/layout';
 
 @Component({
-  imports: [CommonModule, SidebarModule, ScrollAreaModule, Avatar, PIcon, Divider],
+  imports: [CommonModule, SidebarModule, ScrollAreaModule, Avatar, PIcon],
   selector: 'app-layout-sidebar',
   templateUrl: './layout-sidebar.html',
   host: {
@@ -33,7 +32,11 @@ export class LayoutSidebar {
   protected readonly _variant$ = computed(() => this._layoutService$.layoutState().variant);
   protected readonly _isDesktop$ = computed(() => this._layoutService$.isDesktop());
 
-  /** Estado de acordeón y selección activa del menú */
+  /**
+   * _openItemLabel$: menú desplegable actualmente abierto para ver sus submenús.
+   * _activeItemLabel$: menú principal perteneciente a la ruta/selección activa actual.
+   * _activeSubItemLabel$: submenú perteneciente a la ruta/selección activa actual.
+   */
   protected readonly _openItemLabel$ = signal<string | null>(null);
   protected readonly _activeItemLabel$ = signal<string>('Resumen');
   protected readonly _activeSubItemLabel$ = signal<string | null>(null);
@@ -46,9 +49,11 @@ export class LayoutSidebar {
       }
     });
 
-    this._router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => {
-      this.syncActiveFromUrl(event.urlAfterRedirects);
-    });
+    this._router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.syncActiveFromUrl(event.urlAfterRedirects);
+      });
   }
 
   onChangeToggleSidebar() {
@@ -59,10 +64,15 @@ export class LayoutSidebar {
     return group.children ?? [];
   }
 
+  /** Indica si el menú desplegable está abierto en este momento */
   isItemOpen(item: SidebarItem): boolean {
     return this._openItemLabel$() === item.label;
   }
 
+  /**
+   * Al abrir un menú para ver sus submenús se marca como abierto (y por ende activo).
+   * Si se pasa a otro menú, el anterior se cierra y se desactiva (salvo que sea el de la ruta actual).
+   */
   onItemOpenChange(item: SidebarItem, isOpen: boolean): void {
     if (isOpen) {
       this._openItemLabel$.set(item.label);
@@ -71,12 +81,29 @@ export class LayoutSidebar {
     }
   }
 
-  isItemDirectActive(item: SidebarItem): boolean {
-    return !item.children?.length && this._activeItemLabel$() === item.label;
+  /** Indica si el menú principal corresponde a la ruta/selección activa actual (directa o por submenú) */
+  isItemRouteActive(item: SidebarItem): boolean {
+    if (!item.children?.length) {
+      return this._activeItemLabel$() === item.label;
+    }
+    return this._activeItemLabel$() === item.label && this._activeSubItemLabel$() !== null;
+  }
+
+  /**
+   * El menú principal se muestra activo si:
+   * 1. Es el menú (o padre del submenú) de la ruta actual, O
+   * 2. Está desplegado actualmente viendo sus submenús.
+   */
+  isItemActive(item: SidebarItem): boolean {
+    return this.isItemRouteActive(item) || this.isItemOpen(item);
   }
 
   hasActiveChild(item: SidebarItem): boolean {
-    return !!item.children?.length && this._activeItemLabel$() === item.label && this._activeSubItemLabel$() !== null;
+    return (
+      !!item.children?.length &&
+      this._activeItemLabel$() === item.label &&
+      this._activeSubItemLabel$() !== null
+    );
   }
 
   isSubItemActive(item: SidebarItem, sub: SidebarItem): boolean {
@@ -90,6 +117,7 @@ export class LayoutSidebar {
 
     this._activeItemLabel$.set(item.label);
     this._activeSubItemLabel$.set(null);
+    this._openItemLabel$.set(null);
 
     if (item.route) {
       this._router.navigateByUrl(item.route);
@@ -119,18 +147,25 @@ export class LayoutSidebar {
     const groups = this._sidebarGroups$();
     if (!groups.length) return;
 
-    // 1. Priorizar coincidencia en items directos
-    for (const group of groups) {
-      for (const item of this.getGroupItems(group)) {
-        if (!item.children?.length && item.route === cleanUrl) {
-          this._activeItemLabel$.set(item.label);
-          this._activeSubItemLabel$.set(null);
-          return;
+    // Si ya hay un sub-item activo cuya ruta coincide con la URL actual, conservarlo
+    const currentItemLabel = this._activeItemLabel$();
+    const currentSubLabel = this._activeSubItemLabel$();
+    if (currentSubLabel) {
+      for (const group of groups) {
+        for (const item of this.getGroupItems(group)) {
+          if (item.label === currentItemLabel) {
+            const matchingSub = (item.children ?? []).find(
+              (s) => s.label === currentSubLabel && s.route === cleanUrl,
+            );
+            if (matchingSub) {
+              return;
+            }
+          }
         }
       }
     }
 
-    // 2. Buscar coincidencia en sub-items
+    // 1. Buscar coincidencia en sub-items
     for (const group of groups) {
       for (const item of this.getGroupItems(group)) {
         for (const sub of item.children ?? []) {
@@ -140,6 +175,17 @@ export class LayoutSidebar {
             this._openItemLabel$.set(item.label);
             return;
           }
+        }
+      }
+    }
+
+    // 2. Buscar coincidencia en items directos
+    for (const group of groups) {
+      for (const item of this.getGroupItems(group)) {
+        if (!item.children?.length && item.route === cleanUrl) {
+          this._activeItemLabel$.set(item.label);
+          this._activeSubItemLabel$.set(null);
+          return;
         }
       }
     }

@@ -14,42 +14,54 @@
     width="16.5rem"
     iconWidth="4rem"
 >
-    <p-sidebar-spacer [class.ml-2.5]="false" />
+    <p-sidebar-spacer />
     <p-sidebar-aside class="fixed! z-30 transition-all duration-200 overflow-hidden">
         <p-sidebar-panel>
-            <p-sidebar-header class="">
+            <!-- Cabecera del Sidebar -->
+            <p-sidebar-header class="flex items-center justify-center px-3">
                 @if (_isOpen$()) {
                     <img
                         src="logo.png"
                         alt="Logo E-Commerce"
-                        class="h-10 w-56 object-contain transition-all duration-200 select-none"
+                        class="h-10 w-52 object-contain transition-all duration-200 select-none"
                     />
                 } @else {
                     <img
                         src="logo_mini.png"
                         alt="Logo Mini"
-                        class="size-10 object-contain transition-all duration-200 select-none"
+                        class="size-9 object-contain transition-all duration-200 select-none"
                     />
                 }
             </p-sidebar-header>
 
-            <p-sidebar-content class="overscroll-contain! scrollbar-gutter-stable! overflow-hidden!">
-                <p-scrollarea class="h-[calc(100dvh-112px)]" [pt]="{root: {class: 'border-0! rounded-none! bg-transparent!'}, viewport: {class: 'px-2!'}}">
+            <!-- Contenido de Navegación con ScrollArea -->
+            <p-sidebar-content class="overscroll-contain! overflow-hidden! p-0!">
+                <p-scrollarea
+                    class="h-[calc(100dvh-7.25rem)]"
+                    [pt]="{
+                        root: { class: 'border-0! rounded-none! bg-transparent!' },
+                        viewport: { class: 'px-2.5! py-2.5!' }
+                    }"
+                >
                     <p-scrollarea-viewport>
                         <p-scrollarea-content>
-                            @for (group of _sidebarGroups$(); track group.label; let firstGroup = $first; let lastGroup = $last) {
-                                <p-sidebar-group [ngClass]="!firstGroup ? 'pt-2.5!' : ''">
+                            @for (group of _sidebarGroups$(); track group.label; let firstGroup = $first) {
+                                <p-sidebar-group
+                                    class="p-0!"
+                                    [ngClass]="!firstGroup ? 'mt-2.5! pt-2.5! border-t border-content' : ''"
+                                >
+                                    <!-- Encabezado de Grupo -->
                                     @if (_isOpen$()) {
-                                        <p-sidebar-group-label class="h-5! mb-1 px-2 flex items-center gap-1.5 uppercase tracking-wider select-none animate-in fade-in slide-in-from-left-2 duration-300">
-                                            <span class="size-1 rounded-full bg-primary/70"></span>
-                                            <span class="truncate">{{ group.label }}</span>
+                                        <p-sidebar-group-label class="h-6! mb-1 px-2! flex items-center justify-between uppercase tracking-wider select-none">
+                                            <div class="flex items-center gap-2 min-w-0">
+                                                <span class="size-1.5 shrink-0 rounded-full bg-primary"></span>
+                                                <span class="truncate">{{ group.label }}</span>
+                                            </div>
                                         </p-sidebar-group-label>
-                                    } @else if (!firstGroup) {
-                                        <p-divider [pt]="{root: {class: 'my-1.5!'}}" />
                                     }
-            
+
                                     <p-sidebar-group-content>
-                                        <p-sidebar-menu class="gap-0.5!">
+                                        <p-sidebar-menu class="gap-1!">
                                             @for (item of getGroupItems(group); track item.label) {
                                                 <p-sidebar-menu-item
                                                     class="relative"
@@ -57,65 +69,71 @@
                                                     [open]="isItemOpen(item)"
                                                     (openChange)="onItemOpenChange(item, $event)"
                                                 >
+                                                    <!-- Botón Principal del Módulo: activo si está en la ruta actual (directa o por submenú) o si está desplegado -->
                                                     <button
                                                         type="button"
-                                                        pSidebarMenuButton 
-                                                        [isActive]="isItemDirectActive(item)"
-                                                        [attr.data-child-active]="hasActiveChild(item) ? 'true' : null"
+                                                        pSidebarMenuButton
+                                                        [isActive]="isItemActive(item)"
                                                         [attr.title]="!_isOpen$() ? item.label : null"
                                                         (click)="onSelectItem(item)"
                                                         [class.justify-center!]="!_isOpen$()"
                                                         [class.px-0!]="!_isOpen$()"
+                                                        [class.font-semibold]="isItemActive(item)"
+                                                        class="group/menu h-9! w-full rounded-lg px-2.5! transition-all duration-200 cursor-pointer"
                                                     >
                                                         @if (item.icon) {
                                                             <span class="relative flex size-5 shrink-0 items-center justify-center">
                                                                 <svg
                                                                     [pIcon]="item.icon"
-                                                                    class="shrink-0 transition-transform duration-150"
+                                                                    class="shrink-0 transition-transform duration-200 group-hover/menu:scale-105"
                                                                 ></svg>
-            
-                                                                @if (!_isOpen$() && hasActiveChild(item)) {
-                                                                    <span class="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-primary ring-2 ring-surface-0 dark:ring-surface-900"></span>
-                                                                }
                                                             </span>
                                                         }
-            
+
                                                         @if (_isOpen$()) {
-                                                            <span class="flex-1 truncate text-left">{{ item.label }}</span>
-            
+                                                            <span class="flex-1 truncate text-left text-[13px]">
+                                                                {{ item.label }}
+                                                            </span>
+
                                                             @if (item.badge) {
                                                                 <span
-                                                                    class="ml-auto inline-flex items-center rounded-md px-1.5 py-0.5 font-mono text-[9px] font-bold tracking-wide transition-colors border"
-                                                                    [class.bg-primary-100/90]="!isItemDirectActive(item)"
-                                                                    [class.text-primary-700]="!isItemDirectActive(item)"
-                                                                    [class.border-primary-200/70]="!isItemDirectActive(item)"
-                                                                    [class.dark:bg-primary-950/80]="!isItemDirectActive(item)"
-                                                                    [class.dark:text-primary-300]="!isItemDirectActive(item)"
-                                                                    [class.dark:border-primary-800/70]="!isItemDirectActive(item)"
-                                                                    [class.bg-surface-0]="isItemDirectActive(item)"
-                                                                    [class.text-primary-700]="isItemDirectActive(item)"
-                                                                    [class.border-transparent]="isItemDirectActive(item)"
+                                                                    class="ml-auto inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-[9px] font-bold tracking-wide transition-colors"
+                                                                    [class.bg-secondary-50]="!isItemActive(item)"
+                                                                    [class.text-secondary-700]="!isItemActive(item)"
+                                                                    [class.border-secondary-200]="!isItemActive(item)"
+                                                                    [class.bg-surface-0]="isItemActive(item)"
+                                                                    [class.text-primary]="isItemActive(item)"
+                                                                    [class.border-transparent]="isItemActive(item)"
                                                                 >
                                                                     {{ item.badge }}
                                                                 </span>
                                                             }
-            
+
                                                             @if (item.children?.length) {
-                                                                <span class="ml-auto flex items-center gap-1">
+                                                                <span class="ml-auto flex items-center gap-1.5">
+                                                                    <span
+                                                                        class="rounded-full px-1.5 py-0.2 font-mono text-[10px] font-semibold transition-colors"
+                                                                        [class.bg-surface-0]="isItemActive(item)"
+                                                                        [class.text-primary]="isItemActive(item)"
+                                                                        [class.bg-surface-100]="!isItemActive(item)"
+                                                                        [class.text-text-secondary]="!isItemActive(item)"
+                                                                    >
+                                                                        {{ item.children?.length }}
+                                                                    </span>
                                                                     <svg
                                                                         pIcon="chevron-down"
-                                                                        class="size-3.5! shrink-0 text-secondary-400 dark:text-secondary-500 transition-transform duration-200 group-hover/menu:text-primary-600 dark:group-hover/menu:text-primary-400"
+                                                                        class="size-3.5! shrink-0 transition-transform duration-200 ease-in-out"
                                                                         [class.rotate-180]="isItemOpen(item)"
-                                                                        [class.text-primary-600!]="isItemOpen(item)"
-                                                                        [class.dark:text-primary-400!]="isItemOpen(item)"
+                                                                        [class.text-text-secondary]="!isItemActive(item)"
                                                                     ></svg>
                                                                 </span>
                                                             }
                                                         }
                                                     </button>
-            
+
+                                                    <!-- Submenú Desplegable con Animación de Apertura y Cierre -->
                                                     @if (item.children?.length && _isOpen$()) {
-                                                        <p-sidebar-menu-sub class="">
+                                                        <p-sidebar-menu-sub class="mt-1! mb-0.5! ml-4! pl-2.5! border-l border-content flex flex-col gap-0.5!">
                                                             @for (sub of item.children; track sub.label) {
                                                                 <p-sidebar-menu-sub-item>
                                                                     <button
@@ -123,16 +141,23 @@
                                                                         pSidebarMenuSubButton
                                                                         [isActive]="isSubItemActive(item, sub)"
                                                                         (click)="onSelectSubItem(item, sub)"
-                                                                        class="group/sub relative flex h-7! w-full items-center gap-2 rounded-md px-2 text-left text-xs! font-medium text-secondary-600 dark:text-secondary-400 transition-all duration-150 cursor-pointer hover:bg-primary-50/65 dark:hover:bg-primary-950/35 hover:text-primary-700 dark:hover:text-primary-300 data-[active=true]:bg-primary-50/95 dark:data-[active=true]:bg-primary-950/60 data-[active=true]:text-primary-700 dark:data-[active=true]:text-primary-300 data-[active=true]:font-semibold!"
+                                                                        class="group/sub relative flex h-7.5! w-full items-center gap-2 rounded-md px-2.5! text-left text-xs! transition-all duration-150 cursor-pointer"
+                                                                        [class.font-semibold]="isSubItemActive(item, sub)"
                                                                     >
                                                                         <span
-                                                                            class="size-1.5 shrink-0 rounded-full bg-secondary-300 dark:bg-secondary-600 transition-all duration-150 group-hover/sub:bg-primary-400 group-data-[active=true]/sub:bg-primary group-data-[active=true]/sub:scale-125 group-data-[active=true]/sub:ring-2 group-data-[active=true]/sub:ring-primary-500/25"
+                                                                            class="size-1.5 shrink-0 rounded-full transition-all duration-150"
+                                                                            [class.bg-primary]="isSubItemActive(item, sub)"
+                                                                            [class.scale-125]="isSubItemActive(item, sub)"
+                                                                            [class.ring-2]="isSubItemActive(item, sub)"
+                                                                            [class.ring-primary-100]="isSubItemActive(item, sub)"
+                                                                            [class.bg-surface-300]="!isSubItemActive(item, sub)"
+                                                                            [class.group-hover/sub:bg-primary]="!isSubItemActive(item, sub)"
                                                                         ></span>
-            
+
                                                                         <span class="flex-1 truncate">{{ sub.label }}</span>
-            
+
                                                                         @if (sub.badge) {
-                                                                            <span class="rounded bg-primary-100/80 dark:bg-primary-900/60 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-primary-700 dark:text-primary-300">
+                                                                            <span class="rounded border border-secondary-200 bg-secondary-50 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-secondary-700">
                                                                                 {{ sub.badge }}
                                                                             </span>
                                                                         }
@@ -149,13 +174,15 @@
                             }
                         </p-scrollarea-content>
                     </p-scrollarea-viewport>
+
                     <p-scrollarea-scrollbar orientation="vertical">
                         <p-scrollarea-handle />
                     </p-scrollarea-scrollbar>
                 </p-scrollarea>
             </p-sidebar-content>
 
-            <p-sidebar-footer class="border-t border-secondary-200/70 dark:border-secondary-800/70 p-2!">
+            <!-- Pie del Sidebar: Perfil del Administrador -->
+            <p-sidebar-footer class="border-t border-content p-2!">
                 <p-sidebar-menu>
                     <p-sidebar-menu-item>
                         <button
@@ -164,28 +191,28 @@
                             [attr.title]="!_isOpen$() ? 'Admin General (admin@tienda.com)' : null"
                             [class.justify-center!]="!_isOpen$()"
                             [class.px-0!]="!_isOpen$()"
-                            class="group/user h-10! w-full rounded-lg px-2! transition-colors hover:bg-primary-50/70 dark:hover:bg-primary-950/35 cursor-pointer"
+                            class="group/user h-11! w-full rounded-lg px-2! transition-colors cursor-pointer"
                         >
                             <div class="relative flex shrink-0 items-center justify-center">
                                 <p-avatar
                                     label="AD"
                                     shape="circle"
-                                    class="size-7! shrink-0 bg-primary! text-primary-contrast! ring-2 ring-primary-500/25 text-[10px]! font-bold shadow-xs"
+                                    class="size-8! shrink-0 bg-primary! text-primary-contrast! text-xs! font-bold"
                                 />
-                                <span class="absolute -bottom-0.5 -right-0.5 size-2 rounded-full bg-emerald-500 ring-2 ring-surface-0 dark:ring-surface-900"></span>
+                                <span class="absolute -bottom-0.5 -right-0.5 size-2 rounded-full bg-success ring-2 ring-surface-0"></span>
                             </div>
 
                             @if (_isOpen$()) {
                                 <div class="flex min-w-0 flex-1 flex-col text-left leading-tight">
-                                    <span class="truncate text-xs font-semibold text-surface-800 dark:text-surface-100 group-hover/user:text-primary-700 dark:group-hover/user:text-primary-300 transition-colors">
+                                    <span class="truncate text-xs font-semibold text-color">
                                         Admin General
                                     </span>
-                                    <span class="truncate text-[10px] text-secondary-500 dark:text-secondary-400">
+                                    <span class="truncate text-[11px] text-text-secondary">
                                         admin&#64;tienda.com
                                     </span>
                                 </div>
 
-                                <span class="rounded-md bg-secondary-100 dark:bg-secondary-800 px-1.5 py-0.5 text-[9px] font-semibold text-secondary-600 dark:text-secondary-300 group-hover/user:bg-primary-100/80 group-hover/user:text-primary-700 dark:group-hover/user:bg-primary-900/50 dark:group-hover/user:text-primary-300 transition-colors">
+                                <span class="rounded-md border border-secondary-200 bg-secondary-50 px-1.5 py-0.5 text-[10px] font-semibold text-secondary-700">
                                     Root
                                 </span>
                             }
