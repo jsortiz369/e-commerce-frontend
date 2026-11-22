@@ -25,6 +25,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { PanelModule } from 'primeng/panel';
 import { LayoutService } from '../../../../../layout/services/layout-service';
+import { LanguageCreateUpdateComponent } from '../../ui/language-create-update/language-create-update.component';
 
 export type LanguageDirection = 'LTR' | 'RTL';
 export type StatusFilterType = 'ALL' | 'ACTIVE' | 'INACTIVE';
@@ -83,6 +84,7 @@ export interface LanguagePresetOption {
     DividerModule,
     MessageModule,
     PanelModule,
+    LanguageCreateUpdateComponent,
   ],
   selector: 'app-languages',
   templateUrl: './languages.html',
@@ -330,21 +332,10 @@ export class Languages {
     });
   });
 
-  /** Estado del diálogo modal Crear / Editar idioma */
+  /** Estado del diálogo modal Crear / Editar idioma (componente separado) */
   readonly languageDialogVisible = signal<boolean>(false);
-  readonly isEditMode = signal<boolean>(false);
-  readonly selectedPreset = signal<LanguagePresetOption | null>(null);
-
-  readonly formId = signal<string>('');
-  readonly formName = signal<string>('');
-  readonly formNativeName = signal<string>('');
-  readonly formCode = signal<string>('');
-  readonly formFlag = signal<string>('');
-  readonly formRegion = signal<string>('América Latina');
-  readonly formDirection = signal<LanguageDirection>('LTR');
-  readonly formImage = signal<string>('/assets/flags/default.svg');
-  readonly formIsActive = signal<boolean>(true);
-  readonly formIsDefault = signal<boolean>(false);
+  readonly selectedLanguageId = signal<string | null>(null);
+  readonly selectedLanguageForEdit = signal<LanguageItem | null>(null);
 
   getProgressSeverity(progress: number): 'success' | 'info' | 'warn' | 'danger' {
     if (progress >= 90) return 'success';
@@ -360,125 +351,47 @@ export class Languages {
   }
 
   openNewLanguageDialog(): void {
-    this.isEditMode.set(false);
-    this.selectedPreset.set(null);
-    this.formId.set('');
-    this.formName.set('');
-    this.formNativeName.set('');
-    this.formCode.set('');
-    this.formFlag.set('');
-    this.formRegion.set('América Latina');
-    this.formDirection.set('LTR');
-    this.formImage.set('/assets/flags/default.svg');
-    this.formIsActive.set(true);
-    this.formIsDefault.set(false);
+    this.selectedLanguageId.set(null);
+    this.selectedLanguageForEdit.set(null);
     this.languageDialogVisible.set(true);
   }
 
   openEditLanguageDialog(lang: LanguageItem): void {
-    this.isEditMode.set(true);
-    this.selectedPreset.set(null);
-    this.formId.set(lang.id);
-    this.formName.set(lang.name);
-    this.formNativeName.set(lang.nativeName);
-    this.formCode.set(lang.code);
-    this.formFlag.set(lang.flag);
-    this.formRegion.set(lang.region);
-    this.formDirection.set(lang.direction);
-    this.formImage.set(lang.image);
-    this.formIsActive.set(lang.isActive);
-    this.formIsDefault.set(lang.isDefault);
+    this.selectedLanguageId.set(lang.id);
+    this.selectedLanguageForEdit.set(lang);
     this.languageDialogVisible.set(true);
   }
 
-  applyPreset(preset: LanguagePresetOption | null): void {
-    this.selectedPreset.set(preset);
-    if (!preset) return;
-    this.formName.set(preset.name);
-    this.formNativeName.set(preset.nativeName);
-    this.formCode.set(preset.code);
-    this.formFlag.set(preset.flag);
-    this.formRegion.set(preset.region);
-    this.formDirection.set(preset.direction);
-    this.formImage.set(preset.image);
-  }
+  onLanguageSaved(savedLang: LanguageItem): void {
+    const isEditing = !!this.selectedLanguageId();
 
-  saveLanguage(): void {
-    const name = this.formName().trim();
-    const code = this.formCode().trim();
-    if (!name || !code) {
-      this._messageService.add({
-        severity: 'warn',
-        summary: 'Campos requeridos',
-        detail: 'Ingresa el nombre del idioma y su código ISO (ej. es-PE, en-US).',
-      });
-      return;
-    }
-
-    const flag = (this.formFlag().trim() || code.split('-')[1] || code.slice(0, 2)).toUpperCase();
-    const nativeName = this.formNativeName().trim() || name;
-    const isDefault = this.formIsDefault();
-    const isActive = isDefault ? true : this.formIsActive();
-
-    if (this.isEditMode()) {
-      const id = this.formId();
+    if (isEditing) {
       this.languages.update((list) =>
         list.map((item) => {
-          if (item.id === id) {
-            return {
-              ...item,
-              name,
-              nativeName,
-              code,
-              flag,
-              region: this.formRegion(),
-              direction: this.formDirection(),
-              image: this.formImage().trim() || `/assets/flags/${code.toLowerCase()}.svg`,
-              isActive,
-              isDefault,
-              updatedAt: 'Justo ahora',
-            };
+          if (item.id === savedLang.id) {
+            return savedLang;
           }
-          return isDefault ? { ...item, isDefault: false } : item;
+          return savedLang.isDefault ? { ...item, isDefault: false } : item;
         }),
       );
 
       this._messageService.add({
         severity: 'success',
         summary: 'Idioma actualizado',
-        detail: `Se guardaron los cambios para ${name} (${code}).`,
+        detail: `Se guardaron los cambios para ${savedLang.name} (${savedLang.code}).`,
       });
     } else {
-      const newLang: LanguageItem = {
-        id: 'lang-' + Date.now(),
-        name,
-        nativeName,
-        code,
-        flag,
-        region: this.formRegion(),
-        direction: this.formDirection(),
-        image: this.formImage().trim() || `/assets/flags/${code.toLowerCase()}.svg`,
-        isActive,
-        isDefault,
-        translatedKeys: 0,
-        totalKeys: 1240,
-        progress: 0,
-        updatedAt: 'Justo ahora',
-      };
-
       this.languages.update((list) => {
-        const updated = isDefault ? list.map((item) => ({ ...item, isDefault: false })) : list;
-        return [newLang, ...updated];
+        const updated = savedLang.isDefault ? list.map((item) => ({ ...item, isDefault: false })) : list;
+        return [savedLang, ...updated];
       });
 
       this._messageService.add({
         severity: 'success',
         summary: 'Idioma registrado',
-        detail: `${name} (${code}) fue añadido a i18n.tb_languages.`,
+        detail: `${savedLang.name} (${savedLang.code}) fue añadido a i18n.tb_languages.`,
       });
     }
-
-    this.languageDialogVisible.set(false);
   }
 
   onToggleActive(lang: LanguageItem): void {

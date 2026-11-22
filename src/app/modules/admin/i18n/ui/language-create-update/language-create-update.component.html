@@ -1,0 +1,220 @@
+<p-dialog
+    [(visible)]="dialogVisible"
+    (onHide)="onDialogHide()"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [header]="isEditMode() ? 'Editar Idioma (' + formCode() + ')' : 'Registrar Nuevo Idioma'"
+    [style]="{ width: '36rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+>
+    <div class="flex flex-col gap-4 pt-1">
+        <p-message severity="info" variant="outlined" size="small">
+            Los registros se almacenan en la tabla <strong>i18n.tb_languages</strong> empleando el estándar ISO 639-1 / BCP 47 (ej. <code>es-PE</code>, <code>en-US</code>).
+        </p-message>
+
+        @if (!isEditMode()) {
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Plantilla rápida de idioma (Opcional)
+                </label>
+                <p-select
+                    [options]="languagePresets"
+                    [ngModel]="selectedPreset()"
+                    (ngModelChange)="applyPreset($event)"
+                    optionLabel="label"
+                    placeholder="Seleccionar un idioma preconfigurado para autocompletar..."
+                    [showClear]="true"
+                    size="small"
+                    fluid
+                />
+            </div>
+
+            <p-divider class="my-0!" />
+        }
+
+        <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+            <!-- Nombre comercial del idioma -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Nombre del Idioma (`name`) *
+                </label>
+                <input
+                    pInputText
+                    type="text"
+                    pSize="small"
+                    [ngModel]="formName()"
+                    (ngModelChange)="formName.set($event)"
+                    placeholder="Ej. Español (Colombia)"
+                    fluid
+                />
+            </div>
+
+            <!-- Nombre nativo -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Nombre Nativo
+                </label>
+                <input
+                    pInputText
+                    type="text"
+                    pSize="small"
+                    [ngModel]="formNativeName()"
+                    (ngModelChange)="formNativeName.set($event)"
+                    placeholder="Ej. Español / English"
+                    fluid
+                />
+            </div>
+
+            <!-- Código ISO (tb_languages.code) -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Código ISO / Locale (`code`) *
+                </label>
+                <input
+                    pInputText
+                    type="text"
+                    pSize="small"
+                    [ngModel]="formCode()"
+                    (ngModelChange)="formCode.set($event)"
+                    placeholder="Ej. es-CO, en-GB, fr-FR"
+                    class="font-mono"
+                    fluid
+                />
+            </div>
+
+            <!-- Iniciales de bandera -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Código País / Bandera (`ISO-2`)
+                </label>
+                <input
+                    pInputText
+                    type="text"
+                    pSize="small"
+                    maxlength="2"
+                    [ngModel]="formFlag()"
+                    (ngModelChange)="formFlag.set($event)"
+                    placeholder="Ej. CO, US, BR"
+                    class="font-mono uppercase"
+                    fluid
+                />
+            </div>
+
+            <!-- Región comercial -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Región Comercial
+                </label>
+                <p-select
+                    [options]="regionOptions"
+                    [ngModel]="formRegion()"
+                    (ngModelChange)="formRegion.set($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    size="small"
+                    fluid
+                />
+            </div>
+
+            <!-- Dirección de lectura -->
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Dirección de Escritura
+                </label>
+                <p-select
+                    [options]="directionOptions"
+                    [ngModel]="formDirection()"
+                    (ngModelChange)="formDirection.set($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    size="small"
+                    fluid
+                />
+            </div>
+
+            <!-- Recurso de imagen (tb_languages.image) -->
+            <div class="flex flex-col gap-1.5 sm:col-span-2">
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-200">
+                    Ruta de Bandera SVG (`image`)
+                </label>
+                <p-iconfield iconPosition="left">
+                    <p-inputicon>
+                        <svg pIcon="image" class="size-3.5!"></svg>
+                    </p-inputicon>
+                    <input
+                        pInputText
+                        type="text"
+                        pSize="small"
+                        [ngModel]="formImage()"
+                        (ngModelChange)="formImage.set($event)"
+                        placeholder="/assets/flags/es-co.svg"
+                        class="font-mono"
+                        fluid
+                    />
+                </p-iconfield>
+            </div>
+        </div>
+
+        <p-divider class="my-0!" />
+
+        <!-- Configuración de visibilidad y estado por defecto con p-toggleswitch -->
+        <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-col">
+                    <span class="text-xs font-semibold text-surface-800 dark:text-surface-100">
+                        Idioma activo en tienda (`is_active`)
+                    </span>
+                    <span class="text-[11px] text-secondary-500 dark:text-secondary-400">
+                        Permite que los clientes seleccionen este idioma en el selector público.
+                    </span>
+                </div>
+                <p-toggleswitch
+                    [ngModel]="formIsActive()"
+                    (ngModelChange)="formIsActive.set($event)"
+                    [disabled]="formIsDefault()"
+                />
+            </div>
+
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-col">
+                    <span class="text-xs font-semibold text-surface-800 dark:text-surface-100">
+                        Establecer como idioma predeterminado
+                    </span>
+                    <span class="text-[11px] text-secondary-500 dark:text-secondary-400">
+                        Se utilizará por defecto cuando no haya una traducción específica disponible.
+                    </span>
+                </div>
+                <p-toggleswitch
+                    [ngModel]="formIsDefault()"
+                    (ngModelChange)="formIsDefault.set($event)"
+                />
+            </div>
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <div class="flex items-center justify-end gap-2 pt-2">
+            <button
+                pButton
+                type="button"
+                severity="secondary"
+                variant="outlined"
+                size="small"
+                (click)="closeDialog()"
+            >
+                Cancelar
+            </button>
+
+            <button
+                pButton
+                type="button"
+                size="small"
+                (click)="saveLanguage()"
+            >
+                <svg pIcon="check"></svg>
+                <span>{{ isEditMode() ? 'Guardar cambios' : 'Registrar idioma' }}</span>
+            </button>
+        </div>
+    </ng-template>
+</p-dialog>

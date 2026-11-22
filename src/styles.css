@@ -126,6 +126,8 @@
   --color-color: var(--ecom-text-color);
   --color-text-secondary: var(--ecom-text-secondary-color);
 
+  --radius-content: var(--ecom-content-border-radius);
+
   /* --text-muted-color: var(--ecom-text-muted-color);
   --text-xs: var(--ecom-form-field-xs-font-size);
   --text-xs--line-height: 1rem;
@@ -174,3 +176,54 @@ h6 {
 p {
   @apply text-sm leading-6;
 }
+
+/* Animaciones de apertura y cierre para p-dialog con classPrefix: 'ecom' */
+/* [class*="dialog-enter-from"],
+[class*="dialog-leave-to"] {
+  opacity: 0;
+  transform: scale(0.95) translateY(8px);
+}
+
+[class*="dialog-enter-to"],
+[class*="dialog-leave-from"] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+[class*="dialog-enter-active"] {
+  transition:
+    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[class*="dialog-leave-active"] {
+  transition:
+    opacity 160ms cubic-bezier(0.4, 0, 1, 1),
+    transform 160ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+[class*="overlay-mask-enter-active"] {
+  animation: ecomOverlayMaskEnter 180ms ease-out forwards;
+}
+
+[class*="overlay-mask-leave-active"] {
+  animation: ecomOverlayMaskLeave 160ms ease-in forwards;
+}
+
+@keyframes ecomOverlayMaskEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ecomOverlayMaskLeave {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+} */

@@ -1,0 +1,210 @@
+<div class="flex flex-col gap-2.5">
+    
+    <p-card [pt]="{ root: { class: 'shadow-md!'}, body: { class: 'p-0!' }}">
+        <p-table
+            #dt
+            [lazy]="true"
+            [totalRecords]="languagesTable().total"
+            [value]="languagesTable().data"
+            [rows]="languagesTable().rows"
+            (onLazyLoad)="onLazyLanguages($event)"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50, 100]"
+            paginator
+            rowHover
+            showCurrentPageReport
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} idiomas"
+            scrollHeight="calc(100dvh - 12rem)"
+            [scrollable]="true"
+            stripedRows 
+            [tableStyle]="{ 'min-width': '100%' }"
+        >
+            <ng-template #caption>
+                asas
+                <!-- <div class="flex items-center gap-2">
+                    <p-iconfield iconPosition="left">
+                        <p-inputicon>
+                            <svg pIcon="search" class="size-3.5!"></svg>
+                        </p-inputicon>
+                        <input
+                            pInputText
+                            type="text"
+                            pSize="small"
+                            [ngModel]="searchQuery()"
+                            (ngModelChange)="searchQuery.set($event)"
+                            placeholder="Buscar idioma, código ISO o región..."
+                            class="w-full sm:w-64"
+                        />
+                    </p-iconfield>
+
+                    <p-selectbutton
+                        [options]="statusFilterOptions"
+                        [ngModel]="statusFilter()"
+                        (ngModelChange)="statusFilter.set($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        size="small"
+                        [allowEmpty]="false"
+                    />
+                </div> -->
+            </ng-template>
+
+            <ng-template #header>
+                <tr>
+                    <th style="width: 3rem">
+                        <p-tableheadercheckbox [disabled]="languagesTable().loading"/>
+                    </th>
+
+                    <th pSortableColumn="name" style="min-width: 16rem">
+                        <div class="flex items-center gap-1.5">
+                            <span>Language</span>
+                            <p-sorticon field="name" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="code" style="min-width: 12rem">
+                        <div class="flex items-center gap-1.5">
+                            <span>Código</span>
+                            <p-sorticon field="code" />
+                        </div>
+                    </th>
+
+                     <th pSortableColumn="isActive" style="min-width: 8rem">
+                        <div class="flex items-center gap-1.5">
+                            <span>Visible</span>
+                            <p-sorticon field="isActive" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="isActive" style="min-width: 8rem">
+                        <div class="flex items-center gap-1.5">
+                            <span>Estado</span>
+                            <p-sorticon field="isActive" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="createdAt" style="min-width: 8rem">
+                        <div class="flex items-center gap-1.5">
+                            <span>Creado</span>
+                            <p-sorticon field="createdAt" />
+                        </div>
+                    </th>
+
+                    <th pSortableColumn="updatedAt" style="min-width: 8rem">
+                        <div class="flex items-center gap-1.5">
+                            <span>Actualizado</span>
+                            <p-sorticon field="updatedAt" />
+                        </div>
+                    </th>
+
+                    <th class="text-right!" style="width: 7rem">
+                        <span>Acciones</span>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template #body let-item>
+                <tr>
+                    @if (languagesTable().loading) {
+                        <td>
+                            <p-skeleton width="1.275rem" height="1.275rem" borderRadius="0.275rem" />
+                        </td>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <p-skeleton width="40px" height="40px" borderRadius="6px" />
+                                <div class="flex flex-col gap-1">
+                                    <p-skeleton width="8rem" height="0.6rem" borderRadius="4px" />
+                                    <p-skeleton width="5rem" height="0.55rem" borderRadius="4px" />
+                                </div>
+                            </div>
+                        </td>
+                        <td><p-skeleton width="5rem" height="1rem" borderRadius="16px" /></td>
+                        <td><p-skeleton width="6rem" height="1rem" borderRadius="16px" /></td>
+                        <td><p-skeleton width="6rem" height="1rem" borderRadius="16px" /></td>
+                        <td><p-skeleton width="6rem" height="1rem" borderRadius="16px" /></td>
+                        <td><p-skeleton width="6rem" height="1rem" borderRadius="16px" /></td>
+                        <td><p-skeleton width="6rem" height="1rem" borderRadius="16px" /></td>
+                    } @else {
+                        <td>
+                            <p-tablecheckbox [value]="item" [disabled]="item.isDefault" />
+                        </td>
+
+                        <td>
+                            <div class="flex items-center gap-3 py-0.5">
+                                <p-avatar size="large">
+                                    <img 
+                                        class="rounded-content"
+                                        [alt]="item.name"
+                                        [appLanguageImgFallback]="item.image"
+                                    >
+                                </p-avatar>
+
+                                <div class="flex flex-col min-w-0">
+                                    <span class="font-semibold truncate">
+                                        {{ item.name }}
+                                    </span>
+                                    @if (item.isDefault) {
+                                        <p-badge value="Predeterminado" severity="success" />
+                                    }
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-semibold truncate">
+                                    {{item.code}}
+                                </span>
+                                <p-tag
+                                    [value]="item.direction || 'RTL'"
+                                    [severity]="item.direction === 'RTL' ? 'warn' : 'info'"
+                                    [rounded]="true"
+                                />
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <p-tag
+                                    [value]="item.isActive ? 'Activo' : 'Inactivo'"
+                                    [severity]="item.isActive ? 'success' : 'secondary'"
+                                    [rounded]="true"
+                                />
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <p-tag
+                                    [value]="item.isActive ? 'Activo' : 'Inactivo'"
+                                    [severity]="item.isActive ? 'success' : 'secondary'"
+                                    [rounded]="true"
+                                />
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ item.createdAt | localizedDate }}
+                        </td>
+
+                        <td>
+                            {{ item.updatedAt | localizedDate }}
+                        </td>
+
+                        <td class="text-right!">
+                            <div class="flex justify-center">
+                                <p-splitbutton 
+                                    label="Save" 
+                                    (onClick)="save()" 
+                                    [model]="itemsDataTable()"
+                                    size="small"
+                                    severity="secondary"
+                                />
+                            </div>
+                        </td>
+                    }
+            </ng-template>  
+        </p-table>
+    </p-card>
+</div>
+

@@ -1,0 +1,50 @@
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { inject, Service } from '@angular/core';
+import { catchError, delay, map, Observable, OperatorFunction, throwError } from 'rxjs';
+import { ZodError } from 'zod';
+
+import { environment } from '../../../../../environments/environment';
+import { LanguagesParamsDataTable, LanguagesResponse } from '../interfaces';
+import { languagesDatatableSchema } from '../schemas/languages';
+
+export type ApiError = HttpErrorResponse | ZodError;
+export function catchApiError<T>(): OperatorFunction<T, T> {
+  return (source: Observable<T>) =>
+    source.pipe(
+      catchError((error: unknown) => {
+        if (error instanceof HttpErrorResponse || error instanceof ZodError) {
+          if (!(error instanceof HttpErrorResponse)) error.issues.forEach((issue) => console.log(issue.message));
+          return throwError(() => error);
+        }
+
+        return throwError(() => error);
+      }),
+    );
+}
+
+@Service()
+export class LanguageService {
+  private readonly _http$ = inject(HttpClient);
+  private readonly _url$ = environment.urlAdmin;
+
+  constructor() {}
+
+  public getAll(params: LanguagesParamsDataTable) {
+    let paramsFilter = new HttpParams();
+    if (params.limit !== undefined) paramsFilter = paramsFilter.set('limit', params.limit);
+    if (params.page !== undefined) paramsFilter = paramsFilter.set('page', params.page);
+    if (params.sort !== undefined) paramsFilter = paramsFilter.set('sort', params.sort);
+    if (params.sortOrder !== undefined) paramsFilter = paramsFilter.set('sortOrder', params.sortOrder);
+    if (params.search !== undefined) paramsFilter = paramsFilter.set('search', params.search);
+
+    return this._http$.get<LanguagesResponse>(`${this._url$}/languages`, { params: paramsFilter }).pipe(
+      map((res: LanguagesResponse) => languagesDatatableSchema.parse(res)),
+      catchApiError(),
+      delay(500),
+    );
+  }
+
+  public getById(id: string) {
+    return this._http$.get(`${this._url$}/languages/${id}`);
+  }
+}
