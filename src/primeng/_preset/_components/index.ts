@@ -35,5 +35,9 @@ export const _COMPONENTS: ComponentsDesignTokens = {
         paddingY: '{form.field.lg.padding.y}',
       },
     },
+    option: {
+      padding: '0.375rem 0.625rem',
+      fontSize: '{form.field.sm.font.size}',
+    },
   },
 };

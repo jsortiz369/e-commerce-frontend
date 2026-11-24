@@ -33,7 +33,7 @@ export class LanguageService {
     let paramsFilter = new HttpParams();
     if (params.limit !== undefined) paramsFilter = paramsFilter.set('limit', params.limit);
     if (params.page !== undefined) paramsFilter = paramsFilter.set('page', params.page);
-    if (params.sort !== undefined) paramsFilter = paramsFilter.set('sort', params.sort);
+    if (params.sortBy !== undefined) paramsFilter = paramsFilter.set('sortBy', params.sortBy);
     if (params.sortOrder !== undefined) paramsFilter = paramsFilter.set('sortOrder', params.sortOrder);
     if (params.search !== undefined) paramsFilter = paramsFilter.set('search', params.search);
 

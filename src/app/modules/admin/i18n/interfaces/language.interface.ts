@@ -1,7 +1,7 @@
 import { TableLazyLoadEvent } from 'primeng/table';
 
 export interface LanguagesParamsDataTable {
-  sort: 'code' | 'name' | 'status' | 'createdAt';
+  sortBy: 'code' | 'name' | 'status' | 'createdAt';
   limit: number;
   page: number;
   sortOrder: 'asc' | 'desc';
@@ -11,7 +11,6 @@ export interface LanguagesParamsDataTable {
 export interface LanguagesDataTable {
   total: number;
   rows: number;
-  event: TableLazyLoadEvent;
   loading: boolean;
   data: any[];
 }

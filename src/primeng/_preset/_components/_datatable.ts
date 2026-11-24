@@ -49,6 +49,15 @@ export const _DATATABLE: DataTableDesignTokens = {
   },
   css(options) {
     return `
+      .ecom-datatable table thead tr>th {
+        text-transform: uppercase;
+        font-size: ${options.dt('form.field.sm.font.size')}
+      }
+
+      .ecom-datatable .ecom-paginator .ecom-paginator-current {
+        font-size: ${options.dt('form.field.sm.font.size')}
+      }
+
       .ecom-datatable .ecom-paginator .ecom-select .ecom-select-label {
         padding: ${options.dt('select.sm.padding.y')}  ${options.dt('select.sm.padding.x')};
       }
