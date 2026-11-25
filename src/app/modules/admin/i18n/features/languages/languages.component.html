@@ -1,17 +1,176 @@
 <div class="flex flex-col gap-2.5">
+    <p-toolbar class="shadow-md!">
+        <!-- 
+            [pt]="{
+                root: { class: _layoutService$.isMobile()? 'flex-col! items-stretch! gap-3! p-4!': 'flex-row items-center justify-between p-4'},
+                start: { class: _layoutService$.isMobile() ? 'w-full!' : '' },
+                end: { class: _layoutService$.isMobile() ? 'w-full!' : '' }
+            }"
+        -->
+
+        <ng-template #start>
+            <div class="flex flex-wrap items-center gap-2">
+                <div>
+                    <p-card
+                        [pt]="{
+                            root: {class: 'hidden! bg-primary-50! size-10! md:flex! md:justify-center! md:items-center!'}, 
+                            body: { class: 'p-0!' }, 
+                            content: { class: 'p-0!' }
+                        }"
+                        
+                    >
+                        <span>
+                            <svg pIcon="globe" [size]="18" class="text-primary"></svg>
+                        </span>
+                    </p-card>
+                </div>
+
+                <div class="flex flex-col gap-0.5">
+                    <h4> Idiomas </h4>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #end>
+            <button
+                    pButton
+                    type="button"
+                    size="small"
+                >
+                    <svg pIcon="plus"></svg>
+                    <span>Nuevo idioma</span>
+                </button>
+        </ng-template>
+    </p-toolbar>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <p-card
+            [pt]="{
+                root: { class: 'shadow-lg!' },
+                body: { class: 'p-4!' },
+                content: { class: 'p-0!' }
+            }"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                        Total idiomas
+                    </span>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                            10
+                        </span>
+                        <p-tag value="Registrados" severity="secondary" [rounded]="true" class="text-[10px]!" />
+                    </div>
+                </div>
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary border border-primary-200/60 dark:border-primary-800/60">
+                    <svg pIcon="globe" [size]="18"></svg>
+                </div>
+            </div>
+            <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                <svg pIcon="database" [size]="12" class="text-primary"></svg>
+                <span>Total de idiomas configurados</span>
+            </div>
+        </p-card>
+
+        <p-card
+            [pt]="{
+                root: { class: 'shadow-lg!' },
+                body: { class: 'p-4!' },
+                content: { class: 'p-0!' }
+            }"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                        Visibles en el frontend
+                    </span>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                            5
+                        </span>
+                        <p-tag value="Activos" severity="success" [rounded]="true" class="text-[10px]!" />
+                    </div>
+                </div>
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
+                    <svg pIcon="eye" [size]="18"></svg>
+                </div>
+            </div>
+            <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                <span>Idiomas visibles al público</span>
+            </div>
+        </p-card>
+
+        <p-card
+            [pt]="{
+                root: { class: 'shadow-lg!' },
+                body: { class: 'p-4!' },
+                content: { class: 'p-0!' }
+            }"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                        Progreso de traducción
+                    </span>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                            95%
+                        </span>
+                        <p-tag value="Óptimo" severity="info" [rounded]="true" class="text-[10px]!" />
+                    </div>
+                </div>
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/60">
+                    <svg pIcon="chart-bar" [size]="18"></svg>
+                </div>
+            </div>
+            <div class="mt-2.5 flex flex-col gap-1.5">
+                <p-progressbar [value]="95" [showValue]="false" class="h-1.5!" />
+                <span class="text-xs text-surface-500 dark:text-surface-400">
+                    Promedio de llaves traducidas
+                </span>
+            </div>
+        </p-card>
+
+        <p-card
+            [pt]="{
+                root: { class: 'shadow-lg!' },
+                body: { class: 'p-4!' },
+                content: { class: 'p-0!' }
+            }"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col gap-1 min-w-0">
+                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                        Idioma predeterminado
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="truncate text-lg font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                            Español / México
+                        </span>
+                    </div>
+                </div>
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60">
+                    <svg pIcon="star-fill" [size]="16"></svg>
+                </div>
+            </div>
+            <div class="mt-3 flex items-center justify-between gap-2 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                <span>Idioma base del e-commerce</span>
+                <p-tag value="Fallback" severity="warn" [rounded]="true" class="text-[10px]!" />
+            </div>
+        </p-card>
+    </div>
    
     <p-card [pt]="{ root: { class: 'shadow-md!'}, body: { class: 'p-0!' }}">
         <p-table
             #dt
             [lazy]="true"
-            [lazyLoadOnInit]="false"
             [totalRecords]="languagesTable().total"
             [value]="languagesTable().data"
             [rows]="languagesTable().rows"
             (onLazyLoad)="onLazyLanguages($event)"
             removableSort 
-            [sortField]="initSortField()"
-            [sortOrder]="initSortOrder() === 'desc' ? 1 : -1"
             sortMode="single"
             dataKey="id"
             selectionMode="single"
@@ -23,53 +182,78 @@
             scrollHeight="calc(100dvh - 12rem)"
             [scrollable]="true"
             stripedRows 
-            [tableStyle]="{ 'min-width': '100%' }"
+            [tableStyle]="{ 'min-width': '48rem' }"
         >
-            <ng-template #caption>
-                <div class="flex items-center gap-2 justify-end">
-                    
-                    <p-iconfield iconPosition="left">
-                        <p-inputicon>
-                            <svg pIcon="search" class="size-3.5!"></svg>
-                        </p-inputicon>
-                        <input
-                            pInputText
-                            type="text"
-                            pSize="small"
-                            placeholder="Buscar..."
-                            class="w-full sm:w-52"
-                        />
-                    </p-iconfield>
+            <!-- 
+                [sortField]="initSortField()"
+                [sortOrder]="initSortOrder() === 'desc' ? 1 : -1" 
+            -->
 
-                    <button 
-                        pButton 
-                        iconOnly
-                        size="small"
-                        variant="outlined"
-                        pTooltip="Recargar la lista de idiomas"
-                        tooltipPosition="top"
-                        plain
-                        (click)="refetchLanguages()"
-                    >
-                        <svg pIcon="sync" [size]="18" class="text-primary"></svg>
-                    </button>
+            <ng-template #caption>
+                <div class="flex items-center gap-2 justify-between overflow-x-auto py-0.5">
+                    <div class="">
+                        <button 
+                            type="button" 
+                            pButton 
+                            variant="outlined" 
+                            size="small" 
+                            pTooltip="Limpiar filtro"
+                            tooltipPosition="top"
+                            plain
+                            (click)="clearFilters(dt)"
+                            class="whitespace-nowrap"
+                        >
+                            <svg pIcon="filter-slash" [size]="20"></svg>
+                            Limpiar filtro
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 justify-end">
+                        <p-iconfield iconPosition="left">
+                            <p-inputicon>
+                                <svg pIcon="search" class="size-3.5!"></svg>
+                            </p-inputicon>
+                            <input
+                                pInputText
+                                type="text"
+                                pSize="small"
+                                placeholder="Buscar..."
+                                class="w-full sm:w-52"
+                                [(ngModel)]="searchValue"
+                                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                            />
+                        </p-iconfield>
+    
+                        <button 
+                            pButton 
+                            iconOnly
+                            size="small"
+                            variant="outlined"
+                            pTooltip="Recargar la lista de idiomas"
+                            tooltipPosition="top"
+                            plain
+                            (click)="refetchLanguages()"
+                        >
+                            <svg pIcon="sync" [size]="18" class="text-primary"></svg>
+                        </button>
+                    </div>
                 </div>
             </ng-template>
 
             <ng-template #header>
                 <tr>
-                    <th style="width: 1.5rem; min-width: 1.5rem; max-width: 1.5rem;">
+                    <th style="width: 3rem; min-width: 3rem; max-width: 3rem;">
                         <p-tableheadercheckbox [disabled]="languagesTable().loading"/>
                     </th>
 
-                    <th pSortableColumn="name" style="min-width: 12rem; width: 12rem; max-width: 12rem">
+                    <th pSortableColumn="name" style="min-width: 10rem; width: 10rem; max-width: 10rem">
                         <div class="flex items-center gap-1.5">
-                            <span>Language</span>
+                            <span>Idioma</span>
                             <p-sorticon field="name" />
                         </div>
                     </th>
 
-                    <th pSortableColumn="code" style="min-width: 3rem; width: 3rem; max-width: 3rem">
+                    <th pSortableColumn="code" style="min-width: 6rem; width: 6rem; max-width: 6rem">
                         <div class="flex items-center gap-1.5">
                             <span>Código</span>
                             <p-sorticon field="code" />
@@ -83,10 +267,67 @@
                         </div>
                     </th>
 
-                    <th pSortableColumn="isActive" style="min-width: 6rem; width: 6rem; max-width: 6rem">
-                        <div class="flex items-center gap-1.5">
-                            <span>Estado</span>
-                            <p-sorticon field="isActive" />
+                    <th pSortableColumn="isActive" style="min-width: 8rem; width: 8rem; max-width: 8rem">
+                        <div class="flex items-center justify-between gap-1.5">
+                            <div class="flex items-center gap-1.5">
+                                <span>Estado</span>
+                                <p-sorticon field="isActive" />
+                            </div>
+
+                            <p-column-filter
+                                field="isActive"
+                                matchMode="equals"
+                                display="menu"
+                                [showMatchModes]="false"
+                                [showOperator]="false"
+                                [showAddButton]="false"
+                                [showApplyButton]="false"
+                                (click)="$event.stopPropagation()"
+                                class="p-0!"
+                                [filterButtonProps]="{ 
+                                    filter: {size: 'small', plain: true, iconOnly: true, variant: 'text'} 
+                                }"
+                            >
+
+                                <ng-template #filter let-value let-filter="filterCallback">
+                                    <p-select
+                                        [ngModel]="value"
+                                        [options]="filterStateOptions()"
+                                        (onChange)="filter($event.value)"
+                                        optionLabel="label"
+                                        optionValue="value"
+                                        placeholder="Todos los estados"
+                                        [showClear]="true"
+                                        size="small"
+                                        class="w-full"
+                                    >
+                                        <ng-template #selectedItem let-selectedOption>
+                                            @if (selectedOption) {
+                                                <div class="flex items-center gap-2">
+                                                    <p-tag
+                                                        [value]="selectedOption.label"
+                                                        [severity]="selectedOption.severity"
+                                                        [rounded]="true"
+                                                    />
+                                                </div>
+                                            }
+                                        </ng-template>
+
+                                        <ng-template #item let-option>
+                                            <div class="flex w-full items-center justify-between gap-3">
+                                                <p-tag
+                                                    [value]="option.label"
+                                                    [severity]="option.severity"
+                                                    [rounded]="true"
+                                                />
+                                                <span class="text-[11px] text-text-secondary">
+                                                    {{ option.description }}
+                                                </span>
+                                            </div>
+                                        </ng-template>
+                                    </p-select>
+                                </ng-template>
+                            </p-column-filter>
                         </div>
                     </th>
 
@@ -104,7 +345,7 @@
                         </div>
                     </th>
 
-                    <th class="text-right!" style="width: 6rem">
+                    <th class="text-right!" style="min-width: 5.5rem; width: 5.5rem; max-width: 5.5rem;">
                         <span>Acciones</span>
                     </th>
                 </tr>
@@ -119,11 +360,11 @@
 
                         <td>
                             <div class="flex items-center gap-3">
-                                <p-skeleton width="2.125rem" height="2.125rem" borderRadius="0.25rem" />
+                                <p-skeleton width="2rem" height="2.125rem" borderRadius="0.25rem" />
                                 <div class="flex flex-col gap-1">
-                                    <p-skeleton width="8rem" height="0.875rem" borderRadius="4px" />
+                                    <p-skeleton width="4rem" height="0.875rem" borderRadius="4px" />
                                     @if(i === 0) {
-                                        <p-skeleton width="5rem" height="1.125rem" borderRadius="4px" />
+                                        <p-skeleton width="5.5rem" height="1.125rem" borderRadius="4px" />
                                     }
                                 </div>
                             </div>
@@ -136,12 +377,29 @@
                             </div>
                         </td>
                         <td><p-skeleton width="3rem" height="1rem" borderRadius="16px" /></td>
-                        <td><p-skeleton width="3rem" height="1rem" borderRadius="16px" /></td>
-                        <td><p-skeleton width="8rem" height="1rem" borderRadius="16px" /></td>
-                        <td><p-skeleton width="8rem" height="1rem" borderRadius="16px" /></td>
-                        <td><p-skeleton width="5rem" height="1.75rem" borderRadius="0.5rem"/></td>
+                        <td>
+                            <div class="flex items-center justify-center gap-2">
+                                <p-skeleton width="3rem" height="1rem" borderRadius="16px" />
+                            </div>
+                        </td>
+                        <td><p-skeleton width="8.5rem" height="1rem" borderRadius="16px" /></td>
+                        <td><p-skeleton width="8.5rem" height="1rem" borderRadius="16px" /></td>
+                        <td>
+                            <div class="flex flex-col justify-self-end gap-0.5 mr-4">
+                                <p-skeleton width="0.275rem" height="0.275rem"/>
+                                <p-skeleton width="0.275rem" height="0.275rem"/>
+                                <p-skeleton width="0.275rem" height="0.275rem"/>
+                            </div>
+                        </td>
                     } @else {
                         <td>
+                            <!-- <button type="button" pButton [pRowToggler]="item" variant="text" severity="secondary" iconOnly rounded>
+                                @if (expanded) {
+                                    <svg data-p-icon="chevron-down"></svg> 
+                                } @else {
+                                    <svg data-p-icon="chevron-right"></svg>
+                                }
+                            </button> -->
                             <p-tablecheckbox [value]="item" [disabled]="item.isDefault" />
                         </td>
 
@@ -190,7 +448,7 @@
                         </td>
 
                         <td>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center justify-center gap-2">
                                 <p-tag
                                     [value]="item.isActive ? 'Activo' : 'Inactivo'"
                                     [severity]="item.isActive ? 'success' : 'secondary'"
@@ -215,14 +473,65 @@
                                 size="small"
                                 text
                                 (click)="menu.toggle($event)"
+                                plain
                             >
                                 <svg pIcon="ellipsis-v" [size]="18"></svg>
                             </button>
                             <p-menu #menu [model]="itemsDataTable()" [popup]="true" styleClass="w-40" />
                         </td>
                     }
+                </tr>
             </ng-template>
-            
+
+            <ng-template #emptymessage>
+                <tr>
+                    <td colspan="8" class="py-14! text-center">
+                        @if (hasActiveFilters()) {
+                            <div class="mx-auto flex max-w-md flex-col items-center justify-center gap-2.5">
+                                <p-avatar shape="circle" size="xlarge">
+                                    <svg pIcon="search" [size]="20"></svg>
+                                </p-avatar>
+
+                                <div class="flex flex-col gap-1 text-center">
+                                    <span class="text-sm font-semibold">
+                                        No se encontraron resultados para "{{ searchValue() }}"
+                                    </span>
+                                    <span class="text-xs">
+                                        No hay idiomas que coincidan con el término buscado o los filtros aplicados. Intenta con otra búsqueda o restablece los filtros.
+                                    </span>
+                                </div>
+                            </div>
+                        } @else {
+                            <div class="mx-auto flex max-w-md flex-col items-center justify-center gap-2.5">
+                                <p-avatar shape="circle" size="xlarge" class="bg-surface-100! dark:bg-surface-800!">
+                                    <svg pIcon="globe" [size]="30" class="text-surface-400 dark:text-surface-500"></svg>
+                                </p-avatar>
+
+                                <div class="flex flex-col gap-1 text-center">
+                                    <span class="text-sm font-semibold">
+                                        Aún no hay idiomas registrados
+                                    </span>
+                                    <span class="text-xs">
+                                        No existen registros de idiomas configurados en el sistema. Registra un nuevo idioma o actualiza la lista para comenzar.
+                                    </span>
+                                </div>
+
+                                <div class="mt-1 flex flex-wrap items-center justify-center gap-2">
+                                    <button
+                                        pButton
+                                        type="button"
+                                        size="small"
+                                        (click)="save()"
+                                    >
+                                        <svg pIcon="plus"></svg>
+                                        <span>Nuevo idioma</span>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            </ng-template>
         </p-table>
     </p-card>
 </div>

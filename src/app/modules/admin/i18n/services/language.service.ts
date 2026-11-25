@@ -35,7 +35,7 @@ export class LanguageService {
     if (params.page !== undefined) paramsFilter = paramsFilter.set('page', params.page);
     if (params.sortBy !== undefined) paramsFilter = paramsFilter.set('sortBy', params.sortBy);
     if (params.sortOrder !== undefined) paramsFilter = paramsFilter.set('sortOrder', params.sortOrder);
-    if (params.search !== undefined) paramsFilter = paramsFilter.set('search', params.search);
+    if (params.filters !== undefined) paramsFilter = paramsFilter.set('filters', JSON.stringify(params.filters));
 
     return this._http$.get<LanguagesResponse>(`${this._url$}/languages`, { params: paramsFilter }).pipe(
       map((res: LanguagesResponse) => languagesDatatableSchema.parse(res)),

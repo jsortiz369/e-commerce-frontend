@@ -19,7 +19,16 @@ export const _DATATABLE: DataTableDesignTokens = {
     },
   },
   paginatorBottom: {
-    borderColor: '{content.border.color}',
+    borderColor: '{content.border.color} ',
+  },
+  filter: {
+    /* overlayPopover: {
+      background: 'red',
+    },
+    overlaySelect: {
+      background: 'red',
+
+    }, */
   },
   colorScheme: {
     light: {
@@ -82,6 +91,12 @@ export const _DATATABLE: DataTableDesignTokens = {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;    
       }
+
+      /*.ecom-datatable .ecom-button-text.ecom-button-secondary:not(:disabled):hover {
+        background: ${options.dt('primary.300')};
+        border-color: transparent;
+        color: ${options.dt('primary.800')};     
+      }*/
     `;
   },
 };

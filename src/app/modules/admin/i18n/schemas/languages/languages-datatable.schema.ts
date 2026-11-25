@@ -1,8 +1,8 @@
 import z from 'zod';
 
-import { LanguagesResponse } from '../../interfaces';
+import { LanguagesResponse, LanguageTable } from '../../interfaces';
 
-const languageDatatableSchema = z
+export const languageDatatableSchema: z.ZodType<LanguageTable> = z
   .object({
     id: z.uuidv7(),
     name: z.string(),
@@ -10,8 +10,8 @@ const languageDatatableSchema = z
     image: z.string(),
     isActive: z.boolean(),
     isDefault: z.boolean(),
-    createdAt: z.iso.datetime(),
-    updatedAt: z.iso.datetime(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
   })
   .strict();
 
