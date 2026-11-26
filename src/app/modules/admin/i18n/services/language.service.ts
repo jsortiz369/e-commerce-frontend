@@ -34,7 +34,6 @@ export class LanguageService {
     return this._http$.get<LanguageSummaryResponse>(`${this._url$}/languages/summary`).pipe(
       map((res: LanguageSummaryResponse) => languageSummaryResponseSchema.parse(res)),
       catchApiError(),
-      delay(5000),
     );
   }
 
@@ -49,7 +48,6 @@ export class LanguageService {
     return this._http$.get<LanguagesResponse>(`${this._url$}/languages`, { params: paramsFilter }).pipe(
       map((res: LanguagesResponse) => languagesResponseSchema.parse(res)),
       catchApiError(),
-      delay(5000),
     );
   }
 

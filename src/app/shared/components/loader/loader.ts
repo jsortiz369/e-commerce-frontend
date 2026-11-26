@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { LoadersSystem } from '../../services/loaders-system';
 
 export type LoaderActionType = 'product' | 'cart' | 'payment' | 'sync' | 'general';
 export type LoaderDisplayMode = 'overlay' | 'card' | 'inline';
@@ -16,6 +17,8 @@ export interface LoaderItemDetail {
   templateUrl: './loader.html',
 })
 export class Loader {
+  private readonly _loadersSystem$ = inject(LoadersSystem);
+
   /** Tipo de acción que se está ejecutando */
   readonly action = input<LoaderActionType>('payment');
 

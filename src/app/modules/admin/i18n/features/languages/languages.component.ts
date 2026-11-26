@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { PIcon } from '@primeicons/angular/p-icon';
@@ -7,7 +8,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule, TableLazyLoadEvent, Table } from 'primeng/table';
 import { Badge } from 'primeng/badge';
 import { Tag } from 'primeng/tag';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { InputTextModule } from 'primeng/inputtext';
@@ -27,11 +28,13 @@ import {
   LanguageTable,
   StatusFilterType,
 } from '../../interfaces';
-import { LanguageImgFallbackDirective } from '../../directives/language-img-fallback.directive';
-import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
+import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
+import { ImgFallbackDirective } from '../../../../../shared/directives/img-fallback.directive';
+import { AlertsCustomService } from '../../../../../shared/services/alerts-custom.service';
 
 @Component({
   imports: [
+    NgClass,
     FormsModule,
     Card,
     ButtonModule,
@@ -41,7 +44,7 @@ import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
     SkeletonModule,
     Badge,
     Tag,
-    LanguageImgFallbackDirective,
+    ImgFallbackDirective,
     LocalizedDatePipe,
     InputTextModule,
     IconField,
@@ -55,6 +58,7 @@ import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
 })
 export class LanguagesComponent implements OnInit {
   private readonly _languageService$ = inject(LanguageService);
+  private readonly _alertsCustomService$ = inject(AlertsCustomService);
 
   private readonly languagesSummary = signal<LanguageSummary>({ loading: false, data: {} as LanguageSummaryResponse });
   private readonly languagesTable = signal<LanguagesDataTable>({ total: 0, rows: 10, loading: false, data: [] });
@@ -65,13 +69,24 @@ export class LanguagesComponent implements OnInit {
   private readonly searchValue = signal<string>('');
   private readonly statusFilter = signal<StatusFilterType>('ALL');
   private readonly hasActiveFilters = computed(() => this.searchValue().trim().length > 0 || this.statusFilter() !== 'ALL');
-  private readonly filterStateOptions = signal<FilterStateOptions[]>([
-    { label: 'Activo', description: 'Habilitados', value: 'ACTIVE', severity: 'success' },
-    { label: 'Inactivo', description: 'Deshabilitados', value: 'INACTIVE', severity: 'secondary' },
-  ]).asReadonly();
-  private readonly itemsDataTable = signal<MenuItem[]>([
-    { label: 'Update', icon: 'pi pi-refresh', command: () => console.log('llega') },
-  ]).asReadonly();
+  private readonly filterStateOptions = computed<FilterStateOptions[]>(() => [
+    {
+      label: 'language.status.active'.translate(),
+      description: 'language.status.activeDescription'.translate(),
+      value: 'ACTIVE',
+      severity: 'success',
+    },
+    {
+      label: 'language.status.inactive'.translate(),
+      description: 'language.status.inactiveDescription'.translate(),
+      value: 'INACTIVE',
+      severity: 'secondary',
+    },
+  ]);
+  private readonly itemsDataTable = computed<MenuItem[]>(() => [
+    { label: 'language.table.menu.update'.translate(), icon: 'pi pi-refresh', command: () => console.log('llega') },
+    { label: 'language.table.menu.delete'.translate(), icon: 'pi pi-trash', command: () => this.delete() },
+  ]);
   private readonly imagePreviewVisible = signal<boolean>(false);
   private readonly selectedPreviewLanguage = signal<LanguageTable | null>(null);
 
@@ -170,5 +185,17 @@ export class LanguagesComponent implements OnInit {
 
   private save() {
     console.log('save');
+  }
+
+  private delete(item?: LanguageTable) {
+    this._alertsCustomService$.confirm({
+      message: '¿Está seguro de eliminar el idioma?',
+      header: 'Confirmar eliminación',
+      icon: 'pi pi-info-circle',
+      acceptButtonProps: { severity: 'danger' },
+      rejectButtonProps: { severity: 'secondary' },
+      reject: () => console.log('Reject'),
+      accept: () => console.log('Accept'),
+    });
   }
 }

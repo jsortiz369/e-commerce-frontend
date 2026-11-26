@@ -11,13 +11,10 @@
             <svg pIcon="sidebar" size="20"></svg>
         </button>
         
-        <!-- class="size-7! p-0! text-secondary-500 hover:bg-primary-50/70! hover:text-primary-600! dark:text-secondary-400 dark:hover:bg-primary-950/40! dark:hover:text-primary-400!" -->
         <p-divider [align]="'center'" layout="vertical" class="m-1!" type="solid" />
     </div>
 
     <div class="flex items-center gap-1.5">
-    
-    
         <button
             type="button"
             class="hidden md:inline-flex h-7 w-48 items-center justify-between rounded-md border border-secondary-200/80 dark:border-secondary-800 bg-secondary-50/50 dark:bg-secondary-950/60 px-2.5 text-xs text-secondary-500 dark:text-secondary-400 transition-colors hover:border-secondary-300 hover:text-secondary-700"
@@ -30,6 +27,30 @@
                 Ctrl K
             </kbd>
         </button>
+
+        <!-- Selector interactivo de idioma en caliente (ES / EN) sin recargar la página -->
+        <div class="inline-flex h-7 items-center rounded-md border border-content bg-surface-50 dark:bg-surface-900 p-0.5 text-[11px] font-semibold">
+            <button
+                type="button"
+                (click)="switchLanguage('es')"
+                class="h-6 rounded px-2 transition-colors cursor-pointer"
+                [class.bg-primary]="_i18n$.currentLang() === 'es'"
+                [class.text-primary-contrast]="_i18n$.currentLang() === 'es'"
+                [class.text-text-secondary]="_i18n$.currentLang() !== 'es'"
+            >
+                ES
+            </button>
+            <button
+                type="button"
+                (click)="switchLanguage('en')"
+                class="h-6 rounded px-2 transition-colors cursor-pointer"
+                [class.bg-primary]="_i18n$.currentLang() === 'en'"
+                [class.text-primary-contrast]="_i18n$.currentLang() === 'en'"
+                [class.text-text-secondary]="_i18n$.currentLang() !== 'en'"
+            >
+                EN
+            </button>
+        </div>
 
         <div class="hidden sm:inline-flex h-7 items-center gap-1.5 rounded-md border border-secondary-200/80 dark:border-secondary-800 bg-secondary-50/60 dark:bg-secondary-900/60 px-2 text-[11px] font-medium text-secondary-700 dark:text-secondary-300">
             <span class="size-1.5 rounded-full bg-success"></span>

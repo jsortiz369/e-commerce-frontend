@@ -1,16 +1,15 @@
-import { Directive, ElementRef, inject, input, OnChanges, OnDestroy, signal } from '@angular/core';
+import { Directive, ElementRef, inject, input, OnChanges, OnDestroy } from '@angular/core';
 
 @Directive({
-  selector: 'img[appLanguageImgFallback]',
+  selector: 'img[appImgFallback]',
 })
-export class LanguageImgFallbackDirective implements OnChanges, OnDestroy {
+export class ImgFallbackDirective implements OnChanges, OnDestroy {
   private readonly _element = inject(ElementRef<HTMLImageElement>);
   private _requestId = 0;
   private _observer: IntersectionObserver | null = null;
 
-  readonly appLanguageImgFallback = input<string | null | undefined>();
-
-  private readonly appImageFallbackDefault = signal('imgs/flags/default.webp').asReadonly();
+  readonly appImgFallback = input<string | null | undefined>();
+  readonly appImgFallbackDefault = input('imgs/flags/default.webp');
 
   ngOnChanges(): void {
     const img = this._element.nativeElement;
@@ -20,9 +19,9 @@ export class LanguageImgFallbackDirective implements OnChanges, OnDestroy {
 
     img.loading = 'lazy';
     img.decoding = 'async';
-    img.src = this.appImageFallbackDefault();
+    img.src = this.appImgFallbackDefault();
 
-    const targetSrc = this.appLanguageImgFallback();
+    const targetSrc = this.appImgFallback();
     if (!targetSrc) return;
 
     // Si el navegador soporta IntersectionObserver, solo descarga la imagen cuando entra en el viewport
@@ -63,7 +62,7 @@ export class LanguageImgFallbackDirective implements OnChanges, OnDestroy {
 
     image.onerror = () => {
       if (requestId === this._requestId) {
-        img.src = this.appImageFallbackDefault();
+        img.src = this.appImgFallbackDefault();
       }
     };
 

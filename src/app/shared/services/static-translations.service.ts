@@ -1,0 +1,135 @@
+import { HttpClient } from '@angular/common/http';
+import { computed, inject, Service, Signal, signal } from '@angular/core';
+import { catchError, delay, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
+
+export type SupportedLangCode = 'es' | 'en';
+export type StaticTranslationsMap = Record<string, string>;
+export type MultiLangTranslationsPayload = Record<SupportedLangCode, StaticTranslationsMap> | StaticTranslationsMap;
+
+declare global {
+  interface String {
+    /**
+     * Traduce una llave estática globalmente desde cualquier plantilla HTML o archivo TS
+     * sin necesidad de importar ningún Pipe en el @Component.
+     * Al cambiar el idioma activo, todos los textos que usan .translate() se actualizan
+     * reactivamente sin recargar la página.
+     */
+    translate(fallback?: string): string;
+  }
+}
+
+const CURRENT_LANG$ = signal<SupportedLangCode>(
+  (typeof localStorage !== 'undefined' && (localStorage.getItem('app_lang') as SupportedLangCode)) || 'es',
+);
+const GLOBAL_STATIC_TRANSLATIONS$ = signal<StaticTranslationsMap>({});
+
+if (typeof String.prototype.translate !== 'function') {
+  Object.defineProperty(String.prototype, 'translate', {
+    value: function (this: string, fallback?: string): string {
+      const key = String(this);
+      if (!key) return fallback ?? '';
+      return GLOBAL_STATIC_TRANSLATIONS$()[key] ?? fallback ?? key;
+    },
+    writable: true,
+    configurable: true,
+  });
+}
+
+@Service()
+export class StaticTranslationsService {
+  private readonly _http = inject(HttpClient);
+
+  /** Caché en memoria por código de idioma ('es', 'en') */
+  private readonly _dictionariesByLang = signal<Partial<Record<SupportedLangCode, StaticTranslationsMap>>>({});
+
+  public readonly currentLang = computed(() => CURRENT_LANG$());
+  public readonly translations = computed(() => GLOBAL_STATIC_TRANSLATIONS$());
+  public readonly hasTranslations = computed(() => Object.keys(GLOBAL_STATIC_TRANSLATIONS$()).length > 0);
+
+  private _request$: Observable<StaticTranslationsMap> | null = null;
+
+  /**
+   * Obtiene las traducciones del idioma activo (o del idioma indicado) por Observable.
+   */
+  getStaticTranslations(lang: SupportedLangCode = CURRENT_LANG$()): Observable<StaticTranslationsMap> {
+    const cached = this._dictionariesByLang()[lang];
+    if (cached && Object.keys(cached).length > 0) {
+      CURRENT_LANG$.set(lang);
+      GLOBAL_STATIC_TRANSLATIONS$.set(cached);
+      return of(cached);
+    }
+
+    if (this._request$) return this._request$;
+
+    this._request$ = this._http.get<MultiLangTranslationsPayload>('example/static-translations.json').pipe(
+      map((payload) => {
+        // Soporta JSON multi-idioma { es: {...}, en: {...} } o plano { "key": "val" }
+        if (payload && typeof payload === 'object' && ('es' in payload || 'en' in payload) && typeof payload[lang] === 'object') {
+          const multi = payload as Record<SupportedLangCode, StaticTranslationsMap>;
+          this._dictionariesByLang.set({
+            es: multi.es ?? {},
+            en: multi.en ?? {},
+          });
+          return multi[lang] ?? {};
+        }
+
+        const flat = (payload as StaticTranslationsMap) ?? {};
+        this._dictionariesByLang.update((prev) => ({ ...prev, [lang]: flat }));
+        return flat;
+      }),
+      tap((activeDict) => {
+        CURRENT_LANG$.set(lang);
+        GLOBAL_STATIC_TRANSLATIONS$.set(activeDict);
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('app_lang', lang);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error al cargar static-translations.json:', error);
+        return of({});
+      }),
+      finalize(() => (this._request$ = null)),
+      shareReplay(1),
+      delay(500),
+    );
+
+    return this._request$;
+  }
+
+  /**
+   * Cambia el idioma en caliente sin refrescar la página.
+   * Actualiza la señal GLOBAL_STATIC_TRANSLATIONS$ y Angular re-renderiza todos los .translate() automáticamente.
+   */
+  changeLanguage(lang: SupportedLangCode): void {
+    if (lang === CURRENT_LANG$() && this.hasTranslations()) return;
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('app_lang', lang);
+    }
+
+    const cached = this._dictionariesByLang()[lang];
+    if (cached && Object.keys(cached).length > 0) {
+      CURRENT_LANG$.set(lang);
+      GLOBAL_STATIC_TRANSLATIONS$.set(cached);
+      return;
+    }
+
+    this.getStaticTranslations(lang).subscribe();
+  }
+
+  /**
+   * Alterna instantáneamente entre Español ('es') e Inglés ('en') sin recargar la página.
+   */
+  toggleLanguage(): void {
+    const nextLang: SupportedLangCode = CURRENT_LANG$() === 'es' ? 'en' : 'es';
+    this.changeLanguage(nextLang);
+  }
+
+  translate(key: string, fallback?: string): string {
+    return GLOBAL_STATIC_TRANSLATIONS$()[key] ?? fallback ?? key;
+  }
+
+  select(key: string, fallback?: string): Signal<string> {
+    return computed(() => GLOBAL_STATIC_TRANSLATIONS$()[key] ?? fallback ?? key);
+  }
+}

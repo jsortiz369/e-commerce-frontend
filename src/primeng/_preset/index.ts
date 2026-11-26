@@ -4,6 +4,7 @@ import Aura from '@primeuix/themes/aura';
 import { _SEMANTIC } from './_semantic';
 import { _COMPONENTS } from './_components';
 import { _PALETTE, resolvePaletteScale } from './_palette';
+import { BaseTokenSections } from '@primeuix/themes/types/base';
 
 export type PaletteConfig = {
   primaryColor: string;
@@ -31,10 +32,12 @@ export const configPreset = (paletteColor?: PaletteConfig) => {
     primitive: {
       borderRadius: {
         none: '0',
-        sm: '0.25rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-      },
+        xs: '0.125rem', // 2px
+        sm: '0.25rem', // 4px
+        md: '0.375rem', // 6px
+        lg: '0.625rem', // 10px
+        xl: '0.875rem', // 14px
+      } as BaseTokenSections.Primitive['borderRadius'],
       ..._PALETTE,
     },
     semantic: {

@@ -6,6 +6,7 @@ import { _CARD } from './_card';
 import { _VIRTUALSCROLLER } from './_virtualscroller';
 import { _SCROLLAREA } from './_scrollarea';
 import { _DATATABLE } from './_datatable';
+import { _CONFIRMDIALOG } from './_confirmdialog';
 
 export const _COMPONENTS: ComponentsDesignTokens = {
   sidebar: _SIDEBAR,
@@ -14,6 +15,7 @@ export const _COMPONENTS: ComponentsDesignTokens = {
   virtualscroller: _VIRTUALSCROLLER,
   scrollarea: _SCROLLAREA,
   datatable: _DATATABLE,
+  confirmdialog: _CONFIRMDIALOG,
   paginator: {
     root: {
       padding: '0.375rem 0.875rem',

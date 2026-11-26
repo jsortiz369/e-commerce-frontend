@@ -65,19 +65,33 @@
   --color-warning-950: var(--ecom-warn-950);
   --color-warning-contrast: var(--ecom-warn-contrast-color);
 
-  --color-error: var(--ecom-error-500);
-  --color-error-50: var(--ecom-error-50);
-  --color-error-100: var(--ecom-error-100);
-  --color-error-200: var(--ecom-error-200);
-  --color-error-300: var(--ecom-error-300);
-  --color-error-400: var(--ecom-error-400);
-  --color-error-500: var(--ecom-error-500);
-  --color-error-600: var(--ecom-error-600);
-  --color-error-700: var(--ecom-error-700);
-  --color-error-800: var(--ecom-error-800);
-  --color-error-900: var(--ecom-error-900);
-  --color-error-950: var(--ecom-error-950);
-  --color-error-contrast: var(--ecom-error-contrast-color);
+  --color-error: var(--ecom-danger-500);
+  --color-error-50: var(--ecom-danger-50);
+  --color-error-100: var(--ecom-danger-100);
+  --color-error-200: var(--ecom-danger-200);
+  --color-error-300: var(--ecom-danger-300);
+  --color-error-400: var(--ecom-danger-400);
+  --color-error-500: var(--ecom-danger-500);
+  --color-error-600: var(--ecom-danger-600);
+  --color-error-700: var(--ecom-danger-700);
+  --color-error-800: var(--ecom-danger-800);
+  --color-error-900: var(--ecom-danger-900);
+  --color-error-950: var(--ecom-danger-950);
+  --color-error-contrast: var(--ecom-danger-contrast-color);
+
+  --color-danger: var(--ecom-danger-500);
+  --color-danger-50: var(--ecom-danger-50);
+  --color-danger-100: var(--ecom-danger-100);
+  --color-danger-200: var(--ecom-danger-200);
+  --color-danger-300: var(--ecom-danger-300);
+  --color-danger-400: var(--ecom-danger-400);
+  --color-danger-500: var(--ecom-danger-500);
+  --color-danger-600: var(--ecom-danger-600);
+  --color-danger-700: var(--ecom-danger-700);
+  --color-danger-800: var(--ecom-danger-800);
+  --color-danger-900: var(--ecom-danger-900);
+  --color-danger-950: var(--ecom-danger-950);
+  --color-danger-contrast: var(--ecom-danger-contrast-color);
 
   --color-info: var(--ecom-info-500);
   --color-info-50: var(--ecom-info-50);

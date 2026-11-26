@@ -12,9 +12,7 @@ export default [
   },
   {
     path: '',
-    loadComponent: () => import('../i18n').then((m) => m.I18n),
-
-    // redirectTo: 'languages',
-    // pathMatch: 'full',
+    redirectTo: 'languages',
+    pathMatch: 'full',
   },
 ] as Routes;
