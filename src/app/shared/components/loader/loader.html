@@ -1,21 +1,48 @@
+@if (_loadersSystem$.isLoader()) {
+    @let currentAction = resolvedAction();
+    @let isDanger = currentAction === 'delete';
 
-@if(_loadersSystem$.isLoader()) {
     <div
-        class="fixed inset-0 z-50 w-full backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 select-none"
+        class="fixed inset-0 z-1200 w-full bg-surface-950/35 dark:bg-surface-950/60 backdrop-blur-xs flex items-center justify-center p-4 transition-all duration-300 select-none"
+        role="status"
+        aria-live="polite"
     >
-        <div class="relative w-full max-w-sm  flex flex-col items-center text-center overflow-hidden">
-            <div class="relative my-3 flex size-28 items-center justify-center">
-                <div class="absolute inset-0 rounded-full border border-primary-500/30 dark:border-primary-400/30 animate-ping opacity-25"></div>
+        <div
+            class="relative w-full max-w-xs rounded-2xl border bg-surface-0/95 dark:bg-surface-900/95 px-6 py-5 shadow-2xl flex flex-col items-center text-center overflow-hidden backdrop-blur-md"
+            [ngClass]="
+                isDanger
+                    ? 'border-danger-200/70 dark:border-danger-900/60 shadow-danger-950/10'
+                    : 'border-surface-200/80 dark:border-surface-800/80 shadow-surface-950/20'
+            "
+        >
+            <div class="relative my-2 flex size-24 items-center justify-center">
+                <div
+                    class="absolute inset-0 rounded-full border animate-ping opacity-25"
+                    [ngClass]="
+                        isDanger
+                            ? 'border-danger-500/35 dark:border-danger-400/35'
+                            : 'border-primary-500/30 dark:border-primary-400/30'
+                    "
+                ></div>
+
                 <svg class="absolute inset-0 size-full animate-[spin_5s_linear_infinite]" viewBox="0 0 100 100" fill="none">
-                    <circle cx="50" cy="50" r="46" stroke="currentColor" stroke-width="2" class="text-secondary-200/70 dark:text-secondary-800/70" stroke-dasharray="6 6" />
+                    <circle
+                        cx="50"
+                        cy="50"
+                        r="46"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="text-surface-200/80 dark:text-surface-800/80"
+                        stroke-dasharray="6 6"
+                    />
                 </svg>
 
-                <svg class="absolute inset-2 size-[calc(100%-16px)] animate-[spin_2.5s_cubic-bezier(0.4,0,0.2,1)_infinite]" viewBox="0 0 100 100" fill="none">
+                <svg class="absolute inset-2 size-[calc(100%-16px)] animate-[spin_2.2s_cubic-bezier(0.4,0,0.2,1)_infinite]" viewBox="0 0 100 100" fill="none">
                     <circle
                         cx="50"
                         cy="50"
                         r="42"
-                        stroke="url(#primaryGradientSpinner)"
+                        [attr.stroke]="isDanger ? 'url(#dangerGradientSpinner)' : 'url(#primaryGradientSpinner)'"
                         stroke-width="3.5"
                         stroke-linecap="round"
                         stroke-dasharray="60 140"
@@ -25,43 +52,53 @@
                             <stop offset="0%" stop-color="var(--color-primary-400, #38bdf8)" stop-opacity="1" />
                             <stop offset="100%" stop-color="var(--color-primary-600, #0284c7)" stop-opacity="0.1" />
                         </linearGradient>
+                        <linearGradient id="dangerGradientSpinner" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--color-danger-500, #ef4444)" stop-opacity="1" />
+                            <stop offset="100%" stop-color="var(--color-danger-600, #dc2626)" stop-opacity="0.12" />
+                        </linearGradient>
                     </defs>
                 </svg>
 
-                
-                <div class="absolute inset-4 rounded-full border-2 border-dashed border-primary-500/40 dark:border-primary-400/40 animate-[spin_6s_linear_infinite_reverse]"></div>
+                <div
+                    class="absolute inset-4 rounded-full border-2 border-dashed animate-[spin_6s_linear_infinite_reverse]"
+                    [ngClass]="
+                        isDanger
+                            ? 'border-danger-500/40 dark:border-danger-400/40'
+                            : 'border-primary-500/40 dark:border-primary-400/40'
+                    "
+                ></div>
 
                 <div class="absolute inset-1 animate-[spin_3s_linear_infinite]">
-                    <span class="absolute top-0 left-1/2 -translate-x-1/2 size-2.5 rounded-full bg-primary shadow-md shadow-primary ring-2 ring-surface-0 dark:ring-surface-900 animate-pulse"></span>
+                    <span
+                        class="absolute top-0 left-1/2 -translate-x-1/2 size-2 rounded-full ring-2 ring-surface-0 dark:ring-surface-900 animate-pulse"
+                        [ngClass]="isDanger ? 'bg-danger-500 shadow-md shadow-danger-500' : 'bg-primary shadow-md shadow-primary'"
+                    ></span>
                 </div>
 
-                <div class="absolute inset-3 animate-[spin_2s_linear_infinite_reverse]">
-                    <span class="absolute bottom-0 left-1/2 -translate-x-1/2 size-1.5 rounded-full bg-primary-400 dark:bg-primary-300 shadow-xs shadow-primary"></span>
-                </div>
-
-                <div class="relative z-10 flex size-14 items-center justify-center rounded-2xl bg-surface-0/90 dark:bg-surface-800/90 border border-primary-200/80 dark:border-primary-800/80 text-primary shadow-md shadow-primary-500/10 backdrop-blur-xs">
-                    @if (action() === 'product') {
-                        <svg class="size-6 text-primary animate-[bounce_2.5s_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div
+                    class="relative z-10 flex size-12 items-center justify-center rounded-2xl bg-surface-0/95 dark:bg-surface-800/95 border shadow-md backdrop-blur-xs"
+                    [ngClass]="
+                        isDanger
+                            ? 'border-danger-200/80 dark:border-danger-800/80 text-danger-600 dark:text-danger-400 shadow-danger-500/10'
+                            : 'border-primary-200/80 dark:border-primary-800/80 text-primary shadow-primary-500/10'
+                    "
+                >
+                    @if (currentAction === 'product') {
+                        <svg class="size-5 text-primary animate-[bounce_2.5s_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m7.5 4.27 9 5.15" />
                             <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
                             <path d="m3.3 7 8.7 5 8.7-5" />
                             <path d="M12 22V12" />
                         </svg>
-                    }
-
-                    <!-- ACCIÓN B: CARRITO / PEDIDO (Venta o carrito pulsante) -->
-                    @else if (action() === 'cart') {
-                        <svg class="size-6 text-primary animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    } @else if (currentAction === 'cart') {
+                        <svg class="size-5 text-primary animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="8" cy="21" r="1" />
                             <circle cx="19" cy="21" r="1" />
                             <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                         </svg>
-                    }
-
-                    <!-- ACCIÓN C: PAGO / TRANSACCIÓN -->
-                    @else if (action() === 'payment') {
+                    } @else if (currentAction === 'payment') {
                         <div class="relative flex items-center justify-center">
-                            <svg class="size-6 text-primary animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="size-5 text-primary animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect width="20" height="14" x="2" y="5" rx="2" />
                                 <line x1="2" x2="22" y1="10" y2="10" />
                             </svg>
@@ -69,47 +106,49 @@
                                 ✓
                             </span>
                         </div>
-                    }
-
-                    <!-- ACCIÓN D: SPINNER DE INFORMACIÓN GENERAL / DATOS (DEFAULT) -->
-                    @else {
+                    } @else if (currentAction === 'delete') {
+                        <svg class="size-5 text-danger-600 dark:text-danger-400 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18" />
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                            <line x1="10" x2="10" y1="11" y2="17" />
+                            <line x1="14" x2="14" y1="11" y2="17" />
+                        </svg>
+                    } @else {
                         <div class="relative flex items-center justify-center">
-                            <!-- Centro con doble flecha de sincronización rotatoria fluida -->
-                            <svg class="size-6 text-primary animate-[spin_2s_linear_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg class="size-5 text-primary animate-[spin_2s_linear_infinite]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                                 <path d="M3 3v5h5" />
                                 <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
                                 <path d="M16 16h5v5" />
                             </svg>
-                            <!-- Destello central pulsante -->
-                            <span class="absolute size-2 rounded-full bg-primary animate-ping opacity-75"></span>
+                            <span class="absolute size-1.5 rounded-full bg-primary animate-ping opacity-75"></span>
                         </div>
                     }
                 </div>
             </div>
 
-            <!-- Título del proceso con beacon interactivo -->
-            <h3 class="mt-2 text-sm font-semibold tracking-tight text-surface-900 dark:text-surface-0 flex items-center justify-center gap-2">
-                <span>{{ title() }}</span>
-                <span class="relative flex size-2">
-                    <span class="absolute inline-flex size-full rounded-full bg-primary opacity-75 animate-ping"></span>
-                    <span class="relative inline-flex size-2 rounded-full bg-primary"></span>
-                </span>
-            </h3>
+            <div class="mt-2 flex flex-col items-center gap-1">
+                <h3 class="text-sm font-semibold tracking-tight text-surface-900 dark:text-surface-0 flex items-center justify-center gap-2">
+                    <span>{{ resolvedTitle() }}</span>
+                    <span class="relative flex size-2">
+                        <span
+                            class="absolute inline-flex size-full rounded-full opacity-75 animate-ping"
+                            [ngClass]="isDanger ? 'bg-danger-500' : 'bg-primary'"
+                        ></span>
+                        <span
+                            class="relative inline-flex size-2 rounded-full"
+                            [ngClass]="isDanger ? 'bg-danger-500' : 'bg-primary'"
+                        ></span>
+                    </span>
+                </h3>
+
+                @if (resolvedSubtitle()) {
+                    <p class="m-0 text-xs text-surface-500 dark:text-surface-400">
+                        {{ resolvedSubtitle() }}
+                    </p>
+                }
+            </div>
         </div>
     </div>
-
-    <style>
-    @keyframes translateProcess {
-        0% {
-            transform: translateX(-100%);
-        }
-        50% {
-            transform: translateX(100%);
-        }
-        100% {
-            transform: translateX(300%);
-        }
-    }
-    </style>
 }

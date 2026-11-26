@@ -7,6 +7,8 @@ import { _VIRTUALSCROLLER } from './_virtualscroller';
 import { _SCROLLAREA } from './_scrollarea';
 import { _DATATABLE } from './_datatable';
 import { _CONFIRMDIALOG } from './_confirmdialog';
+import { _DIALOG } from './_dialog';
+import { _MESSAGE } from './_message';
 
 export const _COMPONENTS: ComponentsDesignTokens = {
   sidebar: _SIDEBAR,
@@ -16,6 +18,8 @@ export const _COMPONENTS: ComponentsDesignTokens = {
   scrollarea: _SCROLLAREA,
   datatable: _DATATABLE,
   confirmdialog: _CONFIRMDIALOG,
+  dialog: _DIALOG,
+  message: _MESSAGE,
   paginator: {
     root: {
       padding: '0.375rem 0.875rem',

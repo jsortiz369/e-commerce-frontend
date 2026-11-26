@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, output } from '@angular/core';
-import { LoadersSystem } from '../../services/loaders-system';
+import { Component, computed, inject, input } from '@angular/core';
+import { LoaderActionType, LoadersSystem } from '../../services/loaders-system';
 
-export type LoaderActionType = 'product' | 'cart' | 'payment' | 'sync' | 'general';
+export type { LoaderActionType };
 export type LoaderDisplayMode = 'overlay' | 'card' | 'inline';
 
 export interface LoaderItemDetail {
@@ -17,11 +17,28 @@ export interface LoaderItemDetail {
   templateUrl: './loader.html',
 })
 export class Loader {
-  private readonly _loadersSystem$ = inject(LoadersSystem);
+  protected readonly _loadersSystem$ = inject(LoadersSystem);
 
-  /** Tipo de acción que se está ejecutando */
-  readonly action = input<LoaderActionType>('payment');
+  /** Tipo de acción opcional por input (si no se envía en showLoader) */
+  readonly action = input<LoaderActionType | undefined>(undefined);
 
-  /** Título principal de la acción (ej. 'Creando producto...', 'Guardando cambios...') */
-  readonly title = input<string>('Creando producto...');
+  /** Título opcional por input (si no se envía en showLoader) */
+  readonly title = input<string | undefined>(undefined);
+
+  /** Subtítulo opcional por input */
+  readonly subtitle = input<string | undefined>(undefined);
+
+  protected readonly resolvedAction = computed<LoaderActionType>(
+    () => this.action() ?? this._loadersSystem$.loaderConfig().action ?? 'general',
+  );
+
+  protected readonly resolvedTitle = computed<string>(() => {
+    const customTitle = this.title() || this._loadersSystem$.loaderConfig().title;
+    if (customTitle) return customTitle;
+    return 'loader.default.title'.translate('Procesando solicitud...');
+  });
+
+  protected readonly resolvedSubtitle = computed<string>(
+    () => this.subtitle() ?? this._loadersSystem$.loaderConfig().subtitle ?? '',
+  );
 }

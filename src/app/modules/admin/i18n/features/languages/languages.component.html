@@ -11,6 +11,7 @@
                 type="button"
                 size="small"
                 class="w-full min-w-36"
+                (click)="create()"
             >
                 <svg pIcon="plus"></svg>
                 <span>{{ 'language.action.new'.translate() }}</span>
@@ -530,7 +531,6 @@
                             >
                                 <svg pIcon="ellipsis-v" [size]="18"></svg>
                             </button>
-                            <p-menu #menu [model]="itemsDataTable()" [popup]="true" styleClass="w-40" />
                         </td>
                     }
                 </tr>
@@ -574,7 +574,7 @@
                                         pButton
                                         type="button"
                                         size="small"
-                                        (click)="save()"
+                                        (click)="create()"
                                     >
                                         <svg pIcon="plus"></svg>
                                         <span>{{ 'language.action.new'.translate() }}</span>
@@ -589,11 +589,25 @@
     </p-card>
 </div>
 
+<p-menu #menu [model]="itemsDataTable()" [popup]="true" styleClass="w-40">
+    <ng-template #item let-menuItem>
+        <a
+            pRipple
+            class="ecom-menu-item-link flex items-center gap-2.5 px-3 py-2 text-xs font-medium cursor-pointer select-none"
+            [ngClass]="menuItem.icon === 'trash' ? 'text-danger-600 dark:text-danger-400' : ''"
+        >
+            @if (menuItem.icon) {
+                <svg [pIcon]="menuItem.icon" [size]="14" class="shrink-0"></svg>
+            }
+            <span>{{ menuItem.label }}</span>
+        </a>
+    </ng-template>
+</p-menu>
 
-@if (imagePreviewVisible() && selectedPreviewLanguage()) {
+@if (imagePreviewVisible() && selectedLanguage()) {
     <p-gallery
         [fullscreen]="true"
-        (onFullscreenChange)="imagePreviewVisible.set($event); selectedPreviewLanguage.set(null)"
+        (onFullscreenChange)="imagePreviewVisible.set($event); selectedLanguage.set(null)"
     >
         <p-gallery-backdrop></p-gallery-backdrop>
 
@@ -610,11 +624,17 @@
         <p-gallery-content>
             <p-gallery-item>
                 <img
-                    [src]="selectedPreviewLanguage()?.image"
+                    [src]="selectedLanguage()?.image"
                     [alt]="'language.gallery.imageAlt'.translate()"
                     class="max-h-[102vh] max-w-[120vw] object-contain rounded-sm"
                 />
             </p-gallery-item>
         </p-gallery-content>
     </p-gallery>
+}
+
+@if(formDialogVisible()) {
+    <app-languages-form 
+        [(visible)]="formDialogVisible"
+    /> 
 }

@@ -14,10 +14,9 @@ declare global {
     /**
      * Traduce una llave estática globalmente desde cualquier plantilla HTML o archivo TS
      * sin necesidad de importar ningún Pipe en el @Component.
-     * Al cambiar el idioma activo, todos los textos que usan .translate() se actualizan
-     * reactivamente sin recargar la página.
+     * Soporta parámetros de interpolación `{key}` o un fallback opcional.
      */
-    translate(fallback?: string): string;
+    translate(paramsOrFallback?: Record<string, string | number> | string, fallback?: string): string;
   }
 }
 
@@ -26,12 +25,27 @@ const CURRENT_LANG$ = signal<SupportedLangCode>(
 );
 const GLOBAL_STATIC_TRANSLATIONS$ = signal<StaticTranslationsMap>({});
 
+function interpolateTranslation(rawText: string, params?: Record<string, string | number>): string {
+  if (!params || typeof params !== 'object') return rawText;
+  return rawText.replace(/\{(\w+)\}/g, (_, paramKey: string) => {
+    const val = params[paramKey];
+    return val !== undefined && val !== null ? String(val) : `{${paramKey}}`;
+  });
+}
+
 if (typeof String.prototype.translate !== 'function') {
   Object.defineProperty(String.prototype, 'translate', {
-    value: function (this: string, fallback?: string): string {
+    value: function (this: string, paramsOrFallback?: Record<string, string | number> | string, fallback?: string): string {
       const key = String(this);
-      if (!key) return fallback ?? '';
-      return GLOBAL_STATIC_TRANSLATIONS$()[key] ?? fallback ?? key;
+      const fallbackText = typeof paramsOrFallback === 'string' ? paramsOrFallback : fallback;
+      if (!key) return fallbackText ?? '';
+
+      const raw = GLOBAL_STATIC_TRANSLATIONS$()[key] ?? fallbackText ?? key;
+      if (paramsOrFallback && typeof paramsOrFallback === 'object') {
+        return interpolateTranslation(raw, paramsOrFallback);
+      }
+
+      return raw;
     },
     writable: true,
     configurable: true,

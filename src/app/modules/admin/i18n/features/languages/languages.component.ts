@@ -32,6 +32,7 @@ import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pi
 import { ImgFallbackDirective } from '../../../../../shared/directives/img-fallback.directive';
 import { AlertsCustomService } from '../../../../../shared/services/alerts-custom.service';
 import { LoadersSystem } from '../../../../../shared/services/loaders-system';
+import { LanguagesFormComponent } from '../../ui/languages-form/languages-form.component';
 
 @Component({
   imports: [
@@ -53,6 +54,7 @@ import { LoadersSystem } from '../../../../../shared/services/loaders-system';
     TooltipModule,
     SelectModule,
     GalleryModule,
+    LanguagesFormComponent,
   ],
   selector: 'app-languages',
   templateUrl: './languages.component.html',
@@ -85,25 +87,25 @@ export class LanguagesComponent implements OnInit {
       severity: 'secondary',
     },
   ]);
-  private readonly selectedActionLanguage = signal<LanguageTable | null>(null);
+  private readonly selectedLanguage = signal<LanguageTable | null>(null);
   private readonly itemsDataTable = computed<MenuItem[]>(() => {
-    const selected = this.selectedActionLanguage();
+    const selected = this.selectedLanguage();
     return [
       {
         label: 'language.table.menu.update'.translate(),
-        icon: 'pi pi-refresh',
+        icon: 'refresh',
         command: () => this.update(selected),
       },
       {
         label: 'language.table.menu.delete'.translate(),
-        icon: 'pi pi-trash',
+        icon: 'trash',
         disabled: Boolean(selected?.isDefault),
         command: () => this.delete(selected),
       },
     ];
   });
   private readonly imagePreviewVisible = signal<boolean>(false);
-  private readonly selectedPreviewLanguage = signal<LanguageTable | null>(null);
+  private readonly formDialogVisible = signal<boolean>(false);
 
   ngOnInit(): void {
     this.getSummary();
@@ -194,17 +196,17 @@ export class LanguagesComponent implements OnInit {
   }
 
   private openRowMenu(menu: { toggle: (event: Event) => void }, event: Event, item: LanguageTable): void {
-    this.selectedActionLanguage.set(item);
+    this.selectedLanguage.set(item);
     menu.toggle(event);
   }
 
   private openImagePreview(item: LanguageTable): void {
-    this.selectedPreviewLanguage.set(item);
+    this.selectedLanguage.set(item);
     this.imagePreviewVisible.set(true);
   }
 
-  private save() {
-    console.log('save');
+  private create() {
+    this.formDialogVisible.set(true);
   }
 
   private update(item?: LanguageTable | null) {
@@ -215,7 +217,7 @@ export class LanguagesComponent implements OnInit {
     if (!item?.id || item.isDefault) return;
 
     this._alertsCustomService$.confirm({
-      message: 'language.confirm.delete.message'.translate(),
+      message: 'language.confirm.delete.message'.translate({ name: item.name }),
       header: 'language.confirm.delete.header'.translate(),
       icon: 'pi pi-exclamation-triangle',
       rejectLabel: 'language.confirm.delete.reject'.translate(),
@@ -223,7 +225,11 @@ export class LanguagesComponent implements OnInit {
       acceptButtonProps: { severity: 'danger' },
       rejectButtonProps: { severity: 'secondary' },
       accept: () => {
-        this._loadingService$.showLoader();
+        this._loadingService$.showLoader({
+          action: 'delete',
+          title: 'language.loader.delete.title'.translate(),
+          subtitle: `${item.name} (${item.code})`,
+        });
         this._languageService$
           .delete(item.id)
           .pipe(finalize(() => this._loadingService$.hideLoader()))
