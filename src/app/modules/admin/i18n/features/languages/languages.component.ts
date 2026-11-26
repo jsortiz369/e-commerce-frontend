@@ -5,7 +5,6 @@ import { PIcon } from '@primeicons/angular/p-icon';
 import { Card } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule, TableLazyLoadEvent, Table } from 'primeng/table';
-import { Avatar } from 'primeng/avatar';
 import { Badge } from 'primeng/badge';
 import { Tag } from 'primeng/tag';
 import { MenuItem } from 'primeng/api';
@@ -16,13 +15,20 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
-import { ProgressBar } from 'primeng/progressbar';
+import { GalleryModule } from 'primeng/gallery';
 
 import { ApiError, LanguageService } from '../../services/language.service';
-import { FilterStateOptions, LanguagesDataTable, LanguagesParamsDataTable, LanguageTable, StatusFilterType } from '../../interfaces';
+import {
+  FilterStateOptions,
+  LanguagesDataTable,
+  LanguagesParamsDataTable,
+  LanguageSummary,
+  LanguageSummaryResponse,
+  LanguageTable,
+  StatusFilterType,
+} from '../../interfaces';
 import { LanguageImgFallbackDirective } from '../../directives/language-img-fallback.directive';
 import { LocalizedDatePipe } from '../../pipes/localized-date.pipe';
-import { Toolbar } from 'primeng/toolbar';
 
 @Component({
   imports: [
@@ -33,7 +39,6 @@ import { Toolbar } from 'primeng/toolbar';
     MenuModule,
     TableModule,
     SkeletonModule,
-    Avatar,
     Badge,
     Tag,
     LanguageImgFallbackDirective,
@@ -43,8 +48,7 @@ import { Toolbar } from 'primeng/toolbar';
     InputIcon,
     TooltipModule,
     SelectModule,
-    ProgressBar,
-    Toolbar,
+    GalleryModule,
   ],
   selector: 'app-languages',
   templateUrl: './languages.component.html',
@@ -52,6 +56,7 @@ import { Toolbar } from 'primeng/toolbar';
 export class LanguagesComponent implements OnInit {
   private readonly _languageService$ = inject(LanguageService);
 
+  private readonly languagesSummary = signal<LanguageSummary>({ loading: false, data: {} as LanguageSummaryResponse });
   private readonly languagesTable = signal<LanguagesDataTable>({ total: 0, rows: 10, loading: false, data: [] });
   private readonly skeletonLanguages = signal(Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }))).asReadonly();
   private readonly initSortField = signal<Pick<LanguagesParamsDataTable, 'sortBy'>['sortBy']>('createdAt').asReadonly();
@@ -67,10 +72,27 @@ export class LanguagesComponent implements OnInit {
   private readonly itemsDataTable = signal<MenuItem[]>([
     { label: 'Update', icon: 'pi pi-refresh', command: () => console.log('llega') },
   ]).asReadonly();
+  private readonly imagePreviewVisible = signal<boolean>(false);
+  private readonly selectedPreviewLanguage = signal<LanguageTable | null>(null);
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getSummary();
+  }
 
-  protected onLazyLanguages(event: TableLazyLoadEvent) {
+  private getSummary() {
+    this.languagesSummary.update((last) => ({ ...last, loading: true }));
+    this._languageService$
+      .getSummary()
+      .pipe(finalize(() => this.languagesSummary.update((last) => ({ ...last, loading: false }))))
+      .subscribe({
+        next: (summary) => this.languagesSummary.update((last) => ({ ...last, data: summary })),
+        error: (error: ApiError) => {
+          this.languagesSummary.update((last) => ({ ...last, data: {} as LanguageSummaryResponse }));
+        },
+      });
+  }
+
+  private onLazyLanguages(event: TableLazyLoadEvent) {
     const rows = event?.rows ?? this.languagesTable().rows;
 
     const globalFilter = event.filters?.['global'];
@@ -93,8 +115,9 @@ export class LanguagesComponent implements OnInit {
           },
     };
 
-    if (JSON.stringify(paramsFilters) === this.lastRequestKey()) return;
-    this.lastRequestKey.set(JSON.stringify(paramsFilters));
+    const stringParamsFilters = JSON.stringify(paramsFilters);
+    if (stringParamsFilters === this.lastRequestKey()) return;
+    this.lastRequestKey.set(stringParamsFilters);
     this.getAllLanguages(paramsFilters);
   }
 
@@ -107,6 +130,8 @@ export class LanguagesComponent implements OnInit {
       sortOrder: this.initSortOrder(),
       filters: undefined,
     };
+    this.searchValue.set('');
+    this.statusFilter.set('ALL');
     this.getAllLanguages(paramsFilters);
   }
 
@@ -124,19 +149,23 @@ export class LanguagesComponent implements OnInit {
       });
   }
 
-  protected onGlobalFilter(table: Table, event: Event) {
+  private onGlobalFilter(table: Table, event: Event) {
     const value = (event.target as HTMLInputElement).value.trim();
     this.searchValue.set(value);
     table.filterGlobal(value, 'contains');
   }
 
-  protected clearFilters(table: Table) {
+  private clearFilters(table: Table) {
     this.searchValue.set('');
     this.statusFilter.set('ALL');
-    this.lastRequestKey.set(null);
     table.clear();
     //table.sortField = this.initSortField();
     //table.sortOrder = -1;
+  }
+
+  private openImagePreview(item: LanguageTable): void {
+    this.selectedPreviewLanguage.set(item);
+    this.imagePreviewVisible.set(true);
   }
 
   private save() {

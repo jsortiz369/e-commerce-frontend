@@ -39,10 +39,27 @@ export interface LanguagesDataTable {
   data: Array<LanguageTable>;
 }
 
+export interface LanguageSummary {
+  loading: boolean;
+  data: LanguageSummaryResponse;
+}
+
 export interface LanguagesResponse {
   items: any[];
   limit: number;
   page: number;
   total: number;
   totalPages: number;
+}
+
+export interface LanguageSummaryResponse {
+  total: number;
+  totalVisibles: number;
+  translationProgress: number;
+  default: {
+    id: string;
+    code: string;
+    name: string;
+    image: string;
+  };
 }

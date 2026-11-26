@@ -4,8 +4,9 @@ import { catchError, delay, map, Observable, OperatorFunction, throwError } from
 import { ZodError } from 'zod';
 
 import { environment } from '../../../../../environments/environment';
-import { LanguagesParamsDataTable, LanguagesResponse } from '../interfaces';
-import { languagesDatatableSchema } from '../schemas/languages';
+import { LanguagesParamsDataTable, LanguagesResponse, LanguageSummaryResponse } from '../interfaces';
+import { languagesResponseSchema } from '../schemas/languages';
+import { languageSummaryResponseSchema } from '../schemas/languages/language-summary.schema';
 
 export type ApiError = HttpErrorResponse | ZodError;
 export function catchApiError<T>(): OperatorFunction<T, T> {
@@ -29,6 +30,14 @@ export class LanguageService {
 
   constructor() {}
 
+  public getSummary() {
+    return this._http$.get<LanguageSummaryResponse>(`${this._url$}/languages/summary`).pipe(
+      map((res: LanguageSummaryResponse) => languageSummaryResponseSchema.parse(res)),
+      catchApiError(),
+      delay(5000),
+    );
+  }
+
   public getAll(params: LanguagesParamsDataTable) {
     let paramsFilter = new HttpParams();
     if (params.limit !== undefined) paramsFilter = paramsFilter.set('limit', params.limit);
@@ -38,9 +47,9 @@ export class LanguageService {
     if (params.filters !== undefined) paramsFilter = paramsFilter.set('filters', JSON.stringify(params.filters));
 
     return this._http$.get<LanguagesResponse>(`${this._url$}/languages`, { params: paramsFilter }).pipe(
-      map((res: LanguagesResponse) => languagesDatatableSchema.parse(res)),
+      map((res: LanguagesResponse) => languagesResponseSchema.parse(res)),
       catchApiError(),
-      delay(500),
+      delay(5000),
     );
   }
 

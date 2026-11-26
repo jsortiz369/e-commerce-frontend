@@ -1,48 +1,23 @@
 <div class="flex flex-col gap-2.5">
-    <p-toolbar class="shadow-md!">
-        <!-- 
-            [pt]="{
-                root: { class: _layoutService$.isMobile()? 'flex-col! items-stretch! gap-3! p-4!': 'flex-row items-center justify-between p-4'},
-                start: { class: _layoutService$.isMobile() ? 'w-full!' : '' },
-                end: { class: _layoutService$.isMobile() ? 'w-full!' : '' }
-            }"
-        -->
+    <div class="flex justify-between gap-1 items-center mb-2">
+        <div>
+            <h2>Gestión de Idiomas</h2>
+            <span class="text-xs text-surface-500 dark:text-surface-400">Configura las localizaciones del storefront, visibilidad y el idioma predeterminado de compra.</span>
+        </div>
 
-        <ng-template #start>
-            <div class="flex flex-wrap items-center gap-2">
-                <div>
-                    <p-card
-                        [pt]="{
-                            root: {class: 'hidden! bg-primary-50! size-10! md:flex! md:justify-center! md:items-center!'}, 
-                            body: { class: 'p-0!' }, 
-                            content: { class: 'p-0!' }
-                        }"
-                        
-                    >
-                        <span>
-                            <svg pIcon="globe" [size]="18" class="text-primary"></svg>
-                        </span>
-                    </p-card>
-                </div>
-
-                <div class="flex flex-col gap-0.5">
-                    <h4> Idiomas </h4>
-                </div>
-            </div>
-        </ng-template>
-
-        <ng-template #end>
+        <div class="flex gap-1">
             <button
                     pButton
                     type="button"
                     size="small"
+                    class="w-full min-w-36"
                 >
                     <svg pIcon="plus"></svg>
                     <span>Nuevo idioma</span>
                 </button>
-        </ng-template>
-    </p-toolbar>
-
+        </div>
+    </div>
+ 
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <p-card
             [pt]="{
@@ -51,26 +26,45 @@
                 content: { class: 'p-0!' }
             }"
         >
-            <div class="flex items-start justify-between gap-3">
-                <div class="flex flex-col gap-1">
-                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
-                        Total idiomas
-                    </span>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
-                            10
-                        </span>
-                        <p-tag value="Registrados" severity="secondary" [rounded]="true" class="text-[10px]!" />
+            @if(languagesSummary().loading) {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <p-skeleton width="8rem" height="0.775rem" borderRadius="0.25rem" />
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <p-skeleton width="2rem" height="2rem" borderRadius="0.25rem" />
+                            <p-skeleton width="5rem" height="1rem" borderRadius="0.275rem" />
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center">
+                        <p-skeleton height="2.675rem" borderRadius="0.775rem" />
                     </div>
                 </div>
-                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary border border-primary-200/60 dark:border-primary-800/60">
-                    <svg pIcon="globe" [size]="18"></svg>
+                <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                    <p-skeleton width="0.875rem" height="1rem" borderRadius="0.25rem" />
+                    <p-skeleton width="10rem" height="0.675rem" borderRadius="0.25rem" />
                 </div>
-            </div>
-            <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
-                <svg pIcon="database" [size]="12" class="text-primary"></svg>
-                <span>Total de idiomas configurados</span>
-            </div>
+            }@else {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                            Total idiomas
+                        </span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                                {{ languagesSummary().data.total }}
+                            </span>
+                            <p-tag value="Registrados" severity="secondary" class="text-[10px]!" />
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary border border-primary-200/60 dark:border-primary-800/60">
+                        <svg pIcon="globe" [size]="18"></svg>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                    <svg pIcon="database" [size]="12" class="text-primary"></svg>
+                    <span>Total de idiomas configurados</span>
+                </div>
+            }
         </p-card>
 
         <p-card
@@ -80,26 +74,45 @@
                 content: { class: 'p-0!' }
             }"
         >
-            <div class="flex items-start justify-between gap-3">
-                <div class="flex flex-col gap-1">
-                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
-                        Visibles en el frontend
-                    </span>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
-                            5
-                        </span>
-                        <p-tag value="Activos" severity="success" [rounded]="true" class="text-[10px]!" />
+            @if(languagesSummary().loading) {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <p-skeleton width="8rem" height="0.775rem" borderRadius="0.25rem" />
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <p-skeleton width="2rem" height="2rem" borderRadius="0.25rem" />
+                            <p-skeleton width="5rem" height="1rem" borderRadius="0.275rem" />
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center">
+                        <p-skeleton height="2.675rem" borderRadius="0.775rem" />
                     </div>
                 </div>
-                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
-                    <svg pIcon="eye" [size]="18"></svg>
+                <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-surface-500 dark:text-surface-400">
+                    <p-skeleton width="0.375rem" height="0.375rem" borderRadius="0.5rem" />
+                    <p-skeleton width="10rem" height="0.675rem" borderRadius="0.25rem" />
                 </div>
-            </div>
-            <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
-                <span class="size-1.5 rounded-full bg-emerald-500"></span>
-                <span>Idiomas visibles al público</span>
-            </div>
+            }@else {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                            Visibles en el frontend
+                        </span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                                {{ languagesSummary().data?.totalVisibles}}
+                            </span>
+                            <p-tag value="Activos" severity="success" [rounded]="true" class="text-[10px]!" />
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
+                        <svg pIcon="eye" [size]="18"></svg>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                    <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Idiomas visibles al público</span>
+                </div>
+            }
         </p-card>
 
         <p-card
@@ -109,28 +122,50 @@
                 content: { class: 'p-0!' }
             }"
         >
-            <div class="flex items-start justify-between gap-3">
-                <div class="flex flex-col gap-1">
-                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
-                        Progreso de traducción
-                    </span>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
-                            95%
-                        </span>
-                        <p-tag value="Óptimo" severity="info" [rounded]="true" class="text-[10px]!" />
+            @if(languagesSummary().loading) {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <p-skeleton width="8rem" height="0.775rem" borderRadius="0.25rem" />
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <p-skeleton width="2.5rem" height="2rem" borderRadius="0.25rem" />
+                            <p-skeleton width="5rem" height="1rem" borderRadius="0.275rem" />
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center">
+                        <p-skeleton height="2.675rem" borderRadius="0.775rem" />
                     </div>
                 </div>
-                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/60">
-                    <svg pIcon="chart-bar" [size]="18"></svg>
+                <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-surface-500 dark:text-surface-400">
+                    <p-skeleton width="10rem" height="0.675rem" borderRadius="0.25rem" />
                 </div>
-            </div>
-            <div class="mt-2.5 flex flex-col gap-1.5">
-                <p-progressbar [value]="95" [showValue]="false" class="h-1.5!" />
-                <span class="text-xs text-surface-500 dark:text-surface-400">
-                    Promedio de llaves traducidas
-                </span>
-            </div>
+            }@else {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                            Progreso de traducción
+                        </span>
+                        <div class="flex items-baseline gap-2">
+                            @let progres = languagesSummary().data?.translationProgress;
+                            <span class="text-2xl font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                                {{ progres }}%
+                            </span>
+                            <p-tag 
+                                [value]="progres >= 80 ? 'Óptimo' : progres >= 50 ? 'En Proceso' : 'Bajo'" 
+                                [severity]="progres >= 80 ? 'success' : progres >= 50 ? 'warn' : 'danger'"
+                                class="text-[10px]!" 
+                            />
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/60">
+                        <svg pIcon="chart-bar" [size]="18"></svg>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                    <span class="text-xs text-surface-500 dark:text-surface-400">
+                        Promedio de llaves traducidas
+                    </span>
+                </div>
+            }
         </p-card>
 
         <p-card
@@ -140,25 +175,46 @@
                 content: { class: 'p-0!' }
             }"
         >
-            <div class="flex items-start justify-between gap-3">
-                <div class="flex flex-col gap-1 min-w-0">
-                    <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
-                        Idioma predeterminado
-                    </span>
-                    <div class="flex items-center gap-2">
-                        <span class="truncate text-lg font-bold tracking-tight text-surface-900 dark:text-surface-0">
-                            Español / México
-                        </span>
+             @if(languagesSummary().loading) {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1">
+                        <p-skeleton width="8rem" height="0.775rem" borderRadius="0.25rem" />
+                        <div class="flex items-baseline gap-2 mt-1">
+                            <span class="flex gap-2 truncate text-lg font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                                <p-skeleton width="5rem" height="2rem" borderRadius="0.25rem" /> /
+                                <p-skeleton width="2.5rem" height="2rem" borderRadius="0.275rem" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center">
+                        <p-skeleton height="2.675rem" borderRadius="0.775rem" />
                     </div>
                 </div>
-                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60">
-                    <svg pIcon="star-fill" [size]="16"></svg>
+                <div class="mt-3 flex items-center justify-between gap-1.5 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-surface-500 dark:text-surface-400">
+                    <p-skeleton width="10rem" height="0.675rem" borderRadius="0.25rem" />
+                    <p-skeleton width="3rem" height="0.75rem" borderRadius="0.25rem" />
                 </div>
-            </div>
-            <div class="mt-3 flex items-center justify-between gap-2 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
-                <span>Idioma base del e-commerce</span>
-                <p-tag value="Fallback" severity="warn" [rounded]="true" class="text-[10px]!" />
-            </div>
+            }@else {
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex flex-col gap-1 min-w-0">
+                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                            Idioma predeterminado
+                        </span>
+                        <div>
+                            <span class="truncate text-lg font-bold tracking-tight text-surface-900 dark:text-surface-0">
+                                {{languagesSummary().data?.default.name}} / {{languagesSummary().data?.default.code}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60">
+                        <svg pIcon="star-fill" [size]="16"></svg>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between gap-2 border-t border-surface-100 dark:border-surface-800/80 pt-2.5 text-xs text-surface-500 dark:text-surface-400">
+                    <span>Idioma base del e-commerce</span>
+                    <p-tag value="Fallback" severity="warn" class="text-[10px]!" />
+                </div>
+            }
         </p-card>
     </div>
    
@@ -360,11 +416,11 @@
 
                         <td>
                             <div class="flex items-center gap-3">
-                                <p-skeleton width="2rem" height="2.125rem" borderRadius="0.25rem" />
+                                <p-skeleton width="3rem" height="2.125rem" borderRadius="0.25rem" />
                                 <div class="flex flex-col gap-1">
-                                    <p-skeleton width="4rem" height="0.875rem" borderRadius="4px" />
+                                    <p-skeleton width="4rem" height="0.75rem" borderRadius="4px" />
                                     @if(i === 0) {
-                                        <p-skeleton width="5.5rem" height="1.125rem" borderRadius="4px" />
+                                        <p-skeleton width="5.5rem" height="1rem" borderRadius="4px" />
                                     }
                                 </div>
                             </div>
@@ -405,13 +461,13 @@
 
                         <td>
                             <div class="flex items-center gap-3 py-0.5">
-                                <p-avatar size="normal">
+                                <div class="w-10 cursor-pointer hover:opacity-40 transition-opacity" (click)="openImagePreview(item)">
                                     <img 
-                                        class="rounded-sm object-cover"
-                                        [alt]="item.name"
                                         [appLanguageImgFallback]="item.image"
-                                    >
-                                </p-avatar>
+                                        [alt]="item.name"
+                                        class="w-full h-full object-cover rounded-sm" 
+                                    />
+                                </div>
 
                                 <div class="flex flex-col min-w-0">
                                     <span class="font-semibold truncate">
@@ -488,10 +544,10 @@
                     <td colspan="8" class="py-14! text-center">
                         @if (hasActiveFilters()) {
                             <div class="mx-auto flex max-w-md flex-col items-center justify-center gap-2.5">
-                                <p-avatar shape="circle" size="xlarge">
-                                    <svg pIcon="search" [size]="20"></svg>
-                                </p-avatar>
-
+                                <div class="flex items-center justify-center rounded-full bg-surface-100 dark:bg-surface-800 size-14 ">
+                                    <svg pIcon="search" [size]="20" class="text-surface-400 dark:text-surface-500"></svg>
+                                </div>
+                                
                                 <div class="flex flex-col gap-1 text-center">
                                     <span class="text-sm font-semibold">
                                         No se encontraron resultados para "{{ searchValue() }}"
@@ -503,9 +559,9 @@
                             </div>
                         } @else {
                             <div class="mx-auto flex max-w-md flex-col items-center justify-center gap-2.5">
-                                <p-avatar shape="circle" size="xlarge" class="bg-surface-100! dark:bg-surface-800!">
+                                <div class="flex items-center justify-center rounded-full bg-surface-100 dark:bg-surface-800 size-14 ">
                                     <svg pIcon="globe" [size]="30" class="text-surface-400 dark:text-surface-500"></svg>
-                                </p-avatar>
+                                </div>
 
                                 <div class="flex flex-col gap-1 text-center">
                                     <span class="text-sm font-semibold">
@@ -535,4 +591,34 @@
         </p-table>
     </p-card>
 </div>
+
+
+@if (imagePreviewVisible() && selectedPreviewLanguage()) {
+    <p-gallery
+        [fullscreen]="true"
+        (onFullscreenChange)="imagePreviewVisible.set($event); selectedPreviewLanguage.set(null)"
+    >
+        <p-gallery-backdrop></p-gallery-backdrop>
+
+        <p-gallery-header class="justify-end">
+            <button
+                pGalleryFullScreen
+                type="button"
+                aria-label="Cerrar vista previa"
+            >
+                <svg pIcon="times" class="size-5"></svg>
+            </button>
+        </p-gallery-header>
+
+        <p-gallery-content>
+            <p-gallery-item>
+                <img
+                    [src]="selectedPreviewLanguage()?.image"
+                    alt="Vista ampliada de la bandera"
+                    class="max-h-[102vh] max-w-[120vw] object-contain rounded-sm"
+                />
+            </p-gallery-item>
+        </p-gallery-content>
+    </p-gallery>
+}
 

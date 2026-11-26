@@ -1,4 +1,6 @@
-const baseUrlApi = 'https://dev-api.tu-dominio-en-la-nube.com';
+declare const BASE_URL_API: string;
+
+const baseUrlApi = typeof BASE_URL_API !== 'undefined' ? BASE_URL_API : '';
 
 export const environment = {
   production: false,

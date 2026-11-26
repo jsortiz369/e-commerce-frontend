@@ -1,4 +1,7 @@
-const baseUrlApi = 'http://localhost:8000';
+declare const BASE_URL_API: string;
+
+const baseUrlApi = typeof BASE_URL_API !== 'undefined' ? BASE_URL_API : '';
+
 export const environment = {
   production: false,
   envName: 'local',

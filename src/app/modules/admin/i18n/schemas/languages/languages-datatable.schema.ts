@@ -2,7 +2,7 @@ import z from 'zod';
 
 import { LanguagesResponse, LanguageTable } from '../../interfaces';
 
-export const languageDatatableSchema: z.ZodType<LanguageTable> = z
+const languageDatatableSchema: z.ZodType<LanguageTable> = z
   .object({
     id: z.uuidv7(),
     name: z.string(),
@@ -15,7 +15,7 @@ export const languageDatatableSchema: z.ZodType<LanguageTable> = z
   })
   .strict();
 
-export const languagesDatatableSchema: z.ZodType<LanguagesResponse> = z
+export const languagesResponseSchema: z.ZodType<LanguagesResponse> = z
   .object({
     items: z.array(languageDatatableSchema),
     limit: z.number(),
