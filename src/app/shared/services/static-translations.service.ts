@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Service, Signal, signal } from '@angular/core';
+import { PrimeNG } from 'primeng/config';
 import { catchError, delay, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
 
-export type SupportedLangCode = 'es' | 'en';
+import { buildPrimeNGTranslation } from '../../../primeng/_translations';
+
+export type SupportedLangCode = string;
 export type StaticTranslationsMap = Record<string, string>;
-export type MultiLangTranslationsPayload = Record<SupportedLangCode, StaticTranslationsMap> | StaticTranslationsMap;
+export type MultiLangTranslationsPayload = Record<string, StaticTranslationsMap> | StaticTranslationsMap;
 
 declare global {
   interface String {
@@ -38,15 +41,23 @@ if (typeof String.prototype.translate !== 'function') {
 @Service()
 export class StaticTranslationsService {
   private readonly _http = inject(HttpClient);
+  private readonly _primeng = inject(PrimeNG);
 
-  /** Caché en memoria por código de idioma ('es', 'en') */
-  private readonly _dictionariesByLang = signal<Partial<Record<SupportedLangCode, StaticTranslationsMap>>>({});
+  private readonly _dictionariesByLang = signal<Record<string, StaticTranslationsMap>>({});
 
   public readonly currentLang = computed(() => CURRENT_LANG$());
   public readonly translations = computed(() => GLOBAL_STATIC_TRANSLATIONS$());
   public readonly hasTranslations = computed(() => Object.keys(GLOBAL_STATIC_TRANSLATIONS$()).length > 0);
 
   private _request$: Observable<StaticTranslationsMap> | null = null;
+  private _applyActiveLanguage(lang: SupportedLangCode, activeDict: StaticTranslationsMap): void {
+    CURRENT_LANG$.set(lang);
+    GLOBAL_STATIC_TRANSLATIONS$.set(activeDict);
+    this._primeng.setTranslation(buildPrimeNGTranslation(activeDict));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('app_lang', lang);
+    }
+  }
 
   /**
    * Obtiene las traducciones del idioma activo (o del idioma indicado) por Observable.
@@ -54,8 +65,7 @@ export class StaticTranslationsService {
   getStaticTranslations(lang: SupportedLangCode = CURRENT_LANG$()): Observable<StaticTranslationsMap> {
     const cached = this._dictionariesByLang()[lang];
     if (cached && Object.keys(cached).length > 0) {
-      CURRENT_LANG$.set(lang);
-      GLOBAL_STATIC_TRANSLATIONS$.set(cached);
+      this._applyActiveLanguage(lang, cached);
       return of(cached);
     }
 
@@ -63,14 +73,12 @@ export class StaticTranslationsService {
 
     this._request$ = this._http.get<MultiLangTranslationsPayload>('example/static-translations.json').pipe(
       map((payload) => {
-        // Soporta JSON multi-idioma { es: {...}, en: {...} } o plano { "key": "val" }
-        if (payload && typeof payload === 'object' && ('es' in payload || 'en' in payload) && typeof payload[lang] === 'object') {
-          const multi = payload as Record<SupportedLangCode, StaticTranslationsMap>;
-          this._dictionariesByLang.set({
-            es: multi.es ?? {},
-            en: multi.en ?? {},
-          });
-          return multi[lang] ?? {};
+        // Soporta JSON multi-idioma { es: {...}, en: {...}, pt: {...}, ... } o plano { "key": "val" }
+        const firstValue = payload && typeof payload === 'object' ? Object.values(payload)[0] : null;
+        if (payload && typeof payload === 'object' && firstValue && typeof firstValue === 'object') {
+          const multi = payload as Record<string, StaticTranslationsMap>;
+          this._dictionariesByLang.set(multi);
+          return multi[lang] ?? multi[Object.keys(multi)[0]] ?? {};
         }
 
         const flat = (payload as StaticTranslationsMap) ?? {};
@@ -78,14 +86,11 @@ export class StaticTranslationsService {
         return flat;
       }),
       tap((activeDict) => {
-        CURRENT_LANG$.set(lang);
-        GLOBAL_STATIC_TRANSLATIONS$.set(activeDict);
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('app_lang', lang);
-        }
+        this._applyActiveLanguage(lang, activeDict);
       }),
       catchError((error) => {
         console.error('Error al cargar static-translations.json:', error);
+        this._applyActiveLanguage(lang, {});
         return of({});
       }),
       finalize(() => (this._request$ = null)),
@@ -98,19 +103,14 @@ export class StaticTranslationsService {
 
   /**
    * Cambia el idioma en caliente sin refrescar la página.
-   * Actualiza la señal GLOBAL_STATIC_TRANSLATIONS$ y Angular re-renderiza todos los .translate() automáticamente.
+   * Actualiza la señal GLOBAL_STATIC_TRANSLATIONS$ y la configuración de PrimeNG automáticamente.
    */
   changeLanguage(lang: SupportedLangCode): void {
     if (lang === CURRENT_LANG$() && this.hasTranslations()) return;
 
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('app_lang', lang);
-    }
-
     const cached = this._dictionariesByLang()[lang];
     if (cached && Object.keys(cached).length > 0) {
-      CURRENT_LANG$.set(lang);
-      GLOBAL_STATIC_TRANSLATIONS$.set(cached);
+      this._applyActiveLanguage(lang, cached);
       return;
     }
 

@@ -31,6 +31,7 @@ import {
 import { LocalizedDatePipe } from '../../../../../shared/pipes/localized-date.pipe';
 import { ImgFallbackDirective } from '../../../../../shared/directives/img-fallback.directive';
 import { AlertsCustomService } from '../../../../../shared/services/alerts-custom.service';
+import { LoadersSystem } from '../../../../../shared/services/loaders-system';
 
 @Component({
   imports: [
@@ -59,6 +60,7 @@ import { AlertsCustomService } from '../../../../../shared/services/alerts-custo
 export class LanguagesComponent implements OnInit {
   private readonly _languageService$ = inject(LanguageService);
   private readonly _alertsCustomService$ = inject(AlertsCustomService);
+  private readonly _loadingService$ = inject(LoadersSystem);
 
   private readonly languagesSummary = signal<LanguageSummary>({ loading: false, data: {} as LanguageSummaryResponse });
   private readonly languagesTable = signal<LanguagesDataTable>({ total: 0, rows: 10, loading: false, data: [] });
@@ -83,10 +85,23 @@ export class LanguagesComponent implements OnInit {
       severity: 'secondary',
     },
   ]);
-  private readonly itemsDataTable = computed<MenuItem[]>(() => [
-    { label: 'language.table.menu.update'.translate(), icon: 'pi pi-refresh', command: () => console.log('llega') },
-    { label: 'language.table.menu.delete'.translate(), icon: 'pi pi-trash', command: () => this.delete() },
-  ]);
+  private readonly selectedActionLanguage = signal<LanguageTable | null>(null);
+  private readonly itemsDataTable = computed<MenuItem[]>(() => {
+    const selected = this.selectedActionLanguage();
+    return [
+      {
+        label: 'language.table.menu.update'.translate(),
+        icon: 'pi pi-refresh',
+        command: () => this.update(selected),
+      },
+      {
+        label: 'language.table.menu.delete'.translate(),
+        icon: 'pi pi-trash',
+        disabled: Boolean(selected?.isDefault),
+        command: () => this.delete(selected),
+      },
+    ];
+  });
   private readonly imagePreviewVisible = signal<boolean>(false);
   private readonly selectedPreviewLanguage = signal<LanguageTable | null>(null);
 
@@ -178,6 +193,11 @@ export class LanguagesComponent implements OnInit {
     //table.sortOrder = -1;
   }
 
+  private openRowMenu(menu: { toggle: (event: Event) => void }, event: Event, item: LanguageTable): void {
+    this.selectedActionLanguage.set(item);
+    menu.toggle(event);
+  }
+
   private openImagePreview(item: LanguageTable): void {
     this.selectedPreviewLanguage.set(item);
     this.imagePreviewVisible.set(true);
@@ -187,15 +207,36 @@ export class LanguagesComponent implements OnInit {
     console.log('save');
   }
 
-  private delete(item?: LanguageTable) {
+  private update(item?: LanguageTable | null) {
+    console.log('update', item);
+  }
+
+  private delete(item?: LanguageTable | null) {
+    if (!item?.id || item.isDefault) return;
+
     this._alertsCustomService$.confirm({
-      message: '¿Está seguro de eliminar el idioma?',
-      header: 'Confirmar eliminación',
-      icon: 'pi pi-info-circle',
+      message: 'language.confirm.delete.message'.translate(),
+      header: 'language.confirm.delete.header'.translate(),
+      icon: 'pi pi-exclamation-triangle',
+      rejectLabel: 'language.confirm.delete.reject'.translate(),
+      acceptLabel: 'language.confirm.delete.accept'.translate(),
       acceptButtonProps: { severity: 'danger' },
       rejectButtonProps: { severity: 'secondary' },
-      reject: () => console.log('Reject'),
-      accept: () => console.log('Accept'),
+      accept: () => {
+        this._loadingService$.showLoader();
+        this._languageService$
+          .delete(item.id)
+          .pipe(finalize(() => this._loadingService$.hideLoader()))
+          .subscribe({
+            next: () => {
+              this.refetchLanguages();
+              this.getSummary();
+            },
+            error: (error: ApiError) => {
+              console.log(error);
+            },
+          });
+      },
     });
   }
 }

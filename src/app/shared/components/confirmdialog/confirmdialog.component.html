@@ -11,7 +11,7 @@
                 @if (message.closable !== false) {
                     <button
                         type="button"
-                        aria-label="Cerrar"
+                        [attr.aria-label]="'primeng.aria.close'.translate('Cerrar')"
                         class="absolute! top-3.5! right-3.5! z-10 inline-flex size-7 items-center justify-center rounded-lg text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700 dark:hover:bg-surface-800 dark:hover:text-surface-200 cursor-pointer"
                         (click)="onReject()"
                     >
@@ -63,7 +63,7 @@
                                     <svg [pIcon]="message?.rejectButtonProps?.icon" [size]="14"></svg>
                                 }
 
-                                <span>{{ message.rejectLabel ?? message?.rejectButtonProps?.label ?? 'Cancelar' }}</span>
+                                <span>{{ message.rejectLabel ?? message?.rejectButtonProps?.label ?? 'primeng.cancel'.translate('Cancelar') }}</span>
                             </button>
                         }
 
@@ -82,7 +82,7 @@
                                     <svg [pIcon]="message?.acceptButtonProps?.icon" [size]="14"></svg>
                                 }
 
-                                <span>{{ message.acceptLabel ?? message?.acceptButtonProps?.label ?? 'Confirmar' }}</span>
+                                <span>{{ message.acceptLabel ?? message?.acceptButtonProps?.label ?? 'primeng.accept'.translate('Confirmar') }}</span>
                             </button>
                         }
                     </div>

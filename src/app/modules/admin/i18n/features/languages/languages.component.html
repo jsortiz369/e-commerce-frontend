@@ -17,7 +17,7 @@
             </button>
         </div>
     </div>
- 
+
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <p-card
             [pt]="{
@@ -522,10 +522,10 @@
                             <button 
                                 pButton 
                                 iconOnly 
-                                aria-label="Save"
+                                [attr.aria-label]="'language.table.column.actions'.translate()"
                                 size="small"
                                 text
-                                (click)="menu.toggle($event)"
+                                (click)="openRowMenu(menu, $event, item)"
                                 plain
                             >
                                 <svg pIcon="ellipsis-v" [size]="18"></svg>

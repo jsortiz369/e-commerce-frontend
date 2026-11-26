@@ -54,4 +54,8 @@ export class LanguageService {
   public getById(id: string) {
     return this._http$.get(`${this._url$}/languages/${id}`);
   }
+
+  public delete(id: string) {
+    return this._http$.delete(`${this._url$}/languages/${id}`).pipe(catchApiError(), delay(5000));
+  }
 }
