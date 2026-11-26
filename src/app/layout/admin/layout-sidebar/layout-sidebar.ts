@@ -7,7 +7,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { Avatar } from 'primeng/avatar';
 import { ScrollAreaModule } from 'primeng/scrollarea';
 
-import { LayoutService } from '../../services/layout-service';
+import { LayoutService2 } from '../../services/layout-service';
 import { Layout, SidebarGroup, SidebarItem } from '../../services/admin/layout';
 
 @Component({
@@ -20,7 +20,7 @@ import { Layout, SidebarGroup, SidebarItem } from '../../services/admin/layout';
 })
 export class LayoutSidebar {
   private readonly _router = inject(Router);
-  private readonly _layoutService$ = inject(LayoutService);
+  private readonly _layoutService$ = inject(LayoutService2);
   protected readonly _adminLayout$ = inject(Layout);
 
   protected readonly _sidebarGroups$ = computed(() => this._adminLayout$.sidebar());
@@ -49,11 +49,9 @@ export class LayoutSidebar {
       }
     });
 
-    this._router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-      .subscribe((event) => {
-        this.syncActiveFromUrl(event.urlAfterRedirects);
-      });
+    this._router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => {
+      this.syncActiveFromUrl(event.urlAfterRedirects);
+    });
   }
 
   onChangeToggleSidebar() {
@@ -99,11 +97,7 @@ export class LayoutSidebar {
   }
 
   hasActiveChild(item: SidebarItem): boolean {
-    return (
-      !!item.children?.length &&
-      this._activeItemLabel$() === item.label &&
-      this._activeSubItemLabel$() !== null
-    );
+    return !!item.children?.length && this._activeItemLabel$() === item.label && this._activeSubItemLabel$() !== null;
   }
 
   isSubItemActive(item: SidebarItem, sub: SidebarItem): boolean {
@@ -154,9 +148,7 @@ export class LayoutSidebar {
       for (const group of groups) {
         for (const item of this.getGroupItems(group)) {
           if (item.label === currentItemLabel) {
-            const matchingSub = (item.children ?? []).find(
-              (s) => s.label === currentSubLabel && s.route === cleanUrl,
-            );
+            const matchingSub = (item.children ?? []).find((s) => s.label === currentSubLabel && s.route === cleanUrl);
             if (matchingSub) {
               return;
             }

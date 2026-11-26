@@ -24,7 +24,6 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { PanelModule } from 'primeng/panel';
-import { LayoutService } from '../../../../../layout/services/layout-service';
 import { LanguageCreateUpdateComponent } from '../../ui/language-create-update/language-create-update.component';
 
 export type LanguageDirection = 'LTR' | 'RTL';

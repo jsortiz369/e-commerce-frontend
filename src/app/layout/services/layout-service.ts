@@ -16,7 +16,7 @@ interface LayoutState {
 }
 
 @Service()
-export class LayoutService {
+export class LayoutService2 {
   readonly layoutConfig = signal<LayoutConfig>({
     //primary: 'green',
     surface: null,

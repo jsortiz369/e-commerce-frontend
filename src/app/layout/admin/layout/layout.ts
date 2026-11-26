@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 
 import { LayoutTopbar } from '../layout-topbar/layout-topbar';
 import { LayoutSidebar } from '../layout-sidebar/layout-sidebar';
-import { LayoutService } from '../../services/layout-service';
+import { LayoutService2 } from '../../services/layout-service';
 
 @Component({
   imports: [CommonModule, SidebarModule, RouterModule, LayoutTopbar, LayoutSidebar],
@@ -13,7 +13,7 @@ import { LayoutService } from '../../services/layout-service';
   templateUrl: './layout.html',
 })
 export class Layout implements OnInit {
-  readonly _layoutService$ = inject(LayoutService);
+  readonly _layoutService$ = inject(LayoutService2);
 
   private readonly _variant$ = computed(() => this._layoutService$.layoutState().variant);
 

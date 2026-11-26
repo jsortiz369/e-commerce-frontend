@@ -4,7 +4,7 @@ import { PIcon } from '@primeicons/angular/p-icon';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 
-import { LayoutService } from '../../services/layout-service';
+import { LayoutService2 } from '../../services/layout-service';
 
 @Component({
   imports: [CommonModule, PIcon, DividerModule, TagModule],
@@ -15,10 +15,8 @@ import { LayoutService } from '../../services/layout-service';
   },
 })
 export class LayoutFooter {
-  readonly _layoutService$ = inject(LayoutService);
+  readonly _layoutService$ = inject(LayoutService2);
 
   protected readonly _currentYear = new Date().getFullYear();
-  protected readonly _isFloating$ = computed(
-    () => this._layoutService$.layoutState().variant === 'floating',
-  );
+  protected readonly _isFloating$ = computed(() => this._layoutService$.layoutState().variant === 'floating');
 }
